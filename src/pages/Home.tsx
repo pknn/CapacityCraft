@@ -1,22 +1,20 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../components/core/Button';
 import Input from '../components/core/Input';
 import Logo from '../components/Logo';
 import Separator from '../components/core/Separator';
 import useRoomState from '../state/useRoomState';
-import { useShallow } from 'zustand/shallow';
+import genId from '../util/genId';
 
 const Home = () => {
   const [roomIdValue, setRoomIdValue] = useState<string>('');
-  const { generateRoomId, setRoomId } = useRoomState(
-    useShallow((state) => ({
-      generateRoomId: state.generateRoomId,
-      setRoomId: state.setRoomId,
-    }))
-  );
+  const setRoomId = useRoomState((state) => state.setRoomId);
+  const navigate = useNavigate();
 
   const handleStartPlanning = () => {
-    generateRoomId();
+    const id = genId();
+    setRoomIdAndNavigate(id);
   };
 
   const handleRoomIdChange = (roomId: string) => {
@@ -24,7 +22,12 @@ const Home = () => {
   };
 
   const handleJoin = () => {
-    setRoomId(roomIdValue);
+    setRoomIdAndNavigate(roomIdValue);
+  };
+
+  const setRoomIdAndNavigate = (id: string) => {
+    setRoomId(id);
+    navigate(`/app/${id}/plan`);
   };
 
   return (
