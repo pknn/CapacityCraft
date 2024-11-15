@@ -12,8 +12,8 @@ const useSprintDetails = create(
   devtools<SprintDetails>((set) => ({
     length: 0,
     startDate: new Date(),
-    setLength: (length) => set(() => ({ length })),
-    setStartDate: (date) => set(() => ({ startDate: date })),
+    setLength: (length) => set({ length }),
+    setStartDate: (date) => set({ startDate: date }),
   }))
 );
 
