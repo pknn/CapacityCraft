@@ -6,6 +6,8 @@ import Logo from '../components/Logo';
 import Separator from '../components/core/Separator';
 import useRoomState from '../state/useRoomState';
 import genId from '../util/genId';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const Home = () => {
   const [roomIdValue, setRoomIdValue] = useState<string>('');
@@ -32,9 +34,7 @@ const Home = () => {
 
   return (
     <div className="bg-gradient-to-b from-white to-stone-400 min-h-screen flex flex-col">
-      <header className="flex px-6 py-4">
-        <Logo />
-      </header>
+      <Header />
       <main className="container mx-auto text-center flex flex-col align-middle h-full flex-1 justify-center">
         <div className="mb-4 text-5xl font-extrabold">
           <span className="text-stone-500">Capacity</span>
@@ -58,9 +58,7 @@ const Home = () => {
           <Button onClick={handleJoin}>Join</Button>
         </section>
       </main>
-      <footer className="text-center py-4 text-sm text-stone-500">
-        <div>© 2024 Capacity Craft</div>
-      </footer>
+      <Footer />
     </div>
   );
 };
