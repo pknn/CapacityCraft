@@ -17,7 +17,7 @@ const Home = () => {
 
   useEffect(() => {
     clearDisplayName();
-  }, []);
+  }, [clearDisplayName]);
 
   const handleStartPlanning = () => {
     const id = genId();
@@ -38,9 +38,9 @@ const Home = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-white to-stone-400 min-h-screen flex flex-col">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-stone-400">
       <Header />
-      <main className="container mx-auto text-center flex flex-col align-middle h-full flex-1 justify-center">
+      <main className="container mx-auto flex h-full flex-1 flex-col justify-center text-center align-middle">
         <div className="mb-4 text-5xl font-extrabold">
           <span className="text-stone-500">Capacity</span>
           <span> made clear</span>

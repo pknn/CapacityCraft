@@ -3,9 +3,9 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 
 const App = () => (
-  <div className="flex flex-col min-h-screen bg-stone-200">
+  <div className="flex min-h-screen flex-col bg-stone-200">
     <Header />
-    <main className="container mx-auto max-w-screen-lg flex flex-col h-full flex-1">
+    <main className="container mx-auto flex h-full max-w-screen-lg flex-1 flex-col">
       <Outlet />
     </main>
     <Footer />

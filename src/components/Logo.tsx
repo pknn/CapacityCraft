@@ -5,7 +5,7 @@ const Logo = () => {
 
   return (
     <div
-      className="pl-0 p-4 text-2xl font-bold text-stone-800 cursor-pointer"
+      className="cursor-pointer p-4 pl-0 text-2xl font-bold text-stone-800"
       onClick={() => navigate('/')}
     >
       <div className="-mb-2">Capacity</div>

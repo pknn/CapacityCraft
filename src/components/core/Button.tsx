@@ -12,7 +12,7 @@ const Button = ({
 }: PropsWithChildren<ButtonProps>) => (
   <button
     onClick={onClick}
-    className={`bg-stone-500 hover:bg-stone-400 px-4 py-2 rounded text-stone-100 ${className}`}
+    className={`rounded bg-stone-500 px-4 py-2 text-stone-100 hover:bg-stone-400 ${className}`}
     type="button"
   >
     {children}
