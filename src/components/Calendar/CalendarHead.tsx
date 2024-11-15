@@ -9,7 +9,7 @@ type OwnProps = {
 
 type Props = OwnProps;
 
-const CalendarItem = ({ day, onClick }: Props) => {
+const CalendarHead = ({ day, onClick }: Props) => {
   const { dayOfWeek, date, month, isWeekend } = useMemo(
     () => formatDateStringForDisplay(day.date),
     [day]
@@ -44,4 +44,4 @@ const CalendarItem = ({ day, onClick }: Props) => {
   );
 };
 
-export default CalendarItem;
+export default CalendarHead;

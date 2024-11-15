@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../../store';
 import { Day, toggleNonWorkingDay } from '../../store/sprintSlice';
-import CalendarItem from './CalendarItem';
+import CalendarHead from './CalendarHead';
 import Legend from './Legend';
 
 type StateBindings = {
@@ -20,12 +20,20 @@ const Calendar = ({ days, toggleNonWorkingDay }: Props) => {
   };
 
   return (
-    <div>
-      <Legend />
-      <div className="flex gap-2">
-        {days.map((day, index) => (
-          <CalendarItem key={day.date} day={day} onClick={handleClick(index)} />
-        ))}
+    <div className="flex">
+      <div></div>
+      <div className="flex-1">
+        <Legend />
+        <div className="flex gap-2">
+          <div className="px-16" />
+          {days.map((day, index) => (
+            <CalendarHead
+              key={day.date}
+              day={day}
+              onClick={handleClick(index)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
