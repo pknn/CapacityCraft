@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import SprintDetailsInput from '../components/SprintDetailsInput';
 import UserOverlay from '../components/UserOverlay';
-import { AppDispatch, RootState } from '../store';
+import { AppDispatch, AppState } from '../store';
 import { setRoomId } from '../store/roomSlice';
 import { connect } from 'react-redux';
 import { useEffect } from 'react';
 
-type StateProps = {
+type ActionBindings = {
   roomId: string | undefined;
 };
 
@@ -14,7 +14,7 @@ type DispatchProps = {
   setRoomId: (id: string) => void;
 };
 
-type Props = StateProps & DispatchProps;
+type Props = ActionBindings & DispatchProps;
 
 const Plan = ({ roomId, setRoomId }: Props) => {
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ const Plan = ({ roomId, setRoomId }: Props) => {
   );
 };
 
-const mapStateToProps = (state: RootState): StateProps => ({
+const mapStateToProps = (state: AppState): ActionBindings => ({
   roomId: state.room.id,
 });
 

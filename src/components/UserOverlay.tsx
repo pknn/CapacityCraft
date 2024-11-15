@@ -1,11 +1,11 @@
 import Input from './core/Input';
 import { useState } from 'react';
 import Button from './core/Button';
-import { AppDispatch, RootState } from '../store';
+import { AppDispatch, AppState } from '../store';
 import { setDisplayName } from '../store/userSlice';
 import { connect } from 'react-redux';
 
-type StateProps = {
+type ActionBindings = {
   displayName: string | undefined;
 };
 
@@ -13,7 +13,7 @@ type DispatchProps = {
   setDisplayName: (displayName: string) => void;
 };
 
-type Props = StateProps & DispatchProps;
+type Props = ActionBindings & DispatchProps;
 
 const UserOverlay = ({ displayName, setDisplayName }: Props) => {
   const [value, setValue] = useState(displayName);
@@ -57,7 +57,7 @@ const UserOverlay = ({ displayName, setDisplayName }: Props) => {
   );
 };
 
-const mapStateToProps = (state: RootState): StateProps => ({
+const mapStateToProps = (state: AppState): ActionBindings => ({
   displayName: state.user.displayName,
 });
 
