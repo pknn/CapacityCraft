@@ -1,18 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/core/Button';
 import Input from '../components/core/Input';
-import Logo from '../components/Logo';
 import Separator from '../components/core/Separator';
 import useRoomState from '../state/useRoomState';
 import genId from '../util/genId';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import useUserState from '../state/useUserState';
 
 const Home = () => {
   const [roomIdValue, setRoomIdValue] = useState<string>('');
   const setRoomId = useRoomState((state) => state.setRoomId);
+  const clearDisplayName = useUserState((state) => state.clearDisplayName);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    clearDisplayName();
+  }, []);
 
   const handleStartPlanning = () => {
     const id = genId();
