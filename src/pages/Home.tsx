@@ -3,21 +3,30 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../components/core/Button';
 import Input from '../components/core/Input';
 import Separator from '../components/core/Separator';
-import useRoomState from '../state/useRoomState';
 import genId from '../util/genId';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import useUserState from '../state/useUserState';
+import { AppDispatch } from '../store';
+import { clearRoomId, setRoomId } from '../store/roomSlice';
+import { connect } from 'react-redux';
+import { clearDisplayName } from '../store/userSlice';
 
-const Home = () => {
+type DispatchProps = {
+  setRoomId: (id: string) => void;
+  clearRoomId: () => void;
+  clearDisplayName: () => void;
+};
+
+type Props = DispatchProps;
+
+const Home = ({ setRoomId, clearRoomId, clearDisplayName }: Props) => {
   const [roomIdValue, setRoomIdValue] = useState<string>('');
-  const setRoomId = useRoomState((state) => state.setRoomId);
-  const clearDisplayName = useUserState((state) => state.clearDisplayName);
   const navigate = useNavigate();
 
   useEffect(() => {
     clearDisplayName();
-  }, [clearDisplayName]);
+    clearRoomId();
+  }, [clearDisplayName, clearRoomId]);
 
   const handleStartPlanning = () => {
     const id = genId();
@@ -69,4 +78,10 @@ const Home = () => {
   );
 };
 
-export default Home;
+const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
+  setRoomId: (id: string) => dispatch(setRoomId(id)),
+  clearRoomId: () => dispatch(clearRoomId()),
+  clearDisplayName: () => dispatch(clearDisplayName()),
+});
+
+export default connect(undefined, mapDispatchToProps)(Home);

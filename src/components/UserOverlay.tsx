@@ -1,22 +1,26 @@
-import { useShallow } from 'zustand/shallow';
-import useUserState from '../state/useUserState';
-import Button from './core/Button';
 import Input from './core/Input';
 import { useState } from 'react';
+import Button from './core/Button';
+import { AppDispatch, RootState } from '../store';
+import { setDisplayName } from '../store/userSlice';
+import { connect } from 'react-redux';
 
-const UserOverlay = () => {
-  const { displayName, setDisplayName } = useUserState(
-    useShallow((state) => ({
-      displayName: state.displayName,
-      setDisplayName: state.setDisplayName,
-    }))
-  );
+type StateProps = {
+  displayName: string | undefined;
+};
 
+type DispatchProps = {
+  setDisplayName: (displayName: string) => void;
+};
+
+type Props = StateProps & DispatchProps;
+
+const UserOverlay = ({ displayName, setDisplayName }: Props) => {
   const [shouldDisplay, setShouldDisplay] = useState(
     !displayName || displayName.length <= 0
   );
 
-  const handleDisplayNameChange = (value: string | undefined) => {
+  const handleDisplayNameChange = (value: string) => {
     setDisplayName(value);
   };
 
@@ -31,8 +35,8 @@ const UserOverlay = () => {
           <div>
             <div>Let your friends know who you are</div>
 
-            <Input<string | undefined>
-              value={displayName}
+            <Input<string>
+              value={displayName ?? ''}
               onValueChange={handleDisplayNameChange}
               name="user-name"
               placeholder="Mink"
@@ -47,4 +51,13 @@ const UserOverlay = () => {
   );
 };
 
-export default UserOverlay;
+const mapStateToProps = (state: RootState): StateProps => ({
+  displayName: state.user.displayName,
+});
+
+const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
+  setDisplayName: (displayName: string) =>
+    dispatch(setDisplayName(displayName)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserOverlay);
