@@ -1,16 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/core/Button';
 import Input from '../components/core/Input';
-import Logo from '../components/Logo';
 import Separator from '../components/core/Separator';
 import useRoomState from '../state/useRoomState';
 import genId from '../util/genId';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import useUserState from '../state/useUserState';
 
 const Home = () => {
   const [roomIdValue, setRoomIdValue] = useState<string>('');
   const setRoomId = useRoomState((state) => state.setRoomId);
+  const clearDisplayName = useUserState((state) => state.clearDisplayName);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    clearDisplayName();
+  }, [clearDisplayName]);
 
   const handleStartPlanning = () => {
     const id = genId();
@@ -31,11 +38,9 @@ const Home = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-white to-stone-400 min-h-screen flex flex-col">
-      <header className="flex px-6 py-4">
-        <Logo />
-      </header>
-      <main className="container mx-auto text-center flex flex-col align-middle h-full flex-1 justify-center">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-stone-400">
+      <Header />
+      <main className="container mx-auto flex h-full flex-1 flex-col justify-center text-center align-middle">
         <div className="mb-4 text-5xl font-extrabold">
           <span className="text-stone-500">Capacity</span>
           <span> made clear</span>
@@ -53,14 +58,13 @@ const Home = () => {
             value={roomIdValue}
             onValueChange={handleRoomIdChange}
             name="room-id"
+            type="text"
             placeholder="# Room ID"
           />
           <Button onClick={handleJoin}>Join</Button>
         </section>
       </main>
-      <footer className="text-center py-4 text-sm text-stone-500">
-        <div>© 2024 Capacity Craft</div>
-      </footer>
+      <Footer />
     </div>
   );
 };
