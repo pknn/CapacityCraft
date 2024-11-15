@@ -26,7 +26,7 @@ const Input = <T extends string | number | ''>({
   return (
     <div className={`my-4 ${className}`}>
       {label && label.length > 0 && (
-        <label className="" htmlFor={`${name}-field`}>
+        <label className="text-sm block mb-1" htmlFor={`${name}-field`}>
           {label}
         </label>
       )}
