@@ -16,16 +16,22 @@ type DispatchProps = {
 type Props = StateProps & DispatchProps;
 
 const UserOverlay = ({ displayName, setDisplayName }: Props) => {
+  const [value, setValue] = useState(displayName);
   const [shouldDisplay, setShouldDisplay] = useState(
     !displayName || displayName.length <= 0
   );
 
   const handleDisplayNameChange = (value: string) => {
-    setDisplayName(value);
+    setValue(value);
   };
 
   const handleSubmit = () => {
-    setShouldDisplay((displayName?.length ?? 0) <= 0);
+    if (!value || value.length <= 0) {
+      return;
+    }
+
+    setShouldDisplay(false);
+    setDisplayName(value);
   };
 
   return (
@@ -36,7 +42,7 @@ const UserOverlay = ({ displayName, setDisplayName }: Props) => {
             <div>Let your friends know who you are</div>
 
             <Input<string>
-              value={displayName ?? ''}
+              value={value ?? ''}
               onValueChange={handleDisplayNameChange}
               name="user-name"
               placeholder="Mink"
