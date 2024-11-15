@@ -53,7 +53,7 @@ const SprintDetailsInput = ({
 };
 
 const mapStateToProps = (state: AppState): StateBindings => ({
-  length: state.sprint.length,
+  length: state.sprint.days.length,
   startDate: state.sprint.startDate,
 });
 

@@ -1,14 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import formatDate from '../util/formatDate';
 
+type Day = {
+  isHoliday: string;
+};
+
 type SprintState = {
-  length: number;
   startDate: string;
+  days: Day[];
 };
 
 const initialState: SprintState = {
-  length: 0,
   startDate: formatDate(new Date()),
+  days: [],
 };
 
 const sprintSlice = createSlice({
@@ -16,10 +20,20 @@ const sprintSlice = createSlice({
   initialState,
   reducers: {
     setLength: (state, action: PayloadAction<number>) => {
-      const length = action.payload;
-      if (length <= 0) return;
+      const newLength = action.payload;
+      if (newLength <= 0) return;
 
-      state.length = length;
+      const currentDays = state.days;
+
+      if (currentDays.length > newLength) {
+        currentDays.splice(newLength);
+      } else {
+        state.days = currentDays.concat(
+          Array(newLength - currentDays.length).fill({
+            isHoliday: 'false',
+          })
+        );
+      }
     },
     setStartDate: (state, action: PayloadAction<string>) => {
       state.startDate = action.payload;
