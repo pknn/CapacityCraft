@@ -1,47 +1,43 @@
-import { useMemo } from 'react';
-import { Day } from '../../store/sprintSlice';
-import formatDateStringForDisplay from '../../util/formatDateStringForDisplay';
+import { connect } from 'react-redux';
+import { Day, toggleGlobalNonWorkingDay } from '../../store/sprintSlice';
+import CalendarHeadItem from './CalendarHeadItem';
 
-type OwnProps = {
-  day: Day;
-  onClick: () => void;
+type StateBindings = {
+  days: Day[];
 };
 
-type Props = OwnProps;
+type ActionBindings = {
+  toggleGlobalNonWorkingDay: (index: number) => void;
+};
 
-const CalendarHead = ({ day, onClick }: Props) => {
-  const { dayOfWeek, date, month, isWeekend } = useMemo(
-    () => formatDateStringForDisplay(day.date),
-    [day]
-  );
+type Props = StateBindings & ActionBindings;
 
-  const isNonWorkingDay = useMemo(
-    () => isWeekend || day.isNonWorkingDay,
-    [isWeekend, day]
-  );
+const CalendarHead = ({ days, toggleGlobalNonWorkingDay }: Props) => {
+  const handleClick = (index: number) => () => {
+    toggleGlobalNonWorkingDay(index);
+  };
 
   return (
-    <div
-      className={`w-full rounded text-center font-medium uppercase ${isWeekend ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-      onClick={onClick}
-    >
-      <div
-        className={`rounded-t px-4 py-2 font-medium uppercase ${isNonWorkingDay ? 'bg-stone-600 text-stone-400' : 'bg-stone-300'}`}
-      >
-        {dayOfWeek}
-      </div>
-      <div
-        className={`px-4 py-2 text-4xl font-bold ${isNonWorkingDay ? 'bg-stone-400 text-stone-300' : 'bg-stone-100'}`}
-      >
-        {date}
-      </div>
-      <div
-        className={`px-4 py-2 ${isNonWorkingDay ? 'bg-stone-600 text-stone-400' : 'bg-stone-300'}`}
-      >
-        {month}
-      </div>
+    <div className="flex gap-2">
+      <div className="px-16" />
+      {days.map((day, index) => (
+        <CalendarHeadItem
+          key={day.date}
+          day={day}
+          onClick={handleClick(index)}
+        />
+      ))}
     </div>
   );
 };
 
-export default CalendarHead;
+const mapStateToProps = (state: AppState): StateBindings => ({
+  days: state.sprint.days,
+});
+
+const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
+  toggleGlobalNonWorkingDay: (index) =>
+    dispatch(toggleGlobalNonWorkingDay(index)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CalendarHead);

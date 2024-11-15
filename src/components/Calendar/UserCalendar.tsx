@@ -1,18 +1,25 @@
 import { connect } from 'react-redux';
 import { AppState } from '../../store';
+import { Member } from '../../store/sprintSlice';
 
 type StateBindings = {
-  displayName: string;
+  members: Record<string, Member>;
 };
 
 type Props = StateBindings;
 
-const UserCalendar = ({}: Props) => {
-  return <div></div>;
+const UserCalendar = ({ members }: Props) => {
+  return (
+    <div className="flex flex-col">
+      {Object.values(members).map((member) => (
+        <span>{member.displayName}</span>
+      ))}
+    </div>
+  );
 };
 
 const mapStateToProps = (state: AppState): StateBindings => ({
-  displayName: state.user.displayName ?? '',
+  members: state.sprint.members,
 });
 
 export default connect(mapStateToProps)(UserCalendar);

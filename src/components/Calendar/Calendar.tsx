@@ -1,51 +1,30 @@
 import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../../store';
-import { Day, toggleGlobalNonWorkingDay } from '../../store/sprintSlice';
 import CalendarHead from './CalendarHead';
 import Legend from './Legend';
+import UserCalendar from './UserCalendar';
 
-type StateBindings = {
-  days: Day[];
-};
+type StateBindings = {};
 
-type ActionBindings = {
-  toggleGlobalNonWorkingDay: (index: number) => void;
-};
+type ActionBindings = {};
 
 type Props = StateBindings & ActionBindings;
 
-const Calendar = ({ days, toggleGlobalNonWorkingDay }: Props) => {
-  const handleClick = (index: number) => () => {
-    toggleGlobalNonWorkingDay(index);
-  };
-
+const Calendar = ({}: Props) => {
   return (
     <div className="flex">
       <div></div>
       <div className="flex-1">
         <Legend />
-        <div className="flex gap-2">
-          <div className="px-16" />
-          {days.map((day, index) => (
-            <CalendarHead
-              key={day.date}
-              day={day}
-              onClick={handleClick(index)}
-            />
-          ))}
-        </div>
+        <CalendarHead />
+        <UserCalendar />
       </div>
     </div>
   );
 };
 
-const mapStateToProps = (state: AppState): StateBindings => ({
-  days: state.sprint.days,
-});
+const mapStateToProps = (state: AppState): StateBindings => ({});
 
-const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
-  toggleGlobalNonWorkingDay: (index) =>
-    dispatch(toggleGlobalNonWorkingDay(index)),
-});
+const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Calendar);
