@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../../store';
 import CalendarHead from './CalendarHead';
 import Legend from './Legend';
-import UserCalendar from './UserCalendar';
+import MemberCalendars from './MemberCalendars';
 
 type StateBindings = {};
 
@@ -17,7 +17,7 @@ const Calendar = ({}: Props) => {
       <div className="flex-1">
         <Legend />
         <CalendarHead />
-        <UserCalendar />
+        <MemberCalendars />
       </div>
     </div>
   );

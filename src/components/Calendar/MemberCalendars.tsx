@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { AppState } from '../../store';
 import { Member } from '../../store/sprintSlice';
+import MemberCalendar from './MemberCalendar';
 
 type StateBindings = {
   members: Record<string, Member>;
@@ -8,11 +9,11 @@ type StateBindings = {
 
 type Props = StateBindings;
 
-const UserCalendar = ({ members }: Props) => {
+const MemberCalendars = ({ members }: Props) => {
   return (
     <div className="flex flex-col">
       {Object.values(members).map((member) => (
-        <span>{member.displayName}</span>
+        <MemberCalendar key={member.displayName} member={member} />
       ))}
     </div>
   );
@@ -22,4 +23,4 @@ const mapStateToProps = (state: AppState): StateBindings => ({
   members: state.sprint.members,
 });
 
-export default connect(mapStateToProps)(UserCalendar);
+export default connect(mapStateToProps)(MemberCalendars);
