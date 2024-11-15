@@ -43,7 +43,7 @@ const Home = ({ setRoomId, clearRoomId, clearDisplayName }: Props) => {
 
   const setRoomIdAndNavigate = (id: string) => {
     setRoomId(id);
-    navigate(`/app/${id}/plan`);
+    navigate(`/app/${id}`);
   };
 
   return (
