@@ -5,7 +5,7 @@ import { AppDispatch, AppState } from '../store';
 import { setDisplayName } from '../store/userSlice';
 import { connect } from 'react-redux';
 
-type ActionBindings = {
+type StateBindings = {
   displayName: string | undefined;
 };
 
@@ -13,7 +13,7 @@ type ActionBindings = {
   setDisplayName: (displayName: string) => void;
 };
 
-type Props = ActionBindings & ActionBindings;
+type Props = StateBindings & ActionBindings;
 
 const UserOverlay = ({ displayName, setDisplayName }: Props) => {
   const [value, setValue] = useState(displayName);
@@ -57,7 +57,7 @@ const UserOverlay = ({ displayName, setDisplayName }: Props) => {
   );
 };
 
-const mapStateToProps = (state: AppState): ActionBindings => ({
+const mapStateToProps = (state: AppState): StateBindings => ({
   displayName: state.user.displayName,
 });
 

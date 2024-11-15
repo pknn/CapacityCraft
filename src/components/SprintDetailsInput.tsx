@@ -3,7 +3,7 @@ import { AppDispatch, AppState } from '../store';
 import { setLength, setStartDate } from '../store/sprintSlice';
 import { connect } from 'react-redux';
 
-type ActionBindings = {
+type StateBindings = {
   length: number;
   startDate: string;
 };
@@ -13,7 +13,7 @@ type ActionBindings = {
   setStartDate: (startDate: string) => void;
 };
 
-type Props = ActionBindings & ActionBindings;
+type Props = StateBindings & ActionBindings;
 
 const SprintDetailsInput = ({
   length,
@@ -52,7 +52,7 @@ const SprintDetailsInput = ({
   );
 };
 
-const mapStateToProps = (state: AppState): ActionBindings => ({
+const mapStateToProps = (state: AppState): StateBindings => ({
   length: state.sprint.length,
   startDate: state.sprint.startDate,
 });

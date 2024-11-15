@@ -6,7 +6,7 @@ import { setRoomId } from '../store/roomSlice';
 import { connect } from 'react-redux';
 import { useEffect } from 'react';
 
-type ActionBindings = {
+type StateBindings = {
   roomId: string | undefined;
 };
 
@@ -14,7 +14,7 @@ type ActionBindings = {
   setRoomId: (id: string) => void;
 };
 
-type Props = ActionBindings & ActionBindings;
+type Props = StateBindings & ActionBindings;
 
 const Plan = ({ roomId, setRoomId }: Props) => {
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ const Plan = ({ roomId, setRoomId }: Props) => {
   );
 };
 
-const mapStateToProps = (state: AppState): ActionBindings => ({
+const mapStateToProps = (state: AppState): StateBindings => ({
   roomId: state.room.id,
 });
 
