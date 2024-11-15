@@ -53,6 +53,7 @@ const Home = () => {
             value={roomIdValue}
             onValueChange={handleRoomIdChange}
             name="room-id"
+            type="text"
             placeholder="# Room ID"
           />
           <Button onClick={handleJoin}>Join</Button>
