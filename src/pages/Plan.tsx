@@ -10,11 +10,11 @@ type ActionBindings = {
   roomId: string | undefined;
 };
 
-type DispatchProps = {
+type ActionBindings = {
   setRoomId: (id: string) => void;
 };
 
-type Props = ActionBindings & DispatchProps;
+type Props = ActionBindings & ActionBindings;
 
 const Plan = ({ roomId, setRoomId }: Props) => {
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ const mapStateToProps = (state: AppState): ActionBindings => ({
   roomId: state.room.id,
 });
 
-const mapDispatchToProsp = (dispatch: AppDispatch): DispatchProps => ({
+const mapDispatchToProsp = (dispatch: AppDispatch): ActionBindings => ({
   setRoomId: (id: string) => dispatch(setRoomId(id)),
 });
 

@@ -11,13 +11,13 @@ import { clearRoomId, setRoomId } from '../store/roomSlice';
 import { connect } from 'react-redux';
 import { clearDisplayName } from '../store/userSlice';
 
-type DispatchProps = {
+type ActionBindings = {
   setRoomId: (id: string) => void;
   clearRoomId: () => void;
   clearDisplayName: () => void;
 };
 
-type Props = DispatchProps;
+type Props = ActionBindings;
 
 const Home = ({ setRoomId, clearRoomId, clearDisplayName }: Props) => {
   const [roomIdValue, setRoomIdValue] = useState<string>('');
@@ -78,7 +78,7 @@ const Home = ({ setRoomId, clearRoomId, clearDisplayName }: Props) => {
   );
 };
 
-const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
+const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   setRoomId: (id: string) => dispatch(setRoomId(id)),
   clearRoomId: () => dispatch(clearRoomId()),
   clearDisplayName: () => dispatch(clearDisplayName()),

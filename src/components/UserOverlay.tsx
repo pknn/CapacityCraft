@@ -9,11 +9,11 @@ type ActionBindings = {
   displayName: string | undefined;
 };
 
-type DispatchProps = {
+type ActionBindings = {
   setDisplayName: (displayName: string) => void;
 };
 
-type Props = ActionBindings & DispatchProps;
+type Props = ActionBindings & ActionBindings;
 
 const UserOverlay = ({ displayName, setDisplayName }: Props) => {
   const [value, setValue] = useState(displayName);
@@ -61,7 +61,7 @@ const mapStateToProps = (state: AppState): ActionBindings => ({
   displayName: state.user.displayName,
 });
 
-const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
+const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   setDisplayName: (displayName: string) =>
     dispatch(setDisplayName(displayName)),
 });

@@ -8,12 +8,12 @@ type ActionBindings = {
   startDate: string;
 };
 
-type DispatchProps = {
+type ActionBindings = {
   setLength: (length: number) => void;
   setStartDate: (startDate: string) => void;
 };
 
-type Props = ActionBindings & DispatchProps;
+type Props = ActionBindings & ActionBindings;
 
 const SprintDetailsInput = ({
   length,
@@ -57,7 +57,7 @@ const mapStateToProps = (state: AppState): ActionBindings => ({
   startDate: state.sprint.startDate,
 });
 
-const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
+const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   setLength: (length: number) => dispatch(setLength(length)),
   setStartDate: (startDate: string) => dispatch(setStartDate(startDate)),
 });
