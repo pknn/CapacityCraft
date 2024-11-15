@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import CoreComponentProps from './coreComponentProps';
+import CoreComponentProps from './CoreComponentProps';
 
 type ButtonProps = {
   onClick?: () => void;

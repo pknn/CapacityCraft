@@ -1,5 +1,5 @@
 import { ChangeEvent } from 'react';
-import CoreComponentProps from './coreComponentProps';
+import CoreComponentProps from './CoreComponentProps';
 
 type InputProps<T> = {
   value: T;
