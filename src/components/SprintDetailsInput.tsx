@@ -31,7 +31,7 @@ const SprintDetailsInput = ({
   };
 
   return (
-    <div className="flex gap-4">
+    <div className="flex justify-end gap-4">
       <Input<string>
         value={startDate}
         onValueChange={handleSprintStartDateChange}

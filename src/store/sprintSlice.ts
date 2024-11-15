@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import formatDateInput from '../util/formatDateInput';
-import { act } from 'react';
+
+export type Member = {
+  displayName: string;
+  days: Day[];
+};
 
 export type Day = {
   date: string;
@@ -10,6 +14,7 @@ export type Day = {
 type SprintState = {
   startDate: string;
   days: Day[];
+  members: Record<string, Member>;
 };
 
 const initialState: SprintState = {
@@ -19,6 +24,32 @@ const initialState: SprintState = {
     { date: '2024-11-16', isNonWorkingDay: false },
     { date: '2024-11-17', isNonWorkingDay: true },
   ],
+  members: {
+    alice: {
+      displayName: 'Alice',
+      days: [
+        { date: '2024-11-15', isNonWorkingDay: false },
+        { date: '2024-11-16', isNonWorkingDay: false },
+        { date: '2024-11-17', isNonWorkingDay: true },
+      ],
+    },
+    bob: {
+      displayName: 'Bob',
+      days: [
+        { date: '2024-11-15', isNonWorkingDay: true },
+        { date: '2024-11-16', isNonWorkingDay: false },
+        { date: '2024-11-17', isNonWorkingDay: true },
+      ],
+    },
+    charlie: {
+      displayName: 'Charlie',
+      days: [
+        { date: '2024-11-15', isNonWorkingDay: false },
+        { date: '2024-11-16', isNonWorkingDay: true },
+        { date: '2024-11-17', isNonWorkingDay: false },
+      ],
+    },
+  },
 };
 
 const generateDay = (startDate: string, offset: number): Day => {
@@ -45,6 +76,21 @@ const generateDays = (
   return currentDays.slice(0, newLength);
 };
 
+const getUpdatedDays = (days: Day[], newStartDateStr: string): Day[] =>
+  days.map((_, index) => {
+    const calculatedDate = new Date(newStartDateStr);
+    calculatedDate.setDate(calculatedDate.getDate() + index);
+    const formattedDate = formatDateInput(calculatedDate);
+
+    // Keep existing day if date matches, otherwise create a new one
+    return (
+      days.find((day) => day.date === formattedDate) || {
+        date: formattedDate,
+        isNonWorkingDay: false,
+      }
+    );
+  });
+
 const sprintSlice = createSlice({
   name: 'sprint',
   initialState,
@@ -53,38 +99,45 @@ const sprintSlice = createSlice({
       const newLength = action.payload;
       if (newLength > 0) {
         state.days = generateDays(state.startDate, state.days, newLength);
+
+        Object.values(state.members).forEach((member) => {
+          member.days = generateDays(state.startDate, member.days, newLength);
+        });
       }
     },
     setStartDate: (state, action: PayloadAction<string>) => {
       const newStartDate = action.payload;
 
-      state.days = state.days.map((_, index) => {
-        const calculatedDate = new Date(newStartDate);
-        calculatedDate.setDate(calculatedDate.getDate() + index);
-        const formattedDate = formatDateInput(calculatedDate);
-
-        // Keep existing day if date matches, otherwise create a new one
-        return (
-          state.days.find((day) => day.date === formattedDate) || {
-            date: formattedDate,
-            isNonWorkingDay: false,
-          }
-        );
-      });
+      state.days = getUpdatedDays(state.days, newStartDate);
 
       state.startDate = newStartDate;
+
+      Object.values(state.members).forEach((member) => {
+        member.days = getUpdatedDays(member.days, newStartDate);
+      });
     },
-    toggleNonWorkingDay: (state, action: PayloadAction<number>) => {
+    toggleGlobalNonWorkingDay: (state, action: PayloadAction<number>) => {
       const index = action.payload;
       const selectedDay = state.days[index];
+      const updatedIsNonWorkingDay = !selectedDay.isNonWorkingDay;
       state.days[index] = {
         ...selectedDay,
-        isNonWorkingDay: !selectedDay.isNonWorkingDay,
+        isNonWorkingDay: updatedIsNonWorkingDay,
       };
+
+      Object.values(state.members).forEach((member) => {
+        const memberDay = member.days[index];
+        if (memberDay) {
+          member.days[index] = {
+            ...memberDay,
+            isNonWorkingDay: updatedIsNonWorkingDay,
+          };
+        }
+      });
     },
   },
 });
 
-export const { setLength, setStartDate, toggleNonWorkingDay } =
+export const { setLength, setStartDate, toggleGlobalNonWorkingDay } =
   sprintSlice.actions;
 export default sprintSlice.reducer;

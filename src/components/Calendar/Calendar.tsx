@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../../store';
-import { Day, toggleNonWorkingDay } from '../../store/sprintSlice';
+import { Day, toggleGlobalNonWorkingDay } from '../../store/sprintSlice';
 import CalendarHead from './CalendarHead';
 import Legend from './Legend';
 
@@ -9,14 +9,14 @@ type StateBindings = {
 };
 
 type ActionBindings = {
-  toggleNonWorkingDay: (index: number) => void;
+  toggleGlobalNonWorkingDay: (index: number) => void;
 };
 
 type Props = StateBindings & ActionBindings;
 
-const Calendar = ({ days, toggleNonWorkingDay }: Props) => {
+const Calendar = ({ days, toggleGlobalNonWorkingDay }: Props) => {
   const handleClick = (index: number) => () => {
-    toggleNonWorkingDay(index);
+    toggleGlobalNonWorkingDay(index);
   };
 
   return (
@@ -44,7 +44,8 @@ const mapStateToProps = (state: AppState): StateBindings => ({
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
-  toggleNonWorkingDay: (index) => dispatch(toggleNonWorkingDay(index)),
+  toggleGlobalNonWorkingDay: (index) =>
+    dispatch(toggleGlobalNonWorkingDay(index)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Calendar);

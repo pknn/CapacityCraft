@@ -1,5 +1,5 @@
 const Legend = () => (
-  <div className="-mt-8 mb-2 flex items-center justify-end gap-4">
+  <div className="mb-2 flex items-center justify-end gap-4">
     <div className="text-sm text-stone-500">Click to toggle working day</div>
     <div className="inline-flex items-center gap-2">
       <div className="size-4 rounded bg-stone-600" />
