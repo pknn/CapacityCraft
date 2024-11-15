@@ -1,21 +1,29 @@
-import { useShallow } from 'zustand/shallow';
-import useSprintDetails from '../state/useSprintDetails';
 import Input from './core/Input';
-import formatDate from '../util/formatDate';
+import { AppDispatch, RootState } from '../store';
+import { setLength, setStartDate } from '../store/sprintSlice';
+import { connect } from 'react-redux';
 
-const SprintDetailsInput = () => {
-  const { startDate, setStartDate, length, setLength } = useSprintDetails(
-    useShallow((state) => ({
-      startDate: state.startDate,
-      setStartDate: state.setStartDate,
-      length: state.length,
-      setLength: state.setLength,
-    }))
-  );
+type StateProps = {
+  length: number;
+  startDate: string;
+};
 
+type DispatchProps = {
+  setLength: (length: number) => void;
+  setStartDate: (startDate: string) => void;
+};
+
+type Props = StateProps & DispatchProps;
+
+const SprintDetailsInput = ({
+  length,
+  startDate,
+  setLength,
+  setStartDate,
+}: Props) => {
   const handleSprintStartDateChange = (value: string) => {
     console.log(value);
-    setStartDate(new Date(value));
+    setStartDate(value);
   };
 
   const handleSprintLengthChange = (value: number) => {
@@ -25,7 +33,7 @@ const SprintDetailsInput = () => {
   return (
     <div className="flex gap-4">
       <Input<string>
-        value={formatDate(startDate)}
+        value={startDate}
         onValueChange={handleSprintStartDateChange}
         name={''}
         placeholder={''}
@@ -44,4 +52,14 @@ const SprintDetailsInput = () => {
   );
 };
 
-export default SprintDetailsInput;
+const mapStateToProps = (state: RootState): StateProps => ({
+  length: state.sprint.length,
+  startDate: state.sprint.startDate,
+});
+
+const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
+  setLength: (length: number) => dispatch(setLength(length)),
+  setStartDate: (startDate: string) => dispatch(setStartDate(startDate)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SprintDetailsInput);

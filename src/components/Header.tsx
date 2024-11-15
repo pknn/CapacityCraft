@@ -1,12 +1,14 @@
-import useRoomState from '../state/useRoomState';
-import useUserState from '../state/useUserState';
+import { connect } from 'react-redux';
 import pushToClipboard from '../util/pushToClipboard';
 import Logo from './Logo';
+import { RootState } from '../store';
 
-const Header = () => {
-  const displayName = useUserState((state) => state.displayName);
-  const roomId = useRoomState((state) => state.roomId);
+type Props = {
+  roomId: string | undefined;
+  displayName: string | undefined;
+};
 
+const Header = ({ roomId, displayName }: Props) => {
   const handleRoomClick = () => {
     pushToClipboard(location.href);
   };
@@ -32,4 +34,9 @@ const Header = () => {
   );
 };
 
-export default Header;
+const mapStateToProps = (state: RootState): Props => ({
+  roomId: state.room.id,
+  displayName: state.user.displayName,
+});
+
+export default connect(mapStateToProps)(Header);
