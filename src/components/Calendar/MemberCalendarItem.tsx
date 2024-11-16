@@ -29,12 +29,17 @@ const MemberCalendarItem = ({ globalDay, memberDay, onClick }: Props) => {
     onClick();
   };
 
-  return (
-    <td
-      className={`rounded border border-stone-200 ${isNonWorkingDay ? 'bg-stone-700 hover:bg-stone-600' : 'bg-stone-300 hover:bg-stone-200'} ${isGlobalNonWorkingDay ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-      onClick={handleClick}
-    ></td>
-  );
+  const className = [
+    'rounded',
+    'border',
+    'border-stone-200',
+    isGlobalNonWorkingDay ? 'cursor-not-allowed' : 'cursor-pointer',
+    isNonWorkingDay ? 'bg-stone-600' : 'bg-stone-300',
+    isNonWorkingDay ? 'hover:bg-stone-600' : 'hover:bg-stone-400',
+    isNonWorkingDay && !isGlobalNonWorkingDay ? 'hover:bg-stone-700' : '',
+  ].join(' ');
+
+  return <td className={className} onClick={handleClick}></td>;
 };
 
 export default MemberCalendarItem;
