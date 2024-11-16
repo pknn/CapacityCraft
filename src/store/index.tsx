@@ -1,14 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
-import roomReducer from './roomSlice';
-import sprintReducer from './sprintSlice';
+import { roomReducer } from './roomSlice';
 import userReducer from './userSlice';
+import { membersReducer } from './membersSlice';
 
 const store = configureStore({
   reducer: {
     room: roomReducer,
-    sprint: sprintReducer,
+    members: membersReducer,
     user: userReducer,
   },
 });

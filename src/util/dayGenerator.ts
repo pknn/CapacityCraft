@@ -1,4 +1,4 @@
-import { Day } from '../store/sprintSlice';
+import { Day } from '../types/Day';
 import formatDateInput from './formatDateInput';
 
 export const generateDay = (startDate: string, offset: number): Day => {
@@ -24,3 +24,18 @@ export const generateDays = (
   // Trim excess days
   return currentDays.slice(0, newLength);
 };
+
+export const getUpdatedDays = (days: Day[], newStartDateStr: string): Day[] =>
+  days.map((_, index) => {
+    const calculatedDate = new Date(newStartDateStr);
+    calculatedDate.setDate(calculatedDate.getDate() + index);
+    const formattedDate = formatDateInput(calculatedDate);
+
+    // Keep existing day if date matches, otherwise create a new one
+    return (
+      days.find((day) => day.date === formattedDate) || {
+        date: formattedDate,
+        isNonWorkingDay: false,
+      }
+    );
+  });
