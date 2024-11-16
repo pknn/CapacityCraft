@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { Day, toggleGlobalNonWorkingDay } from '../../store/sprintSlice';
 import CalendarHeadItem from './CalendarHeadItem';
+import { AppDispatch, AppState } from '../../store';
 
 type StateBindings = {
   days: Day[];
@@ -18,16 +19,18 @@ const CalendarHead = ({ days, toggleGlobalNonWorkingDay }: Props) => {
   };
 
   return (
-    <div className="flex gap-2">
-      <div className="px-16" />
-      {days.map((day, index) => (
-        <CalendarHeadItem
-          key={day.date}
-          day={day}
-          onClick={handleClick(index)}
-        />
-      ))}
-    </div>
+    <thead>
+      <tr>
+        <th />
+        {days.map((day, index) => (
+          <CalendarHeadItem
+            key={day.date}
+            day={day}
+            onClick={handleClick(index)}
+          />
+        ))}
+      </tr>
+    </thead>
   );
 };
 

@@ -8,7 +8,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const MemberCalendarItem = ({ day, onClick }: Props) => {
-  return <div>{day.date}</div>;
+  return <td>{day.date}</td>;
 };
 
 export default MemberCalendarItem;

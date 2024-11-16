@@ -12,14 +12,10 @@ type Props = StateBindings & ActionBindings;
 
 const Calendar = ({}: Props) => {
   return (
-    <div className="flex">
-      <div></div>
-      <div className="flex-1">
-        <Legend />
-        <CalendarHead />
-        <MemberCalendars />
-      </div>
-    </div>
+    <table className="w-full">
+      <CalendarHead />
+      <MemberCalendars />
+    </table>
   );
 };
 

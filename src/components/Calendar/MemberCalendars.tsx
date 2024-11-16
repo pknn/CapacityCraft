@@ -11,11 +11,11 @@ type Props = StateBindings;
 
 const MemberCalendars = ({ members }: Props) => {
   return (
-    <div className="flex flex-col">
+    <tbody>
       {Object.values(members).map((member) => (
         <MemberCalendar key={member.displayName} member={member} />
       ))}
-    </div>
+    </tbody>
   );
 };
 

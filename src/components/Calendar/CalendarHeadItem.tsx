@@ -21,8 +21,8 @@ const CalendarHeadItem = ({ day, onClick }: Props) => {
   );
 
   return (
-    <div
-      className={`w-full rounded text-center font-medium uppercase ${isWeekend ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+    <th
+      className={`rounded text-center font-medium uppercase ${isWeekend ? 'cursor-not-allowed' : 'cursor-pointer'}`}
       onClick={onClick}
     >
       <div
@@ -40,7 +40,7 @@ const CalendarHeadItem = ({ day, onClick }: Props) => {
       >
         {month}
       </div>
-    </div>
+    </th>
   );
 };
 

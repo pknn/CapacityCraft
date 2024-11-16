@@ -6,6 +6,7 @@ import { setRoomId } from '../store/roomSlice';
 import { connect } from 'react-redux';
 import { useEffect } from 'react';
 import Calendar from '../components/Calendar/Calendar';
+import Legend from '../components/Calendar/Legend';
 
 type StateBindings = {
   roomId: string | undefined;
@@ -34,6 +35,7 @@ const Plan = ({ roomId, setRoomId }: Props) => {
     <div>
       <UserOverlay />
       <SprintDetailsInput />
+      <Legend />
       <Calendar />
     </div>
   );
