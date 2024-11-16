@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { useEffect } from 'react';
 import Calendar from '../components/Calendar/Calendar';
 import Legend from '../components/Calendar/Legend';
-import SprintSummary from '../components/SprintSummary';
 
 type StateBindings = {
   roomId: string | undefined;

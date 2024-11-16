@@ -47,7 +47,7 @@ const Home = ({ setRoomId, clearRoomId, clearUser }: Props) => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-stone-400">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-stone-400 px-8">
       <Header />
       <main className="container mx-auto flex h-full flex-1 flex-col justify-center text-center align-middle">
         <div className="mb-4 text-5xl font-extrabold">
@@ -62,7 +62,9 @@ const Home = ({ setRoomId, clearRoomId, clearUser }: Props) => {
         <section className="m-6">
           <Button onClick={handleStartPlanning}>Start planning</Button>
           <Separator />
-          <div className="mb-2">Already have Room ID?</div>
+          <div className="mb-2 font-medium text-stone-800">
+            Already have Room ID?
+          </div>
           <Input<string>
             value={roomIdValue}
             onValueChange={handleRoomIdChange}
