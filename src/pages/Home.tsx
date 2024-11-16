@@ -9,24 +9,24 @@ import Footer from '../components/Footer';
 import { AppDispatch } from '../store';
 import { clearRoomId, setRoomId } from '../store/roomSlice';
 import { connect } from 'react-redux';
-import { clearDisplayName } from '../store/userSlice';
+import { clearUser } from '../store/userSlice';
 
 type ActionBindings = {
   setRoomId: (id: string) => void;
   clearRoomId: () => void;
-  clearDisplayName: () => void;
+  clearUser: () => void;
 };
 
 type Props = ActionBindings;
 
-const Home = ({ setRoomId, clearRoomId, clearDisplayName }: Props) => {
+const Home = ({ setRoomId, clearRoomId, clearUser }: Props) => {
   const [roomIdValue, setRoomIdValue] = useState<string>('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    clearDisplayName();
+    clearUser();
     clearRoomId();
-  }, [clearDisplayName, clearRoomId]);
+  }, [clearUser, clearRoomId]);
 
   const handleStartPlanning = () => {
     const id = genId();
@@ -81,7 +81,7 @@ const Home = ({ setRoomId, clearRoomId, clearDisplayName }: Props) => {
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   setRoomId: (id: string) => dispatch(setRoomId(id)),
   clearRoomId: () => dispatch(clearRoomId()),
-  clearDisplayName: () => dispatch(clearDisplayName()),
+  clearUser: () => dispatch(clearUser()),
 });
 
 export default connect(undefined, mapDispatchToProps)(Home);

@@ -2,20 +2,23 @@ import Input from './core/Input';
 import { useState } from 'react';
 import Button from './core/Button';
 import { AppDispatch, AppState } from '../store';
-import { setDisplayName } from '../store/userSlice';
+import { setUser } from '../store/userSlice';
 import { connect } from 'react-redux';
+import genId from '../util/genId';
+import { addMember } from '../store/sprintSlice';
 
 type StateBindings = {
   displayName: string | undefined;
 };
 
 type ActionBindings = {
-  setDisplayName: (displayName: string) => void;
+  setUser: (id: string, displayName: string) => void;
+  addMember: (id: string, displayName: string) => void;
 };
 
 type Props = StateBindings & ActionBindings;
 
-const UserOverlay = ({ displayName, setDisplayName }: Props) => {
+const UserOverlay = ({ displayName, setUser, addMember }: Props) => {
   const [value, setValue] = useState(displayName);
   const [shouldDisplay, setShouldDisplay] = useState(
     !displayName || displayName.length <= 0
@@ -31,7 +34,9 @@ const UserOverlay = ({ displayName, setDisplayName }: Props) => {
     }
 
     setShouldDisplay(false);
-    setDisplayName(value);
+    const id = genId();
+    setUser(id, value);
+    addMember(id, value);
   };
 
   return (
@@ -62,8 +67,10 @@ const mapStateToProps = (state: AppState): StateBindings => ({
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
-  setDisplayName: (displayName: string) =>
-    dispatch(setDisplayName(displayName)),
+  setUser: (id: string, displayName: string) =>
+    dispatch(setUser({ id, displayName })),
+  addMember: (id: string, displayName: string) =>
+    dispatch(addMember({ id, displayName })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserOverlay);

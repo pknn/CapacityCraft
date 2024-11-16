@@ -31,7 +31,7 @@ const MemberCalendarItem = ({ globalDay, memberDay, onClick }: Props) => {
 
   return (
     <td
-      className={`border border-stone-200 ${isNonWorkingDay ? 'bg-stone-700 hover:bg-stone-600' : 'bg-stone-300 hover:bg-stone-200'} ${isGlobalNonWorkingDay ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+      className={`rounded border border-stone-200 ${isNonWorkingDay ? 'bg-stone-700 hover:bg-stone-600' : 'bg-stone-300 hover:bg-stone-200'} ${isGlobalNonWorkingDay ? 'cursor-not-allowed' : 'cursor-pointer'}`}
       onClick={handleClick}
     ></td>
   );

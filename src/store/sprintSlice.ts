@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import formatDateInput from '../util/formatDateInput';
+import { generateDays } from '../util/dayGenerator';
+import genId from '../util/genId';
 
 export type Member = {
   displayName: string;
@@ -19,77 +21,21 @@ type SprintState = {
 
 const initialState: SprintState = {
   startDate: formatDateInput(new Date()),
-  days: [
-    { date: '2024-11-16', isNonWorkingDay: false },
-    { date: '2024-11-17', isNonWorkingDay: false },
-    { date: '2024-11-18', isNonWorkingDay: false },
-    { date: '2024-11-19', isNonWorkingDay: false },
-    { date: '2024-11-20', isNonWorkingDay: false },
-    { date: '2024-11-21', isNonWorkingDay: false },
-    { date: '2024-11-22', isNonWorkingDay: false },
-  ],
+  days: generateDays(formatDateInput(new Date()), [], 7),
   members: {
     alice: {
       displayName: 'Alice',
-      days: [
-        { date: '2024-11-16', isNonWorkingDay: false },
-        { date: '2024-11-17', isNonWorkingDay: true },
-        { date: '2024-11-18', isNonWorkingDay: false },
-        { date: '2024-11-19', isNonWorkingDay: false },
-        { date: '2024-11-20', isNonWorkingDay: false },
-        { date: '2024-11-21', isNonWorkingDay: false },
-        { date: '2024-11-22', isNonWorkingDay: false },
-      ],
+      days: generateDays(formatDateInput(new Date()), [], 7),
     },
     bob: {
       displayName: 'Bob',
-      days: [
-        { date: '2024-11-16', isNonWorkingDay: false },
-        { date: '2024-11-17', isNonWorkingDay: true },
-        { date: '2024-11-18', isNonWorkingDay: false },
-        { date: '2024-11-19', isNonWorkingDay: false },
-        { date: '2024-11-20', isNonWorkingDay: false },
-        { date: '2024-11-21', isNonWorkingDay: false },
-        { date: '2024-11-22', isNonWorkingDay: false },
-      ],
+      days: generateDays(formatDateInput(new Date()), [], 7),
     },
     charlie: {
       displayName: 'Charlie',
-      days: [
-        { date: '2024-11-16', isNonWorkingDay: true },
-        { date: '2024-11-17', isNonWorkingDay: false },
-        { date: '2024-11-18', isNonWorkingDay: false },
-        { date: '2024-11-19', isNonWorkingDay: false },
-        { date: '2024-11-20', isNonWorkingDay: false },
-        { date: '2024-11-21', isNonWorkingDay: false },
-        { date: '2024-11-22', isNonWorkingDay: false },
-      ],
+      days: generateDays(formatDateInput(new Date()), [], 7),
     },
   },
-};
-
-const generateDay = (startDate: string, offset: number): Day => {
-  const date = new Date(startDate);
-  date.setDate(date.getDate() + offset);
-  return { date: formatDateInput(date), isNonWorkingDay: false };
-};
-
-const generateDays = (
-  startDate: string,
-  currentDays: Day[],
-  newLength: number
-): Day[] => {
-  if (newLength > currentDays.length) {
-    // Extend days
-    const additionalDays = Array.from(
-      { length: newLength - currentDays.length },
-      (_, i) => generateDay(startDate, currentDays.length + i)
-    );
-    return [...currentDays, ...additionalDays];
-  }
-
-  // Trim excess days
-  return currentDays.slice(0, newLength);
 };
 
 const getUpdatedDays = (days: Day[], newStartDateStr: string): Day[] =>
@@ -165,6 +111,16 @@ const sprintSlice = createSlice({
         };
       }
     },
+    addMember: (
+      state,
+      action: PayloadAction<{ id: string; displayName: string }>
+    ) => {
+      const { id, displayName } = action.payload;
+      state.members[id] = {
+        displayName,
+        days: generateDays(state.startDate, [], state.days.length),
+      };
+    },
   },
 });
 
@@ -173,5 +129,6 @@ export const {
   setStartDate,
   toggleGlobalNonWorkingDay,
   toggleMemberNonWorkingDay,
+  addMember,
 } = sprintSlice.actions;
 export default sprintSlice.reducer;
