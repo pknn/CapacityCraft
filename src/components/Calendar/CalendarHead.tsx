@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
-import { Day, toggleGlobalNonWorkingDay } from '../../store/sprintSlice';
 import CalendarHeadItem from './CalendarHeadItem';
 import { AppDispatch, AppState } from '../../store';
+import { toggleGlobalNonWorkingDay } from '../../store/roomSlice';
+import { Day } from '../../types/Day';
 
 type StateBindings = {
   days: Day[];
@@ -35,7 +36,7 @@ const CalendarHead = ({ days, toggleGlobalNonWorkingDay }: Props) => {
 };
 
 const mapStateToProps = (state: AppState): StateBindings => ({
-  days: state.sprint.days,
+  days: state.room.days,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({

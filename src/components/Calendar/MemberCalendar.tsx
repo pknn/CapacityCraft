@@ -1,13 +1,11 @@
 import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../../store';
-import {
-  Day,
-  Member,
-  toggleMemberNonWorkingDay,
-} from '../../store/sprintSlice';
 import MemberCalendarItem from './MemberCalendarItem';
 import zip from '../../util/zip';
 import { useMemo } from 'react';
+import { Member } from '../../types/Member';
+import { Day } from '../../types/Day';
+import { toggleMemberNonWorkingDay } from '../../store/membersSlice';
 
 type OwnProps = {
   id: string;
@@ -58,7 +56,7 @@ const MemberCalendar = ({
 };
 
 const mapStateToProps = (state: AppState): StateBindings => ({
-  globalDays: state.sprint.days,
+  globalDays: state.room.days,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({

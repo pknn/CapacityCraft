@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Day } from './sprintSlice';
 import formatDateInput from '../util/formatDateInput';
 import { generateDays, getUpdatedDays } from '../util/dayGenerator';
+import { Day } from '../types/Day';
 
 type RoomState = {
   id: string | undefined;

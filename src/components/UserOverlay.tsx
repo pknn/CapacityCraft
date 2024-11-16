@@ -5,20 +5,21 @@ import { AppDispatch, AppState } from '../store';
 import { setUser } from '../store/userSlice';
 import { connect } from 'react-redux';
 import genId from '../util/genId';
-import { addMember } from '../store/sprintSlice';
+import { addMember } from '../store/membersSlice';
 
 type StateBindings = {
   displayName: string | undefined;
+  length: number;
 };
 
 type ActionBindings = {
   setUser: (id: string, displayName: string) => void;
-  addMember: (id: string, displayName: string) => void;
+  addMember: (id: string, displayName: string, length: number) => void;
 };
 
 type Props = StateBindings & ActionBindings;
 
-const UserOverlay = ({ displayName, setUser, addMember }: Props) => {
+const UserOverlay = ({ displayName, length, setUser, addMember }: Props) => {
   const [value, setValue] = useState(displayName);
   const [shouldDisplay, setShouldDisplay] = useState(
     !displayName || displayName.length <= 0
@@ -36,7 +37,7 @@ const UserOverlay = ({ displayName, setUser, addMember }: Props) => {
     setShouldDisplay(false);
     const id = genId();
     setUser(id, value);
-    addMember(id, value);
+    addMember(id, value, length);
   };
 
   return (
@@ -64,13 +65,14 @@ const UserOverlay = ({ displayName, setUser, addMember }: Props) => {
 
 const mapStateToProps = (state: AppState): StateBindings => ({
   displayName: state.user.displayName,
+  length: state.room.days.length,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   setUser: (id: string, displayName: string) =>
     dispatch(setUser({ id, displayName })),
-  addMember: (id: string, displayName: string) =>
-    dispatch(addMember({ id, displayName })),
+  addMember: (id: string, displayName: string, length: number) =>
+    dispatch(addMember({ id, displayName, daysLength: length })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserOverlay);

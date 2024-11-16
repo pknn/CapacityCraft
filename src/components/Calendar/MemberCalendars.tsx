@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { AppState } from '../../store';
-import { Member } from '../../store/sprintSlice';
 import MemberCalendar from './MemberCalendar';
+import { Member } from '../../types/Member';
 
 type StateBindings = {
   members: Record<string, Member>;
@@ -18,7 +18,7 @@ const MemberCalendars = ({ members }: Props) => (
 );
 
 const mapStateToProps = (state: AppState): StateBindings => ({
-  members: state.sprint.members,
+  members: state.members,
 });
 
 export default connect(mapStateToProps)(MemberCalendars);
