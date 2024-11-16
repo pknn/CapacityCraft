@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
-import roomReducer from './roomSlice';
+import { roomReducer } from './roomSlice';
 import sprintReducer from './sprintSlice';
 import userReducer from './userSlice';
 
