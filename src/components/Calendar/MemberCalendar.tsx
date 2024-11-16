@@ -44,7 +44,7 @@ const MemberCalendar = ({
 
   return (
     <tr>
-      <td>{member.displayName}</td>
+      <td className="p-2 text-lg font-medium">{member.displayName}</td>
       {zippedDays.map(([globalDay, memberDay], day) => (
         <MemberCalendarItem
           key={memberDay.date}

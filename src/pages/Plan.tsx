@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import SprintDetailsInput from '../components/SprintDetailsInput';
+import SprintDetails from '../components/SprintDetails';
 import UserOverlay from '../components/UserOverlay';
 import { AppDispatch, AppState } from '../store';
 import { setRoomId } from '../store/roomSlice';
@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { useEffect } from 'react';
 import Calendar from '../components/Calendar/Calendar';
 import Legend from '../components/Calendar/Legend';
+import SprintSummary from '../components/SprintSummary';
 
 type StateBindings = {
   roomId: string | undefined;
@@ -34,7 +35,7 @@ const Plan = ({ roomId, setRoomId }: Props) => {
   return (
     <div>
       <UserOverlay />
-      <SprintDetailsInput />
+      <SprintDetails />
       <Legend />
       <Calendar />
     </div>
