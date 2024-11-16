@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import pushToClipboard from '../util/pushToClipboard';
 import Logo from './Logo';
-import { RootState } from '../store';
+import { AppState } from '../store';
 
 type Props = {
   roomId: string | undefined;
@@ -34,7 +34,7 @@ const Header = ({ roomId, displayName }: Props) => {
   );
 };
 
-const mapStateToProps = (state: RootState): Props => ({
+const mapStateToProps = (state: AppState): Props => ({
   roomId: state.room.id,
   displayName: state.user.displayName,
 });

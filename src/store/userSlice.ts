@@ -1,27 +1,34 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type UserState = {
+  id: string | undefined;
   displayName: string | undefined;
-  id: number | undefined;
 };
 
 const initialState: UserState = {
-  displayName: undefined,
   id: undefined,
+  displayName: undefined,
 };
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setDisplayName: (state, action: PayloadAction<string>) => {
-      state.displayName = action.payload;
+    setUser: (
+      state,
+      action: PayloadAction<{ id: string; displayName: string }>
+    ) => {
+      const { id, displayName } = action.payload;
+
+      state.id = id;
+      state.displayName = displayName;
     },
-    clearDisplayName: (state) => {
+    clearUser: (state) => {
+      state.id = undefined;
       state.displayName = undefined;
     },
   },
 });
 
-export const { setDisplayName, clearDisplayName } = userSlice.actions;
+export const { setUser, clearUser } = userSlice.actions;
 export default userSlice.reducer;

@@ -17,7 +17,7 @@ const StoreProvider = ({ children }: PropsWithChildren) => (
   <Provider store={store}>{children}</Provider>
 );
 
-export type RootState = ReturnType<typeof store.getState>;
+export type AppState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export default StoreProvider;

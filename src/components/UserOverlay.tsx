@@ -1,31 +1,42 @@
 import Input from './core/Input';
 import { useState } from 'react';
 import Button from './core/Button';
-import { AppDispatch, RootState } from '../store';
-import { setDisplayName } from '../store/userSlice';
+import { AppDispatch, AppState } from '../store';
+import { setUser } from '../store/userSlice';
 import { connect } from 'react-redux';
+import genId from '../util/genId';
+import { addMember } from '../store/sprintSlice';
 
-type StateProps = {
+type StateBindings = {
   displayName: string | undefined;
 };
 
-type DispatchProps = {
-  setDisplayName: (displayName: string) => void;
+type ActionBindings = {
+  setUser: (id: string, displayName: string) => void;
+  addMember: (id: string, displayName: string) => void;
 };
 
-type Props = StateProps & DispatchProps;
+type Props = StateBindings & ActionBindings;
 
-const UserOverlay = ({ displayName, setDisplayName }: Props) => {
+const UserOverlay = ({ displayName, setUser, addMember }: Props) => {
+  const [value, setValue] = useState(displayName);
   const [shouldDisplay, setShouldDisplay] = useState(
     !displayName || displayName.length <= 0
   );
 
   const handleDisplayNameChange = (value: string) => {
-    setDisplayName(value);
+    setValue(value);
   };
 
   const handleSubmit = () => {
-    setShouldDisplay((displayName?.length ?? 0) <= 0);
+    if (!value || value.length <= 0) {
+      return;
+    }
+
+    setShouldDisplay(false);
+    const id = genId();
+    setUser(id, value);
+    addMember(id, value);
   };
 
   return (
@@ -36,7 +47,7 @@ const UserOverlay = ({ displayName, setDisplayName }: Props) => {
             <div>Let your friends know who you are</div>
 
             <Input<string>
-              value={displayName ?? ''}
+              value={value ?? ''}
               onValueChange={handleDisplayNameChange}
               name="user-name"
               placeholder="Mink"
@@ -51,13 +62,15 @@ const UserOverlay = ({ displayName, setDisplayName }: Props) => {
   );
 };
 
-const mapStateToProps = (state: RootState): StateProps => ({
+const mapStateToProps = (state: AppState): StateBindings => ({
   displayName: state.user.displayName,
 });
 
-const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
-  setDisplayName: (displayName: string) =>
-    dispatch(setDisplayName(displayName)),
+const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
+  setUser: (id: string, displayName: string) =>
+    dispatch(setUser({ id, displayName })),
+  addMember: (id: string, displayName: string) =>
+    dispatch(addMember({ id, displayName })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserOverlay);

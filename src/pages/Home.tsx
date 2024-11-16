@@ -9,24 +9,24 @@ import Footer from '../components/Footer';
 import { AppDispatch } from '../store';
 import { clearRoomId, setRoomId } from '../store/roomSlice';
 import { connect } from 'react-redux';
-import { clearDisplayName } from '../store/userSlice';
+import { clearUser } from '../store/userSlice';
 
-type DispatchProps = {
+type ActionBindings = {
   setRoomId: (id: string) => void;
   clearRoomId: () => void;
-  clearDisplayName: () => void;
+  clearUser: () => void;
 };
 
-type Props = DispatchProps;
+type Props = ActionBindings;
 
-const Home = ({ setRoomId, clearRoomId, clearDisplayName }: Props) => {
+const Home = ({ setRoomId, clearRoomId, clearUser }: Props) => {
   const [roomIdValue, setRoomIdValue] = useState<string>('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    clearDisplayName();
+    clearUser();
     clearRoomId();
-  }, [clearDisplayName, clearRoomId]);
+  }, [clearUser, clearRoomId]);
 
   const handleStartPlanning = () => {
     const id = genId();
@@ -43,11 +43,11 @@ const Home = ({ setRoomId, clearRoomId, clearDisplayName }: Props) => {
 
   const setRoomIdAndNavigate = (id: string) => {
     setRoomId(id);
-    navigate(`/app/${id}/plan`);
+    navigate(`/app/${id}`);
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-stone-400">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-white to-stone-400 px-8">
       <Header />
       <main className="container mx-auto flex h-full flex-1 flex-col justify-center text-center align-middle">
         <div className="mb-4 text-5xl font-extrabold">
@@ -62,7 +62,9 @@ const Home = ({ setRoomId, clearRoomId, clearDisplayName }: Props) => {
         <section className="m-6">
           <Button onClick={handleStartPlanning}>Start planning</Button>
           <Separator />
-          <div className="mb-2">Already have Room ID?</div>
+          <div className="mb-2 font-medium text-stone-800">
+            Already have Room ID?
+          </div>
           <Input<string>
             value={roomIdValue}
             onValueChange={handleRoomIdChange}
@@ -78,10 +80,10 @@ const Home = ({ setRoomId, clearRoomId, clearDisplayName }: Props) => {
   );
 };
 
-const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
+const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   setRoomId: (id: string) => dispatch(setRoomId(id)),
   clearRoomId: () => dispatch(clearRoomId()),
-  clearDisplayName: () => dispatch(clearDisplayName()),
+  clearUser: () => dispatch(clearUser()),
 });
 
 export default connect(undefined, mapDispatchToProps)(Home);

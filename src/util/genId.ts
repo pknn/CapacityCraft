@@ -1,5 +1,5 @@
 const genId = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const chars = 'ABCDEF1234567890';
 
   const getRandomChar = () =>
     chars.charAt(Math.floor(Math.random() * chars.length));
