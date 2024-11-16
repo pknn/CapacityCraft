@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import genId from '../util/genId';
 
 type UserState = {
   id: string | undefined;

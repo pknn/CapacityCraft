@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import formatDateInput from '../util/formatDateInput';
 import { generateDays } from '../util/dayGenerator';
-import genId from '../util/genId';
 
 export type Member = {
   displayName: string;
