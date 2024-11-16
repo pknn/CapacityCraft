@@ -1,4 +1,4 @@
-import { Day } from '../store/sprintSlice';
+import { Day } from '../types/Day';
 import formatDateInput from './formatDateInput';
 
 export const generateDay = (startDate: string, offset: number): Day => {

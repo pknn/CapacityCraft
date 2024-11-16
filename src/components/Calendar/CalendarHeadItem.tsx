@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { Day } from '../../store/sprintSlice';
 import formatDateStringForDisplay from '../../util/formatDateStringForDisplay';
+import { Day } from '../../types/Day';
 
 type OwnProps = {
   day: Day;
