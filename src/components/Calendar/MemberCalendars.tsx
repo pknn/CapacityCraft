@@ -9,15 +9,13 @@ type StateBindings = {
 
 type Props = StateBindings;
 
-const MemberCalendars = ({ members }: Props) => {
-  return (
-    <tbody>
-      {Object.values(members).map((member) => (
-        <MemberCalendar key={member.displayName} member={member} />
-      ))}
-    </tbody>
-  );
-};
+const MemberCalendars = ({ members }: Props) => (
+  <tbody>
+    {Object.entries(members).map(([k, member]) => (
+      <MemberCalendar key={k} id={k} member={member} />
+    ))}
+  </tbody>
+);
 
 const mapStateToProps = (state: AppState): StateBindings => ({
   members: state.sprint.members,

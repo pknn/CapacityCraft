@@ -3,24 +3,36 @@ import { Day } from '../../store/sprintSlice';
 import formatDateStringForDisplay from '../../util/formatDateStringForDisplay';
 
 type OwnProps = {
-  day: Day;
+  globalDay: Day;
+  memberDay: Day;
   onClick: () => void;
 };
 
 type Props = OwnProps;
 
-const MemberCalendarItem = ({ day, onClick }: Props) => {
+const MemberCalendarItem = ({ globalDay, memberDay, onClick }: Props) => {
   const { isWeekend } = useMemo(
-    () => formatDateStringForDisplay(day.date),
-    [day]
+    () => formatDateStringForDisplay(globalDay.date),
+    [globalDay]
+  );
+  const isGlobalNonWorkingDay = useMemo(
+    () => isWeekend || globalDay.isNonWorkingDay,
+    [isWeekend, globalDay]
   );
   const isNonWorkingDay = useMemo(
-    () => isWeekend || day.isNonWorkingDay,
-    [isWeekend, day]
+    () => isGlobalNonWorkingDay || memberDay.isNonWorkingDay,
+    [isGlobalNonWorkingDay, memberDay]
   );
+
+  const handleClick = () => {
+    if (isGlobalNonWorkingDay) return;
+    onClick();
+  };
+
   return (
     <td
-      className={`border border-stone-200 ${isNonWorkingDay ? 'bg-stone-700 hover:bg-stone-600' : 'bg-stone-300 hover:bg-stone-200'} ${isWeekend ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+      className={`border border-stone-200 ${isNonWorkingDay ? 'bg-stone-700 hover:bg-stone-600' : 'bg-stone-300 hover:bg-stone-200'} ${isGlobalNonWorkingDay ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+      onClick={handleClick}
     ></td>
   );
 };

@@ -151,9 +151,27 @@ const sprintSlice = createSlice({
         }
       });
     },
+    toggleMemberNonWorkingDay: (
+      state,
+      action: PayloadAction<{ id: string; day: number }>
+    ) => {
+      const { id, day } = action.payload;
+      const member = state.members[id];
+      const memberDay = member.days[day];
+      if (memberDay) {
+        member.days[day] = {
+          ...memberDay,
+          isNonWorkingDay: !memberDay.isNonWorkingDay,
+        };
+      }
+    },
   },
 });
 
-export const { setLength, setStartDate, toggleGlobalNonWorkingDay } =
-  sprintSlice.actions;
+export const {
+  setLength,
+  setStartDate,
+  toggleGlobalNonWorkingDay,
+  toggleMemberNonWorkingDay,
+} = sprintSlice.actions;
 export default sprintSlice.reducer;
