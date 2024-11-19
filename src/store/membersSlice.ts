@@ -1,37 +1,21 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Member } from '../types/Member';
 import { generateDays, getUpdatedDays } from '../util/dayGenerator';
 import {
   setDaysLength,
   setStartDate,
   toggleGlobalNonWorkingDay,
-  roomSelector,
 } from './roomSlice';
 import { AppState } from '.';
-import roomService from '../services/roomService';
 import createUndoableEntityAdapter from './utils/createUndoableEntityAdapter';
 import { syncRoomDown, syncRoomUp } from './dataThunkActions';
+import { Day } from '../types/Day';
 
 type AddMemberPayload = {
   id: string;
   displayName: string;
+  days: Day[];
 };
-
-export const addMember = createAsyncThunk(
-  'members/addMember',
-  async ({ id, displayName }: AddMemberPayload, { getState }) => {
-    const state = getState() as AppState;
-    const roomId = roomSelector.value(state).id ?? '';
-    const days = roomSelector.value(state).days;
-    const member: Member = {
-      id,
-      displayName,
-      days,
-    };
-    await roomService.addMember(roomId, member);
-    return member;
-  }
-);
 
 const memberUndoableAdapter = createUndoableEntityAdapter<Member, Member['id']>(
   {
@@ -43,6 +27,14 @@ const membersSlice = createSlice({
   name: 'members',
   initialState: memberUndoableAdapter.getInitialState(),
   reducers: {
+    addMember: (state, action: PayloadAction<AddMemberPayload>) => {
+      const { id, displayName, days } = action.payload;
+      memberUndoableAdapter.addOne(state, {
+        id,
+        displayName,
+        days,
+      });
+    },
     toggleMemberNonWorkingDay: (
       state,
       action: PayloadAction<{ id: string; dayIndex: number }>
@@ -114,14 +106,6 @@ const membersSlice = createSlice({
           })
         );
       })
-      .addCase(addMember.fulfilled, (state, action) => {
-        const member = action.payload;
-        memberUndoableAdapter.addOne(state, member);
-        memberUndoableAdapter.commit(state);
-      })
-      .addCase(addMember.rejected, (state) => {
-        memberUndoableAdapter.rollback(state);
-      })
       .addCase(syncRoomDown.fulfilled, (state, action) => {
         const room = action.payload;
         memberUndoableAdapter.setAll(state, room.members);
@@ -139,7 +123,8 @@ const membersSlice = createSlice({
   },
 });
 
-export const { toggleMemberNonWorkingDay, clearMember } = membersSlice.actions;
+export const { addMember, toggleMemberNonWorkingDay, clearMember } =
+  membersSlice.actions;
 export const membersReducer = membersSlice.reducer;
 export const membersSelector = memberUndoableAdapter.getSelectors(
   (state: AppState) => state.members
