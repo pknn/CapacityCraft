@@ -1,9 +1,4 @@
-import {
-  createAsyncThunk,
-  createEntityAdapter,
-  createSlice,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Member } from '../types/Member';
 import { generateDays } from '../util/dayGenerator';
 import {
@@ -15,6 +10,7 @@ import {
 } from './roomSlice';
 import { AppState } from '.';
 import roomService from '../services/roomService';
+import createUndoableEntityAdapter from './utils/createUndoableEntityAdapter';
 
 type AddMemberPayload = {
   id: string;
@@ -37,13 +33,15 @@ export const addMember = createAsyncThunk(
   }
 );
 
-const memberAdapter = createEntityAdapter<Member, Member['id']>({
-  selectId: (member: Member) => member.id,
-});
+const memberUndoableAdapter = createUndoableEntityAdapter<Member, Member['id']>(
+  {
+    selectId: (member: Member) => member.id,
+  }
+);
 
 const membersSlice = createSlice({
   name: 'members',
-  initialState: memberAdapter.getInitialState(),
+  initialState: memberUndoableAdapter.getInitialState(),
   reducers: {
     toggleMemberNonWorkingDay: (
       state,
@@ -51,10 +49,10 @@ const membersSlice = createSlice({
     ) => {
       const { id, dayIndex } = action.payload;
 
-      memberAdapter.updateOne(state, {
+      memberUndoableAdapter.updateOne(state, {
         id,
         changes: {
-          days: state.entities[id].days.map((day, index) =>
+          days: state.current.entities[id].days.map((day, index) =>
             index === dayIndex
               ? { ...day, isNonWorkingDay: !day.isNonWorkingDay }
               : day
@@ -62,26 +60,30 @@ const membersSlice = createSlice({
         },
       });
     },
-    clearMember: (state) => memberAdapter.removeAll(state),
+    clearMember: (state) => memberUndoableAdapter.removeAll(state),
   },
   extraReducers: (builder) => {
     builder
       .addCase(setDaysLength, (state, action) => {
         const { newLength, startDate } = action.payload;
 
-        memberAdapter.updateMany(
+        memberUndoableAdapter.updateMany(
           state,
-          state.ids.map((id) => ({
+          state.current.ids.map((id) => ({
             id,
             changes: {
-              days: generateDays(startDate, state.entities[id].days, newLength),
+              days: generateDays(
+                startDate,
+                state.current.entities[id].days,
+                newLength
+              ),
             },
           }))
         );
       })
       .addCase(setStartDate.fulfilled, (state, action) => {
         const room = action.payload;
-        memberAdapter.updateMany(
+        memberUndoableAdapter.updateMany(
           state,
           room.members.map((member) => ({
             id: member.id,
@@ -93,10 +95,10 @@ const membersSlice = createSlice({
       })
       .addCase(toggleGlobalNonWorkingDay, (state, action) => {
         const dayIndex = action.payload;
-        memberAdapter.updateMany(
+        memberUndoableAdapter.updateMany(
           state,
-          state.ids.map((id) => {
-            const memberDay = state.entities[id].days;
+          state.current.ids.map((id) => {
+            const memberDay = state.current.entities[id].days;
             return {
               id,
               changes: {
@@ -112,17 +114,17 @@ const membersSlice = createSlice({
       })
       .addCase(addMember.fulfilled, (state, action) => {
         const member = action.payload;
-        memberAdapter.addOne(state, member);
+        memberUndoableAdapter.addOne(state, member);
       })
       .addCase(syncDown.fulfilled, (state, action) => {
         const room = action.payload;
-        memberAdapter.setAll(state, room.members);
+        memberUndoableAdapter.setAll(state, room.members);
       });
   },
 });
 
 export const { toggleMemberNonWorkingDay, clearMember } = membersSlice.actions;
 export const membersReducer = membersSlice.reducer;
-export const membersSelector = memberAdapter.getSelectors(
+export const membersSelector = memberUndoableAdapter.getSelectors(
   (state: AppState) => state.members
 );

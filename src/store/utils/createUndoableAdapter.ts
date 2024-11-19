@@ -1,6 +1,6 @@
 import { WritableDraft } from 'immer';
 
-type UndoableState<TState> = {
+export type UndoableState<TState> = {
   current: TState;
   previous: TState | undefined;
 };
