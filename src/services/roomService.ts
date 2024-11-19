@@ -11,19 +11,20 @@ import {
 import { generateDays } from '../util/dayGenerator';
 import formatDateInput from '../util/formatDateInput';
 import { Member } from '../types/Member';
+import { Day } from '../types/Day';
 
 type RoomId = Room['id'];
 
 type RoomService = {
   createRoom: (roomId: RoomId) => Promise<void>;
   getRoom: (roomId: RoomId) => Promise<Room>;
+  setDays: (roomId: RoomId, days: Day[]) => Promise<void>;
   addMember: (roomId: RoomId, member: Member) => Promise<void>;
 };
 
+type Reference = DocumentReference<DocumentData, DocumentData>;
 const roomsCollection = 'rooms';
-const getRoomReference = (
-  id: RoomId
-): DocumentReference<DocumentData, DocumentData> =>
+const getRoomReference = (id: RoomId): Reference =>
   doc(db, roomsCollection, id);
 
 const roomService: RoomService = {
@@ -40,6 +41,16 @@ const roomService: RoomService = {
     const roomReference = getRoomReference(roomId);
     const doc = await getDoc(roomReference);
     return doc.data() as Room;
+  },
+  setDays: async (roomId, days) => {
+    const roomReference = getRoomReference(roomId);
+    const room = await roomService.getRoom(roomId);
+    const updatedRoom: Room = {
+      ...room,
+      days,
+    };
+
+    await updateDoc(roomReference, updatedRoom);
   },
   addMember: async (roomId: RoomId, member: Member) => {
     const roomReference = getRoomReference(roomId);
