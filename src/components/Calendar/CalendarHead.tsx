@@ -36,7 +36,7 @@ const CalendarHead = ({ days, toggleGlobalNonWorkingDay }: Props) => {
 };
 
 const mapStateToProps = (state: AppState): StateBindings => ({
-  days: state.room.days,
+  days: state.rooms.days,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({

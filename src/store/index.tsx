@@ -7,7 +7,7 @@ import { membersReducer } from './membersSlice';
 
 const store = configureStore({
   reducer: {
-    room: roomReducer,
+    rooms: roomReducer,
     members: membersReducer,
     user: userReducer,
   },

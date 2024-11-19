@@ -78,8 +78,8 @@ const UserOverlay = ({
 
 const mapStateToProps = (state: AppState): StateBindings => ({
   displayName: state.user.displayName,
-  days: state.room.days,
-  roomId: state.room.id ?? '',
+  days: state.rooms.days,
+  roomId: state.rooms.id ?? '',
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({

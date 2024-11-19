@@ -57,8 +57,8 @@ const SprintDetails = ({
 };
 
 const mapStateToProps = (state: AppState): StateBindings => ({
-  length: state.room.days.length,
-  startDate: state.room.startDate,
+  length: state.rooms.days.length,
+  startDate: state.rooms.startDate,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
