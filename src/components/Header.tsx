@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import pushToClipboard from '../util/pushToClipboard';
-import Logo from './Logo';
 import { AppState } from '../store';
+import Logo from './Logo';
 
 type Props = {
   roomId: string | undefined;

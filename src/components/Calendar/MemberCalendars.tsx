@@ -1,24 +1,25 @@
 import { connect } from 'react-redux';
 import { AppState } from '../../store';
-import MemberCalendar from './MemberCalendar';
 import { Member } from '../../types/Member';
+import { membersSelector } from '../../store/membersSlice';
+import MemberCalendar from './MemberCalendar';
 
 type StateBindings = {
-  members: Record<string, Member>;
+  members: Member[];
 };
 
 type Props = StateBindings;
 
 const MemberCalendars = ({ members }: Props) => (
   <tbody>
-    {Object.entries(members).map(([k, member]) => (
-      <MemberCalendar key={k} id={k} member={member} />
+    {members.map((member) => (
+      <MemberCalendar key={member.id} member={member} />
     ))}
   </tbody>
 );
 
 const mapStateToProps = (state: AppState): StateBindings => ({
-  members: state.members,
+  members: membersSelector.selectAll(state),
 });
 
 export default connect(mapStateToProps)(MemberCalendars);

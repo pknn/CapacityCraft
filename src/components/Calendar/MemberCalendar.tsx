@@ -1,14 +1,13 @@
 import { connect } from 'react-redux';
-import { AppDispatch, AppState } from '../../store';
-import MemberCalendarItem from './MemberCalendarItem';
-import zip from '../../util/zip';
 import { useMemo } from 'react';
+import zip from '../../util/zip';
+import { AppDispatch, AppState } from '../../store';
 import { Member } from '../../types/Member';
 import { Day } from '../../types/Day';
 import { toggleMemberNonWorkingDay } from '../../store/membersSlice';
+import MemberCalendarItem from './MemberCalendarItem';
 
 type OwnProps = {
-  id: string;
   member: Member;
 };
 
@@ -23,7 +22,6 @@ type ActionBindings = {
 type Props = OwnProps & StateBindings & ActionBindings;
 
 const MemberCalendar = ({
-  id,
   member,
   globalDays,
   toggleMemberNonWorkingDay,
@@ -37,7 +35,7 @@ const MemberCalendar = ({
   );
 
   const handleClick = (day: number) => () => {
-    toggleMemberNonWorkingDay(id, day);
+    toggleMemberNonWorkingDay(member.id, day);
   };
 
   return (
@@ -60,8 +58,8 @@ const mapStateToProps = (state: AppState): StateBindings => ({
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
-  toggleMemberNonWorkingDay: (id, day) =>
-    dispatch(toggleMemberNonWorkingDay({ id, day })),
+  toggleMemberNonWorkingDay: (id, dayIndex) =>
+    dispatch(toggleMemberNonWorkingDay({ id, dayIndex })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MemberCalendar);

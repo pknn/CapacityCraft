@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { connect } from 'react-redux';
 import Button from '../components/core/Button';
 import Input from '../components/core/Input';
 import Separator from '../components/core/Separator';
@@ -7,26 +8,25 @@ import genId from '../util/genId';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { AppDispatch } from '../store';
-import { clearRoomId, setRoomId } from '../store/roomSlice';
-import { connect } from 'react-redux';
+import { clearRoom, setRoomId } from '../store/roomSlice';
 import { clearUser } from '../store/userSlice';
 
 type ActionBindings = {
   setRoomId: (id: string) => void;
-  clearRoomId: () => void;
+  clearRoom: () => void;
   clearUser: () => void;
 };
 
 type Props = ActionBindings;
 
-const Home = ({ setRoomId, clearRoomId, clearUser }: Props) => {
+const Home = ({ setRoomId, clearRoom, clearUser }: Props) => {
   const [roomIdValue, setRoomIdValue] = useState<string>('');
   const navigate = useNavigate();
 
   useEffect(() => {
     clearUser();
-    clearRoomId();
-  }, [clearUser, clearRoomId]);
+    clearRoom();
+  }, [clearUser, clearRoom]);
 
   const handleStartPlanning = () => {
     const id = genId();
@@ -82,7 +82,7 @@ const Home = ({ setRoomId, clearRoomId, clearUser }: Props) => {
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   setRoomId: (id: string) => dispatch(setRoomId(id)),
-  clearRoomId: () => dispatch(clearRoomId()),
+  clearRoom: () => dispatch(clearRoom()),
   clearUser: () => dispatch(clearUser()),
 });
 

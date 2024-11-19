@@ -1,24 +1,22 @@
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { connect } from 'react-redux';
 import SprintDetails from '../components/SprintDetails';
 import UserOverlay from '../components/UserOverlay';
-import { AppDispatch, AppState } from '../store';
+import { AppDispatch } from '../store';
 import { setRoomId } from '../store/roomSlice';
-import { connect } from 'react-redux';
-import { useEffect } from 'react';
 import Calendar from '../components/Calendar/Calendar';
 import Legend from '../components/Calendar/Legend';
-
-type StateBindings = {
-  roomId: string | undefined;
-};
+import { clearMember } from '../store/membersSlice';
 
 type ActionBindings = {
   setRoomId: (id: string) => void;
+  clearMembers: () => void;
 };
 
-type Props = StateBindings & ActionBindings;
+type Props = ActionBindings;
 
-const Plan = ({ roomId, setRoomId }: Props) => {
+const Plan = ({ setRoomId, clearMembers }: Props) => {
   const navigate = useNavigate();
   const { roomId: roomIdFromParam } = useParams();
 
@@ -26,27 +24,29 @@ const Plan = ({ roomId, setRoomId }: Props) => {
     if (!roomIdFromParam) {
       navigate('/');
     }
-    if (!roomId) {
-      setRoomId(roomIdFromParam ?? '');
-    }
-  }, [roomId, setRoomId, roomIdFromParam, navigate]);
+  }, [navigate, roomIdFromParam]);
+
+  useEffect(() => {
+    setRoomId(roomIdFromParam ?? '');
+  }, [roomIdFromParam, setRoomId]);
+
+  useEffect(() => {
+    clearMembers();
+  }, [clearMembers]);
 
   return (
-    <div>
+    <>
       <UserOverlay />
       <SprintDetails />
       <Legend />
       <Calendar />
-    </div>
+    </>
   );
 };
 
-const mapStateToProps = (state: AppState): StateBindings => ({
-  roomId: state.room.id,
-});
-
-const mapDispatchToProsp = (dispatch: AppDispatch): ActionBindings => ({
+const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   setRoomId: (id: string) => dispatch(setRoomId(id)),
+  clearMembers: () => dispatch(clearMember()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProsp)(Plan);
+export default connect(undefined, mapDispatchToProps)(Plan);
