@@ -7,16 +7,19 @@ import { AppDispatch } from '../store';
 import Calendar from '../components/Calendar/Calendar';
 import Legend from '../components/Calendar/Legend';
 import { clearMember } from '../store/membersSlice';
-import { syncDown } from '../store/dataThunkActions';
+import { syncDown, syncUp } from '../store/dataThunkActions';
+import roomService from '../services/roomService';
+import { Room } from '../types/Room';
 
 type ActionBindings = {
   syncDown: (id: string) => void;
+  syncDownSubscribed: (room: Room) => void;
   clearMembers: () => void;
 };
 
 type Props = ActionBindings;
 
-const Plan = ({ syncDown, clearMembers }: Props) => {
+const Plan = ({ syncDown, syncDownSubscribed, clearMembers }: Props) => {
   const navigate = useNavigate();
   const { roomId: roomIdFromParam } = useParams();
 
@@ -28,11 +31,20 @@ const Plan = ({ syncDown, clearMembers }: Props) => {
 
   useEffect(() => {
     syncDown(roomIdFromParam ?? '');
-  }, [roomIdFromParam, syncDown]);
+    const unsubscribe = roomService.subscribe(
+      roomIdFromParam ?? '',
+      syncDownSubscribed
+    );
+    return () => {
+      unsubscribe();
+    };
+  }, [roomIdFromParam, syncDown, syncDownSubscribed]);
 
   useEffect(() => {
     clearMembers();
   }, [clearMembers]);
+
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -46,6 +58,8 @@ const Plan = ({ syncDown, clearMembers }: Props) => {
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   syncDown: (id: string) => dispatch(syncDown(id)),
+  syncDownSubscribed: (room: Room) =>
+    dispatch(syncDown.fulfilled(room, '', room.id)),
   clearMembers: () => dispatch(clearMember()),
 });
 

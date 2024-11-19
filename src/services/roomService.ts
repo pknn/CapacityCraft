@@ -7,11 +7,11 @@ import {
   DocumentData,
   updateDoc,
   getDoc,
+  onSnapshot,
 } from 'firebase/firestore';
 import { generateDays } from '../util/dayGenerator';
 import formatDateInput from '../util/formatDateInput';
-import { Member } from '../types/Member';
-import { Day } from '../types/Day';
+import { DocumentSnapshot } from 'firebase/firestore/lite';
 
 type RoomId = Room['id'];
 
@@ -19,8 +19,7 @@ type RoomService = {
   createRoom: (roomId: RoomId) => Promise<Room>;
   getRoom: (roomId: RoomId) => Promise<Room>;
   updateRoom: (roomId: RoomId, update: Partial<Room>) => Promise<Room>;
-  setDays: (roomId: RoomId, days: Day[]) => Promise<void>;
-  addMember: (roomId: RoomId, member: Member) => Promise<void>;
+  subscribe: (roomId: RoomId, onChange: (room: Room) => void) => () => void;
 };
 
 type Reference = DocumentReference<DocumentData, DocumentData>;
@@ -55,28 +54,14 @@ const roomService: RoomService = {
     await updateDoc(roomReference, updatedRoom);
     return updatedRoom;
   },
-  setDays: async (roomId, days) => {
+  subscribe: (roomId, onChange) => {
     const roomReference = getRoomReference(roomId);
-    const room = await roomService.getRoom(roomId);
-    const updatedRoom: Room = {
-      ...room,
-      days,
-    };
-
-    await updateDoc(roomReference, updatedRoom);
-  },
-  addMember: async (roomId: RoomId, member: Member) => {
-    const roomReference = getRoomReference(roomId);
-    const room = await roomService.getRoom(roomId);
-    const updatedRoom: Room = {
-      ...room,
-      members: [
-        ...room.members.filter((member) => member.id !== member.id),
-        member,
-      ],
-    };
-
-    return updateDoc(roomReference, updatedRoom);
+    return onSnapshot(roomReference, (snapshot: DocumentSnapshot) => {
+      if (snapshot.exists()) {
+        const room = snapshot.data() as Room;
+        onChange(room);
+      }
+    });
   },
 };
 
