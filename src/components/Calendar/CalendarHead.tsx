@@ -3,7 +3,7 @@ import { AppDispatch, AppState } from '../../store';
 import { roomSelector, toggleGlobalNonWorkingDay } from '../../store/roomSlice';
 import { Day } from '../../types/Day';
 import CalendarHeadItem from './CalendarHeadItem';
-import { syncRoomUp } from '../../store/dataThunkActions';
+import { syncUp } from '../../store/dataThunkActions';
 
 type StateBindings = {
   days: Day[];
@@ -49,7 +49,7 @@ const mapStateToProps = (state: AppState): StateBindings => ({
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   toggleGlobalNonWorkingDay: (index) =>
     dispatch(toggleGlobalNonWorkingDay(index)),
-  syncRoomUp: () => dispatch(syncRoomUp()),
+  syncRoomUp: () => dispatch(syncUp()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CalendarHead);

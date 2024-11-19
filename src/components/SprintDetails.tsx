@@ -3,7 +3,7 @@ import { AppDispatch, AppState } from '../store';
 import { roomSelector, setDaysLength, setStartDate } from '../store/roomSlice';
 import Input from './core/Input';
 import SprintSummary from './SprintSummary';
-import { syncRoomUp } from '../store/dataThunkActions';
+import { syncUp } from '../store/dataThunkActions';
 
 type StateBindings = {
   length: number;
@@ -66,7 +66,7 @@ const mapStateToProps = (state: AppState): StateBindings => ({
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
-  syncRoomUp: () => dispatch(syncRoomUp()),
+  syncRoomUp: () => dispatch(syncUp()),
   setDaysLength: (newLength: number, startDate: string) =>
     dispatch(setDaysLength({ newLength, startDate })),
   setStartDate: (startDate: string) => dispatch(setStartDate(startDate)),

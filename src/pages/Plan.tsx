@@ -7,7 +7,7 @@ import { AppDispatch } from '../store';
 import Calendar from '../components/Calendar/Calendar';
 import Legend from '../components/Calendar/Legend';
 import { clearMember } from '../store/membersSlice';
-import { syncRoomDown } from '../store/dataThunkActions';
+import { syncDown } from '../store/dataThunkActions';
 
 type ActionBindings = {
   syncDown: (id: string) => void;
@@ -45,7 +45,7 @@ const Plan = ({ syncDown, clearMembers }: Props) => {
 };
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
-  syncDown: (id: string) => dispatch(syncRoomDown(id)),
+  syncDown: (id: string) => dispatch(syncDown(id)),
   clearMembers: () => dispatch(clearMember()),
 });
 

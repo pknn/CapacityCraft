@@ -5,7 +5,7 @@ import { Room } from '../types/Room';
 import { roomSelector } from './roomSlice';
 import { membersSelector } from './membersSlice';
 
-export const syncRoomDown = createAsyncThunk(
+export const syncDown = createAsyncThunk(
   'data/syncDown',
   async (roomId: string) => {
     const room = await roomService.getRoom(roomId);
@@ -14,7 +14,7 @@ export const syncRoomDown = createAsyncThunk(
   }
 );
 
-export const syncRoomUp = createAsyncThunk(
+export const syncUp = createAsyncThunk(
   'data/syncUp',
   async (_, { getState }) => {
     const state = getState() as AppState;

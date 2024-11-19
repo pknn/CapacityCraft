@@ -8,7 +8,7 @@ import {
 } from './roomSlice';
 import { AppState } from '.';
 import createUndoableEntityAdapter from './utils/createUndoableEntityAdapter';
-import { syncRoomDown, syncRoomUp } from './dataThunkActions';
+import { syncDown, syncUp } from './dataThunkActions';
 import { Day } from '../types/Day';
 
 type AddMemberPayload = {
@@ -106,18 +106,18 @@ const membersSlice = createSlice({
           })
         );
       })
-      .addCase(syncRoomDown.fulfilled, (state, action) => {
+      .addCase(syncDown.fulfilled, (state, action) => {
         const room = action.payload;
         memberUndoableAdapter.setAll(state, room.members);
         memberUndoableAdapter.commit(state);
       })
-      .addCase(syncRoomDown.rejected, (state) => {
+      .addCase(syncDown.rejected, (state) => {
         memberUndoableAdapter.rollback(state);
       })
-      .addCase(syncRoomUp.fulfilled, (state) => {
+      .addCase(syncUp.fulfilled, (state) => {
         memberUndoableAdapter.commit(state);
       })
-      .addCase(syncRoomUp.rejected, (state) => {
+      .addCase(syncUp.rejected, (state) => {
         memberUndoableAdapter.rollback(state);
       });
   },

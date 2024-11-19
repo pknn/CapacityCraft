@@ -8,7 +8,7 @@ import Button from './core/Button';
 import Input from './core/Input';
 import { roomSelector } from '../store/roomSlice';
 import { Day } from '../types/Day';
-import { syncRoomUp } from '../store/dataThunkActions';
+import { syncUp } from '../store/dataThunkActions';
 
 type StateBindings = {
   displayName: string | undefined;
@@ -84,7 +84,7 @@ const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
     dispatch(setUser({ id, displayName })),
   addMember: (id: string, displayName: string, days: Day[]) =>
     dispatch(addMember({ id, displayName, days })),
-  syncUp: () => dispatch(syncRoomUp()),
+  syncUp: () => dispatch(syncUp()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserOverlay);

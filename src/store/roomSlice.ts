@@ -5,7 +5,7 @@ import roomService from '../services/roomService';
 import { AppState } from '.';
 import getStartDate from '../util/getStartDate';
 import createUndoableAdapter from './utils/createUndoableAdapter';
-import { syncRoomDown, syncRoomUp } from './dataThunkActions';
+import { syncDown, syncUp } from './dataThunkActions';
 
 type RoomState = {
   id: string | undefined;
@@ -75,7 +75,7 @@ const roomSlice = createSlice({
   },
   extraReducers: (builder) =>
     builder
-      .addCase(syncRoomDown.fulfilled, (state, action) => {
+      .addCase(syncDown.fulfilled, (state, action) => {
         const room = action.payload;
         const startDate = room.days.sort((a, b) =>
           new Date(a.date) < new Date(b.date) ? -1 : 1
@@ -100,7 +100,7 @@ const roomSlice = createSlice({
         });
         roomUndoableAdapter.commit(state);
       })
-      .addCase(syncRoomUp.fulfilled, (state, action) => {
+      .addCase(syncUp.fulfilled, (state, action) => {
         const { id, days } = action.payload;
         const startDate = getStartDate(days);
 
@@ -111,7 +111,7 @@ const roomSlice = createSlice({
         });
         roomUndoableAdapter.commit(state);
       })
-      .addCase(syncRoomUp.rejected, (state) => {
+      .addCase(syncUp.rejected, (state) => {
         roomUndoableAdapter.rollback(state);
       }),
 });
