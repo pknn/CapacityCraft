@@ -6,7 +6,7 @@ import userReducer from './userSlice';
 import { membersReducer } from './membersSlice';
 import historyMiddleware from './historyMiddleware';
 
-export const store = configureStore({
+const store = configureStore({
   reducer: {
     room: roomReducer,
     members: membersReducer,

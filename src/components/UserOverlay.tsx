@@ -9,7 +9,6 @@ import Input from './core/Input';
 import { roomSelector } from '../store/roomSlice';
 import { Day } from '../types/Day';
 import { syncUp } from '../store/dataThunkActions';
-import roomService from '../services/roomService';
 
 type StateBindings = {
   displayName: string | undefined;

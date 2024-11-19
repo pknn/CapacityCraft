@@ -7,7 +7,7 @@ import { AppDispatch } from '../store';
 import Calendar from '../components/Calendar/Calendar';
 import Legend from '../components/Calendar/Legend';
 import { clearMember } from '../store/membersSlice';
-import { syncDown, syncUp } from '../store/dataThunkActions';
+import { syncDown } from '../store/dataThunkActions';
 import roomService from '../services/roomService';
 import { Room } from '../types/Room';
 
