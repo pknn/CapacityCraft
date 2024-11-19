@@ -29,9 +29,9 @@ const Home = ({ createRoom, setRoomId, clearRoom, clearUser }: Props) => {
     clearRoom();
   }, [clearUser, clearRoom]);
 
-  const handleStartPlanning = async () => {
+  const handleStartPlanning = () => {
     const id = genId();
-    await createRoom(id);
+    createRoom(id);
     navigate(`/app/${id}`);
   };
 

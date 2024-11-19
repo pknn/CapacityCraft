@@ -31,6 +31,7 @@ const SprintDetails = ({
 }: Props) => {
   const handleSprintStartDateChange = (value: string) => {
     setStartDate(value);
+    syncRoomUp();
   };
 
   const handleSprintLengthChange = (value: number) => {

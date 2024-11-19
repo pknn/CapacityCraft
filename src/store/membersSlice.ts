@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Member } from '../types/Member';
-import { generateDays } from '../util/dayGenerator';
+import { generateDays, getUpdatedDays } from '../util/dayGenerator';
 import {
   syncDown,
   setDaysLength,
@@ -81,14 +81,16 @@ const membersSlice = createSlice({
           }))
         );
       })
-      .addCase(setStartDate.fulfilled, (state, action) => {
-        const room = action.payload;
+      .addCase(setStartDate, (state, action) => {
         memberUndoableAdapter.updateMany(
           state,
-          room.members.map((member) => ({
-            id: member.id,
+          state.current.ids.map((id) => ({
+            id: id,
             changes: {
-              days: member.days,
+              days: getUpdatedDays(
+                state.current.entities[id].days,
+                action.payload
+              ),
             },
           }))
         );
