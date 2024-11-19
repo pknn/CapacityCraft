@@ -13,7 +13,7 @@ type Props = StateBindings;
 const MemberCalendars = ({ members }: Props) => (
   <tbody>
     {members.map((member) => (
-      <MemberCalendar key={member.id} id={member.id} member={member} />
+      <MemberCalendar key={member.id} member={member} />
     ))}
   </tbody>
 );
