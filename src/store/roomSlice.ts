@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import formatDateInput from '../util/formatDateInput';
 import { generateDays, getUpdatedDays } from '../util/dayGenerator';
 import { Day } from '../types/Day';
 import roomService from '../services/roomService';
