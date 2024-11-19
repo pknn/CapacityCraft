@@ -54,9 +54,9 @@ const mapStateToProps = (state: AppState): StateBindings => ({
   roomId: state.room.id,
 });
 
-const mapDispatchToProsp = (dispatch: AppDispatch): ActionBindings => ({
+const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   setRoomId: (id: string) => dispatch(setRoomId(id)),
   clearMembers: () => dispatch(clearMember()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProsp)(Plan);
+export default connect(mapStateToProps, mapDispatchToProps)(Plan);

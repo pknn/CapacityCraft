@@ -22,7 +22,7 @@ const roomSlice = createSlice({
     setRoomId: (state, action: PayloadAction<string>) => {
       state.id = action.payload;
     },
-    clearRoomId: (state) => {
+    clearRoom: (state) => {
       state.id = undefined;
       state.startDate = formatDateInput(new Date());
       state.days = generateDays(state.startDate, [], 9);
@@ -51,7 +51,7 @@ const roomSlice = createSlice({
 
 export const {
   setRoomId,
-  clearRoomId,
+  clearRoom,
   setLength,
   setStartDate,
   toggleGlobalNonWorkingDay,
