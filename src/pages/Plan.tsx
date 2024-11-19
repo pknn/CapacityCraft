@@ -32,12 +32,12 @@ const Plan = ({ roomId, setRoomId }: Props) => {
   }, [roomId, setRoomId, roomIdFromParam, navigate]);
 
   return (
-    <div>
+    <>
       <UserOverlay />
       <SprintDetails />
       <Legend />
       <Calendar />
-    </div>
+    </>
   );
 };
 
