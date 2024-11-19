@@ -7,7 +7,7 @@ import {
 import { Member } from '../types/Member';
 import { getUpdatedDays } from '../util/dayGenerator';
 import {
-  fetchRoomAndSet,
+  syncDown,
   setDaysLength,
   setStartDate,
   toggleGlobalNonWorkingDay,
@@ -112,7 +112,7 @@ const membersSlice = createSlice({
         const member = action.payload;
         memberAdapter.addOne(state, member);
       })
-      .addCase(fetchRoomAndSet.fulfilled, (state, action) => {
+      .addCase(syncDown.fulfilled, (state, action) => {
         const room = action.payload;
         memberAdapter.setAll(state, room.members);
       });

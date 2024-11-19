@@ -21,8 +21,8 @@ export const createRoom = createAsyncThunk(
   }
 );
 
-export const fetchRoomAndSet = createAsyncThunk(
-  'rooms/fetchRoomAndSet',
+export const syncDown = createAsyncThunk(
+  'rooms/syncDown',
   async (roomId: string) => {
     const room = await roomService.getRoom(roomId);
 
@@ -118,7 +118,7 @@ const roomSlice = createSlice({
   },
   extraReducers: (builder) =>
     builder
-      .addCase(fetchRoomAndSet.fulfilled, (state, action) => {
+      .addCase(syncDown.fulfilled, (state, action) => {
         const room = action.payload;
         const startDate = room.days.sort((a, b) =>
           new Date(a.date) < new Date(b.date) ? -1 : 1

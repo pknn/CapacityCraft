@@ -4,19 +4,19 @@ import { connect } from 'react-redux';
 import SprintDetails from '../components/SprintDetails';
 import UserOverlay from '../components/UserOverlay';
 import { AppDispatch } from '../store';
-import { fetchRoomAndSet } from '../store/roomSlice';
+import { syncDown } from '../store/roomSlice';
 import Calendar from '../components/Calendar/Calendar';
 import Legend from '../components/Calendar/Legend';
 import { clearMember } from '../store/membersSlice';
 
 type ActionBindings = {
-  setRoomId: (id: string) => void;
+  syncDown: (id: string) => void;
   clearMembers: () => void;
 };
 
 type Props = ActionBindings;
 
-const Plan = ({ setRoomId, clearMembers }: Props) => {
+const Plan = ({ syncDown, clearMembers }: Props) => {
   const navigate = useNavigate();
   const { roomId: roomIdFromParam } = useParams();
 
@@ -27,8 +27,8 @@ const Plan = ({ setRoomId, clearMembers }: Props) => {
   }, [navigate, roomIdFromParam]);
 
   useEffect(() => {
-    setRoomId(roomIdFromParam ?? '');
-  }, [roomIdFromParam, setRoomId]);
+    syncDown(roomIdFromParam ?? '');
+  }, [roomIdFromParam, syncDown]);
 
   useEffect(() => {
     clearMembers();
@@ -45,7 +45,7 @@ const Plan = ({ setRoomId, clearMembers }: Props) => {
 };
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
-  setRoomId: (id: string) => dispatch(fetchRoomAndSet(id)),
+  syncDown: (id: string) => dispatch(syncDown(id)),
   clearMembers: () => dispatch(clearMember()),
 });
 
