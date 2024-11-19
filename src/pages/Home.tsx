@@ -10,6 +10,7 @@ import Footer from '../components/Footer';
 import { AppDispatch } from '../store';
 import { clearRoom, setRoomId } from '../store/roomSlice';
 import { clearUser } from '../store/userSlice';
+import roomService from '../services/roomService';
 
 type ActionBindings = {
   setRoomId: (id: string) => void;
@@ -28,8 +29,9 @@ const Home = ({ setRoomId, clearRoom, clearUser }: Props) => {
     clearRoom();
   }, [clearUser, clearRoom]);
 
-  const handleStartPlanning = () => {
+  const handleStartPlanning = async () => {
     const id = genId();
+    await roomService.createRoom(id);
     setRoomIdAndNavigate(id);
   };
 

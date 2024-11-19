@@ -6,9 +6,11 @@ import {
   DocumentReference,
   DocumentData,
 } from 'firebase/firestore';
+import { generateDays } from '../util/dayGenerator';
+import formatDateInput from '../util/formatDateInput';
 
 type RoomService = {
-  createRoom: (room: Room) => Promise<void>;
+  createRoom: (roomId: Room['id']) => Promise<void>;
 };
 
 const roomsCollection = 'rooms';
@@ -17,11 +19,16 @@ const getRoomReference = (
 ): DocumentReference<DocumentData, DocumentData> =>
   doc(db, roomsCollection, id);
 
-const roomService = {
-  createRoom: async (room) => {
-    const roomReference = getRoomReference(room.id);
+const roomService: RoomService = {
+  createRoom: async (roomId) => {
+    const roomReference = getRoomReference(roomId);
+    const room: Room = {
+      id: roomId,
+      days: generateDays(formatDateInput(new Date()), [], 9),
+      members: [],
+    };
     return setDoc(roomReference, room);
   },
-} satisfies RoomService;
+};
 
 export default roomService;
