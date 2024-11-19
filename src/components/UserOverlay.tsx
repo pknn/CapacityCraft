@@ -2,24 +2,36 @@ import { useState } from 'react';
 import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../store';
 import { setUser } from '../store/userSlice';
-import genId from '../util/genId';
+import { genUserId } from '../util/genId';
 import { addMember } from '../store/membersSlice';
 import Button from './core/Button';
 import Input from './core/Input';
+import { roomSelector } from '../store/roomSlice';
+import { Day } from '../types/Day';
+import { syncUp } from '../store/dataThunkActions';
 
 type StateBindings = {
   displayName: string | undefined;
-  length: number;
+  roomId: string;
+  days: Day[];
 };
 
 type ActionBindings = {
   setUser: (id: string, displayName: string) => void;
-  addMember: (id: string, displayName: string, length: number) => void;
+  addMember: (id: string, displayName: string, days: Day[]) => void;
+  syncUp: () => void;
 };
 
 type Props = StateBindings & ActionBindings;
 
-const UserOverlay = ({ displayName, length, setUser, addMember }: Props) => {
+const UserOverlay = ({
+  displayName,
+  roomId,
+  days,
+  setUser,
+  addMember,
+  syncUp,
+}: Props) => {
   const [value, setValue] = useState(displayName);
   const [shouldDisplay, setShouldDisplay] = useState(
     !displayName || displayName.length <= 0
@@ -35,9 +47,10 @@ const UserOverlay = ({ displayName, length, setUser, addMember }: Props) => {
     }
 
     setShouldDisplay(false);
-    const id = genId();
+    const id = genUserId(roomId);
     setUser(id, value);
-    addMember(id, value, length);
+    addMember(id, value, days);
+    syncUp();
   };
 
   return (
@@ -65,14 +78,16 @@ const UserOverlay = ({ displayName, length, setUser, addMember }: Props) => {
 
 const mapStateToProps = (state: AppState): StateBindings => ({
   displayName: state.user.displayName,
-  length: state.room.days.length,
+  roomId: roomSelector.value(state).id ?? '',
+  days: roomSelector.value(state).days,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   setUser: (id: string, displayName: string) =>
     dispatch(setUser({ id, displayName })),
-  addMember: (id: string, displayName: string, length: number) =>
-    dispatch(addMember({ id, displayName, daysLength: length })),
+  addMember: (id: string, displayName: string, days: Day[]) =>
+    dispatch(addMember({ id, displayName, days })),
+  syncUp: () => dispatch(syncUp()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserOverlay);

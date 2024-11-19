@@ -1,37 +1,50 @@
-import {
-  createEntityAdapter,
-  createSlice,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Member } from '../types/Member';
 import { generateDays, getUpdatedDays } from '../util/dayGenerator';
-import formatDateInput from '../util/formatDateInput';
-import { Day } from '../types/Day';
 import {
-  setLength,
+  setDaysLength,
   setStartDate,
   toggleGlobalNonWorkingDay,
 } from './roomSlice';
 import { AppState } from '.';
+import createUndoableEntityAdapter from './utils/createUndoableEntityAdapter';
+import { syncDown, syncUp } from './dataThunkActions';
+import { Day } from '../types/Day';
 
-const memberAdapter = createEntityAdapter<Member, Member['id']>({
-  selectId: (member: Member) => member.id,
-});
+type AddMemberPayload = {
+  id: string;
+  displayName: string;
+  days: Day[];
+};
+
+const memberUndoableAdapter = createUndoableEntityAdapter<Member, Member['id']>(
+  {
+    selectId: (member: Member) => member.id,
+  }
+);
 
 const membersSlice = createSlice({
   name: 'members',
-  initialState: memberAdapter.getInitialState(),
+  initialState: memberUndoableAdapter.getInitialState(),
   reducers: {
+    addMember: (state, action: PayloadAction<AddMemberPayload>) => {
+      const { id, displayName, days } = action.payload;
+      memberUndoableAdapter.addOne(state, {
+        id,
+        displayName,
+        days,
+      });
+    },
     toggleMemberNonWorkingDay: (
       state,
       action: PayloadAction<{ id: string; dayIndex: number }>
     ) => {
       const { id, dayIndex } = action.payload;
 
-      memberAdapter.updateOne(state, {
+      memberUndoableAdapter.updateOne(state, {
         id,
         changes: {
-          days: state.entities[id].days.map((day, index) =>
+          days: state.current.entities[id].days.map((day, index) =>
             index === dayIndex
               ? { ...day, isNonWorkingDay: !day.isNonWorkingDay }
               : day
@@ -39,64 +52,47 @@ const membersSlice = createSlice({
         },
       });
     },
-    addMember: (
-      state,
-      action: PayloadAction<{
-        id: string;
-        displayName: string;
-        days?: Day[];
-        daysLength?: number;
-      }>
-    ) => {
-      const { id, displayName, days, daysLength } = action.payload;
-      memberAdapter.addOne(state, {
-        id,
-        displayName,
-        days:
-          days ??
-          generateDays(formatDateInput(new Date()), [], daysLength ?? 0),
-      });
-    },
-    clearMember: (state) => memberAdapter.removeAll(state),
+    clearMember: (state) => memberUndoableAdapter.removeAll(state),
   },
   extraReducers: (builder) => {
     builder
-      .addCase(setLength, (state, action) => {
-        const newLength = action.payload;
-        if (newLength > 0) {
-          memberAdapter.updateMany(
-            state,
-            state.ids.map((id) => ({
-              id,
-              changes: {
-                days: generateDays(
-                  formatDateInput(new Date()),
-                  state.entities[id].days,
-                  newLength
-                ),
-              },
-            }))
-          );
-        }
-      })
-      .addCase(setStartDate, (state, action) => {
-        const newStartDate = action.payload;
-        memberAdapter.updateMany(
+      .addCase(setDaysLength, (state, action) => {
+        const { newLength, startDate } = action.payload;
+
+        memberUndoableAdapter.updateMany(
           state,
-          state.ids.map((id) => ({
+          state.current.ids.map((id) => ({
             id,
             changes: {
-              days: getUpdatedDays(state.entities[id].days, newStartDate),
+              days: generateDays(
+                startDate,
+                state.current.entities[id].days,
+                newLength
+              ),
+            },
+          }))
+        );
+      })
+      .addCase(setStartDate, (state, action) => {
+        memberUndoableAdapter.updateMany(
+          state,
+          state.current.ids.map((id) => ({
+            id: id,
+            changes: {
+              days: getUpdatedDays(
+                state.current.entities[id].days,
+                action.payload
+              ),
             },
           }))
         );
       })
       .addCase(toggleGlobalNonWorkingDay, (state, action) => {
         const dayIndex = action.payload;
-        memberAdapter.updateMany(
+        memberUndoableAdapter.updateMany(
           state,
-          state.ids.map((id) => {
-            const memberDay = state.entities[id].days;
+          state.current.ids.map((id) => {
+            const memberDay = state.current.entities[id].days;
             return {
               id,
               changes: {
@@ -109,13 +105,27 @@ const membersSlice = createSlice({
             };
           })
         );
+      })
+      .addCase(syncDown.fulfilled, (state, action) => {
+        const room = action.payload;
+        memberUndoableAdapter.setAll(state, room.members);
+        memberUndoableAdapter.commit(state);
+      })
+      .addCase(syncDown.rejected, (state) => {
+        memberUndoableAdapter.rollback(state);
+      })
+      .addCase(syncUp.fulfilled, (state) => {
+        memberUndoableAdapter.commit(state);
+      })
+      .addCase(syncUp.rejected, (state) => {
+        memberUndoableAdapter.rollback(state);
       });
   },
 });
 
-export const { toggleMemberNonWorkingDay, addMember, clearMember } =
+export const { addMember, toggleMemberNonWorkingDay, clearMember } =
   membersSlice.actions;
 export const membersReducer = membersSlice.reducer;
-export const membersSelector = memberAdapter.getSelectors(
+export const membersSelector = memberUndoableAdapter.getSelectors(
   (state: AppState) => state.members
 );

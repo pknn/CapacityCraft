@@ -1,8 +1,9 @@
 import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../store';
-import { setLength, setStartDate } from '../store/roomSlice';
+import { roomSelector, setDaysLength, setStartDate } from '../store/roomSlice';
 import Input from './core/Input';
 import SprintSummary from './SprintSummary';
+import { syncUp } from '../store/dataThunkActions';
 
 type StateBindings = {
   length: number;
@@ -10,7 +11,8 @@ type StateBindings = {
 };
 
 type ActionBindings = {
-  setLength: (length: number) => void;
+  syncRoomUp: () => void;
+  setDaysLength: (newLength: number, startDate: string) => void;
   setStartDate: (startDate: string) => void;
 };
 
@@ -19,16 +21,18 @@ type Props = StateBindings & ActionBindings;
 const SprintDetails = ({
   length,
   startDate,
-  setLength,
+  syncRoomUp,
+  setDaysLength,
   setStartDate,
 }: Props) => {
   const handleSprintStartDateChange = (value: string) => {
-    console.log(value);
     setStartDate(value);
+    syncRoomUp();
   };
 
   const handleSprintLengthChange = (value: number) => {
-    setLength(value <= 0 ? 0 : value);
+    setDaysLength(value <= 0 ? 0 : value, startDate);
+    syncRoomUp();
   };
 
   return (
@@ -57,12 +61,14 @@ const SprintDetails = ({
 };
 
 const mapStateToProps = (state: AppState): StateBindings => ({
-  length: state.room.days.length,
-  startDate: state.room.startDate,
+  length: roomSelector.value(state).days.length,
+  startDate: roomSelector.value(state).startDate ?? '',
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
-  setLength: (length: number) => dispatch(setLength(length)),
+  syncRoomUp: () => dispatch(syncUp()),
+  setDaysLength: (newLength: number, startDate: string) =>
+    dispatch(setDaysLength({ newLength, startDate })),
   setStartDate: (startDate: string) => dispatch(setStartDate(startDate)),
 });
 

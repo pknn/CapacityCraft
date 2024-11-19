@@ -6,6 +6,8 @@ import { Member } from '../../types/Member';
 import { Day } from '../../types/Day';
 import { toggleMemberNonWorkingDay } from '../../store/membersSlice';
 import MemberCalendarItem from './MemberCalendarItem';
+import { roomSelector } from '../../store/roomSlice';
+import { syncUp } from '../../store/dataThunkActions';
 
 type OwnProps = {
   member: Member;
@@ -17,6 +19,7 @@ type StateBindings = {
 
 type ActionBindings = {
   toggleMemberNonWorkingDay: (id: string, day: number) => void;
+  syncUp: () => void;
 };
 
 type Props = OwnProps & StateBindings & ActionBindings;
@@ -25,6 +28,7 @@ const MemberCalendar = ({
   member,
   globalDays,
   toggleMemberNonWorkingDay,
+  syncUp,
 }: Props) => {
   const zippedDays = useMemo(
     () =>
@@ -36,6 +40,7 @@ const MemberCalendar = ({
 
   const handleClick = (day: number) => () => {
     toggleMemberNonWorkingDay(member.id, day);
+    syncUp();
   };
 
   return (
@@ -54,12 +59,13 @@ const MemberCalendar = ({
 };
 
 const mapStateToProps = (state: AppState): StateBindings => ({
-  globalDays: state.room.days,
+  globalDays: roomSelector.value(state).days,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   toggleMemberNonWorkingDay: (id, dayIndex) =>
     dispatch(toggleMemberNonWorkingDay({ id, dayIndex })),
+  syncUp: () => dispatch(syncUp()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MemberCalendar);
