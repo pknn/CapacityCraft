@@ -46,7 +46,10 @@ const roomService: RoomService = {
     const room = await roomService.getRoom(roomId);
     const updatedRoom: Room = {
       ...room,
-      members: [...room.members, member],
+      members: [
+        ...room.members.filter((member) => member.id !== member.id),
+        member,
+      ],
     };
 
     return updateDoc(roomReference, updatedRoom);
