@@ -77,14 +77,14 @@ const membersSlice = createSlice({
           }))
         );
       })
-      .addCase(setStartDate, (state, action) => {
-        const newStartDate = action.payload;
+      .addCase(setStartDate.fulfilled, (state, action) => {
+        const room = action.payload;
         memberAdapter.updateMany(
           state,
-          state.ids.map((id) => ({
-            id,
+          room.members.map((member) => ({
+            id: member.id,
             changes: {
-              days: getUpdatedDays(state.entities[id].days, newStartDate),
+              days: member.days,
             },
           }))
         );

@@ -56,6 +56,31 @@ export const setDaysLength = createAsyncThunk(
   }
 );
 
+export const setStartDate = createAsyncThunk(
+  'rooms/setStartDate',
+  async (newStartDate: string, { getState }) => {
+    const state = getState() as AppState;
+    const roomId = state.rooms.id ?? '';
+    const updatedDays = getUpdatedDays(state.rooms.days, newStartDate);
+    const membersWithUpdatedDays = state.members.ids.map((id): Member => {
+      const member = state.members.entities[id];
+      const updatedDays = getUpdatedDays(member.days, newStartDate);
+
+      return {
+        ...member,
+        days: updatedDays,
+      };
+    });
+
+    const roomUpdate: Partial<Room> = {
+      days: updatedDays,
+      members: membersWithUpdatedDays,
+    };
+
+    return roomService.updateRoom(roomId, roomUpdate);
+  }
+);
+
 const initialState: RoomState = {
   id: undefined,
   startDate: formatDateInput(new Date()),
@@ -73,11 +98,6 @@ const roomSlice = createSlice({
       state.id = undefined;
       state.startDate = formatDateInput(new Date());
       state.days = generateDays(state.startDate, [], 9);
-    },
-    setStartDate: (state, action: PayloadAction<string>) => {
-      const newStartDate = action.payload;
-      state.days = getUpdatedDays(state.days, newStartDate);
-      state.startDate = newStartDate;
     },
     toggleGlobalNonWorkingDay: (state, action: PayloadAction<number>) => {
       const index = action.payload;
@@ -102,10 +122,18 @@ const roomSlice = createSlice({
       })
       .addCase(setDaysLength.fulfilled, (state, action) => {
         state.days = action.payload.days;
+      })
+      .addCase(setStartDate.fulfilled, (state, action) => {
+        const room = action.payload;
+        const startDate = room.days.sort((a, b) =>
+          new Date(a.date) < new Date(b.date) ? -1 : 1
+        )[0].date;
+        state.days = room.days;
+        state.startDate = startDate;
       }),
 });
 
-export const { setRoomId, clearRoom, setStartDate, toggleGlobalNonWorkingDay } =
+export const { setRoomId, clearRoom, toggleGlobalNonWorkingDay } =
   roomSlice.actions;
 
 export const roomReducer = roomSlice.reducer;
