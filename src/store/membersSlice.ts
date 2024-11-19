@@ -24,8 +24,8 @@ export const addMember = createAsyncThunk(
   'members/addMember',
   async ({ id, displayName }: AddMemberPayload, { getState }) => {
     const state = getState() as AppState;
-    const roomId = state.rooms.id ?? '';
-    const days = state.rooms.days;
+    const roomId = state.room.id ?? '';
+    const days = state.room.days;
     const member: Member = {
       id,
       displayName,

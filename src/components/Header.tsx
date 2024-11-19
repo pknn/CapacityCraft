@@ -35,7 +35,7 @@ const Header = ({ roomId, displayName }: Props) => {
 };
 
 const mapStateToProps = (state: AppState): Props => ({
-  roomId: state.rooms.id,
+  roomId: state.room.id,
   displayName: state.user.displayName,
 });
 

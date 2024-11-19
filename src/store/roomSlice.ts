@@ -14,7 +14,7 @@ type RoomState = {
 };
 
 export const createRoom = createAsyncThunk(
-  'rooms/createRoom',
+  'room/createRoom',
   async (roomId: string) => {
     await roomService.createRoom(roomId);
     return roomId;
@@ -22,7 +22,7 @@ export const createRoom = createAsyncThunk(
 );
 
 export const syncDown = createAsyncThunk(
-  'rooms/syncDown',
+  'room/syncDown',
   async (roomId: string) => {
     const room = await roomService.getRoom(roomId);
 
@@ -31,20 +31,20 @@ export const syncDown = createAsyncThunk(
 );
 
 export const setDaysLength = createAsyncThunk(
-  'rooms/setRoomLength',
+  'room/setRoomLength',
   async (newLength: number, { getState }) => {
     const state = getState() as AppState;
-    const roomId = state.rooms.id ?? '';
+    const roomId = state.room.id ?? '';
     const newDays = generateDays(
-      state.rooms.startDate,
-      state.rooms.days,
+      state.room.startDate,
+      state.room.days,
       newLength
     );
 
     const membersWithNewDays = state.members.ids.map((id): Member => {
       const member = state.members.entities[id];
       const updatedDays = generateDays(
-        state.rooms.startDate,
+        state.room.startDate,
         member.days,
         newLength
       );
@@ -65,11 +65,11 @@ export const setDaysLength = createAsyncThunk(
 );
 
 export const setStartDate = createAsyncThunk(
-  'rooms/setStartDate',
+  'room/setStartDate',
   async (newStartDate: string, { getState }) => {
     const state = getState() as AppState;
-    const roomId = state.rooms.id ?? '';
-    const updatedDays = getUpdatedDays(state.rooms.days, newStartDate);
+    const roomId = state.room.id ?? '';
+    const updatedDays = getUpdatedDays(state.room.days, newStartDate);
     const membersWithUpdatedDays = state.members.ids.map((id): Member => {
       const member = state.members.entities[id];
       const updatedDays = getUpdatedDays(member.days, newStartDate);
@@ -96,7 +96,7 @@ const initialState: RoomState = {
 };
 
 const roomSlice = createSlice({
-  name: 'rooms',
+  name: 'room',
   initialState,
   reducers: {
     setRoomId: (state, action: PayloadAction<string>) => {

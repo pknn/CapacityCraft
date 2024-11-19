@@ -54,7 +54,7 @@ const MemberCalendar = ({
 };
 
 const mapStateToProps = (state: AppState): StateBindings => ({
-  globalDays: state.rooms.days,
+  globalDays: state.room.days,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({

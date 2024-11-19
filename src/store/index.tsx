@@ -8,7 +8,7 @@ import historyMiddleware from './historyMiddleware';
 
 const store = configureStore({
   reducer: {
-    rooms: roomReducer,
+    room: roomReducer,
     members: membersReducer,
     user: userReducer,
   },
