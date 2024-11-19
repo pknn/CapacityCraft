@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Button from '../components/core/Button';
 import Input from '../components/core/Input';
 import Separator from '../components/core/Separator';
-import genId from '../util/genId';
+import { genRoomId } from '../util/genId';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { AppDispatch } from '../store';
@@ -30,7 +30,7 @@ const Home = ({ createRoom, setRoomId, clearRoom, clearUser }: Props) => {
   }, [clearUser, clearRoom]);
 
   const handleStartPlanning = () => {
-    const id = genId();
+    const id = genRoomId();
     createRoom(id);
     navigate(`/app/${id}`);
   };

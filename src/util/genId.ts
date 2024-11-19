@@ -18,4 +18,17 @@ const genId = () => {
   return newId;
 };
 
-export default genId;
+export const genRoomId = () => genId();
+
+export const genUserId = (roomId: string) => {
+  const userIdFromStorage = localStorage.getItem(`userId:${roomId}`);
+  if (userIdFromStorage) {
+    return userIdFromStorage;
+  }
+
+  const newId = genId();
+
+  localStorage.setItem(`userId:${roomId}`, newId);
+
+  return newId;
+};

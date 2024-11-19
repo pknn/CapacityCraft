@@ -2,16 +2,18 @@ import { useState } from 'react';
 import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../store';
 import { setUser } from '../store/userSlice';
-import genId from '../util/genId';
+import { genUserId } from '../util/genId';
 import { addMember } from '../store/membersSlice';
 import Button from './core/Button';
 import Input from './core/Input';
 import { roomSelector } from '../store/roomSlice';
 import { Day } from '../types/Day';
 import { syncUp } from '../store/dataThunkActions';
+import roomService from '../services/roomService';
 
 type StateBindings = {
   displayName: string | undefined;
+  roomId: string;
   days: Day[];
 };
 
@@ -25,6 +27,7 @@ type Props = StateBindings & ActionBindings;
 
 const UserOverlay = ({
   displayName,
+  roomId,
   days,
   setUser,
   addMember,
@@ -45,7 +48,7 @@ const UserOverlay = ({
     }
 
     setShouldDisplay(false);
-    const id = genId();
+    const id = genUserId(roomId);
     setUser(id, value);
     addMember(id, value, days);
     syncUp();
@@ -76,6 +79,7 @@ const UserOverlay = ({
 
 const mapStateToProps = (state: AppState): StateBindings => ({
   displayName: state.user.displayName,
+  roomId: roomSelector.value(state).id ?? '',
   days: roomSelector.value(state).days,
 });
 
