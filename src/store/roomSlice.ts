@@ -13,6 +13,14 @@ type RoomState = {
   days: Day[];
 };
 
+export const createRoom = createAsyncThunk(
+  'rooms/createRoom',
+  async (roomId: string) => {
+    await roomService.createRoom(roomId);
+    return roomId;
+  }
+);
+
 export const fetchRoomAndSet = createAsyncThunk(
   'rooms/fetchRoomAndSet',
   async (roomId: string) => {
@@ -130,6 +138,10 @@ const roomSlice = createSlice({
         )[0].date;
         state.days = room.days;
         state.startDate = startDate;
+      })
+      .addCase(createRoom.fulfilled, (state, action) => {
+        const roomId = action.payload;
+        state.id = roomId;
       }),
 });
 
