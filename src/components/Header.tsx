@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import pushToClipboard from '../util/pushToClipboard';
 import { AppState } from '../store';
 import Logo from './Logo';
+import { roomSelector } from '../store/roomSlice';
 
 type Props = {
   roomId: string | undefined;
@@ -35,7 +36,7 @@ const Header = ({ roomId, displayName }: Props) => {
 };
 
 const mapStateToProps = (state: AppState): Props => ({
-  roomId: state.room.id,
+  roomId: roomSelector.value(state).id,
   displayName: state.user.displayName,
 });
 

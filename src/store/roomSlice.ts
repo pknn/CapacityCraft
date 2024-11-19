@@ -7,12 +7,19 @@ import { AppState } from '.';
 import { Member } from '../types/Member';
 import { Room } from '../types/Room';
 import getStartDate from '../util/getStartDate';
+import createUndoableAdapter from './utils/createUndoableAdapter';
 
 type RoomState = {
   id: string | undefined;
   startDate: string;
   days: Day[];
 };
+
+const roomUndoableAdapter = createUndoableAdapter<RoomState>({
+  id: undefined,
+  startDate: formatDateInput(new Date()),
+  days: generateDays(formatDateInput(new Date()), [], 9),
+});
 
 export const createRoom = createAsyncThunk(
   'room/createRoom',
@@ -35,7 +42,7 @@ export const syncRoomUp = createAsyncThunk(
   'room/syncUp',
   async (_, { getState }) => {
     const state = getState() as AppState;
-    const roomState = state.room;
+    const roomState = roomSelector.value(state);
     const roomId = roomState.id ?? '';
 
     const roomUpdate: Partial<Room> = {
@@ -47,46 +54,13 @@ export const syncRoomUp = createAsyncThunk(
   }
 );
 
-// export const setDaysLength = createAsyncThunk(
-//   'room/setRoomLength',
-//   async (newLength: number, { getState }) => {
-//     const state = getState() as AppState;
-//     const roomId = state.room.id ?? '';
-//     const newDays = generateDays(
-//       state.room.startDate,
-//       state.room.days,
-//       newLength
-//     );
-
-//     const membersWithNewDays = state.members.ids.map((id): Member => {
-//       const member = state.members.entities[id];
-//       const updatedDays = generateDays(
-//         state.room.startDate,
-//         member.days,
-//         newLength
-//       );
-
-//       return {
-//         ...member,
-//         days: updatedDays,
-//       };
-//     });
-
-//     const roomUpdate: Partial<Room> = {
-//       days: newDays,
-//       members: membersWithNewDays,
-//     };
-
-//     return roomService.updateRoom(roomId, roomUpdate);
-//   }
-// );
-
 export const setStartDate = createAsyncThunk(
   'room/setStartDate',
   async (newStartDate: string, { getState }) => {
     const state = getState() as AppState;
-    const roomId = state.room.id ?? '';
-    const updatedDays = getUpdatedDays(state.room.days, newStartDate);
+    const room = roomSelector.value(state);
+    const roomId = room.id ?? '';
+    const updatedDays = getUpdatedDays(room.days, newStartDate);
     const membersWithUpdatedDays = state.members.ids.map((id): Member => {
       const member = state.members.entities[id];
       const updatedDays = getUpdatedDays(member.days, newStartDate);
@@ -106,39 +80,45 @@ export const setStartDate = createAsyncThunk(
   }
 );
 
-const initialState: RoomState = {
-  id: undefined,
-  startDate: formatDateInput(new Date()),
-  days: generateDays(formatDateInput(new Date()), [], 9),
-};
-
 const roomSlice = createSlice({
   name: 'room',
-  initialState,
+  initialState: roomUndoableAdapter.getInitialState(),
   reducers: {
     setDaysLength: (
       state,
       action: PayloadAction<{ newLength: number; startDate: string }>
     ) => {
       const { newLength, startDate } = action.payload;
-      const updatedDays = generateDays(startDate, state.days, newLength);
-      state.days = updatedDays;
+      const updatedDays = generateDays(
+        startDate,
+        state.current.days,
+        newLength
+      );
+      roomUndoableAdapter.update(state, {
+        days: updatedDays,
+      });
     },
     setRoomId: (state, action: PayloadAction<string>) => {
-      state.id = action.payload;
+      roomUndoableAdapter.update(state, {
+        id: action.payload,
+      });
     },
     clearRoom: (state) => {
-      state.id = undefined;
-      state.startDate = formatDateInput(new Date());
-      state.days = generateDays(state.startDate, [], 9);
+      roomUndoableAdapter.update(state, {
+        id: undefined,
+        startDate: formatDateInput(new Date()),
+        days: generateDays(state.current.startDate, [], 9),
+      });
     },
     toggleGlobalNonWorkingDay: (state, action: PayloadAction<number>) => {
-      const index = action.payload;
-      const selectedDay = state.days[index];
-      state.days[index] = {
-        ...selectedDay,
-        isNonWorkingDay: !selectedDay.isNonWorkingDay,
-      };
+      const dayIndex = action.payload;
+      roomUndoableAdapter.update(state, {
+        days: state.current.days.map((day, index) =>
+          index === dayIndex
+            ? { ...day, isNonWorkingDay: !day.isNonWorkingDay }
+            : day
+        ),
+      });
     },
   },
   extraReducers: (builder) =>
@@ -149,30 +129,45 @@ const roomSlice = createSlice({
           new Date(a.date) < new Date(b.date) ? -1 : 1
         )[0].date;
 
-        state.id = room.id;
-        state.days = room.days;
-        state.startDate = startDate;
+        roomUndoableAdapter.update(state, {
+          id: room.id,
+          days: room.days,
+          startDate,
+        });
+        roomUndoableAdapter.commit(state);
       })
       .addCase(setStartDate.fulfilled, (state, action) => {
         const room = action.payload;
         const startDate = [...room.days].sort((a, b) =>
           new Date(a.date) < new Date(b.date) ? -1 : 1
         )[0].date;
-        state.days = room.days;
-        state.startDate = startDate;
+
+        roomUndoableAdapter.update(state, {
+          days: room.days,
+          startDate: startDate,
+        });
+        roomUndoableAdapter.commit(state);
       })
       .addCase(createRoom.fulfilled, (state, action) => {
         const roomId = action.payload;
-        state.id = roomId;
+        roomUndoableAdapter.update(state, {
+          id: roomId,
+        });
+        roomUndoableAdapter.commit(state);
       })
       .addCase(syncRoomUp.fulfilled, (state, action) => {
         const { id, days } = action.payload;
-        state.id = id;
-        state.days = days;
-
         const startDate = getStartDate(days);
 
-        state.startDate = startDate;
+        roomUndoableAdapter.update(state, {
+          id,
+          days,
+          startDate,
+        });
+        roomUndoableAdapter.commit(state);
+      })
+      .addCase(syncRoomUp.rejected, (state) => {
+        roomUndoableAdapter.rollback(state);
       }),
 });
 
@@ -182,5 +177,9 @@ export const {
   clearRoom,
   toggleGlobalNonWorkingDay,
 } = roomSlice.actions;
+
+export const roomSelector = roomUndoableAdapter.getSelectors(
+  (state: AppState) => state.room
+);
 
 export const roomReducer = roomSlice.reducer;

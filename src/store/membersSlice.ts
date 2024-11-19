@@ -11,6 +11,7 @@ import {
   setDaysLength,
   setStartDate,
   toggleGlobalNonWorkingDay,
+  roomSelector,
 } from './roomSlice';
 import { AppState } from '.';
 import roomService from '../services/roomService';
@@ -24,8 +25,8 @@ export const addMember = createAsyncThunk(
   'members/addMember',
   async ({ id, displayName }: AddMemberPayload, { getState }) => {
     const state = getState() as AppState;
-    const roomId = state.room.id ?? '';
-    const days = state.room.days;
+    const roomId = roomSelector.value(state).id ?? '';
+    const days = roomSelector.value(state).days;
     const member: Member = {
       id,
       displayName,

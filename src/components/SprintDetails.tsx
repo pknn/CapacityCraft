@@ -1,6 +1,11 @@
 import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../store';
-import { setDaysLength, setStartDate, syncRoomUp } from '../store/roomSlice';
+import {
+  roomSelector,
+  setDaysLength,
+  setStartDate,
+  syncRoomUp,
+} from '../store/roomSlice';
 import Input from './core/Input';
 import SprintSummary from './SprintSummary';
 
@@ -59,8 +64,8 @@ const SprintDetails = ({
 };
 
 const mapStateToProps = (state: AppState): StateBindings => ({
-  length: state.room.days.length,
-  startDate: state.room.startDate,
+  length: roomSelector.value(state).days.length,
+  startDate: roomSelector.value(state).startDate,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({

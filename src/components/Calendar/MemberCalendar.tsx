@@ -6,6 +6,7 @@ import { Member } from '../../types/Member';
 import { Day } from '../../types/Day';
 import { toggleMemberNonWorkingDay } from '../../store/membersSlice';
 import MemberCalendarItem from './MemberCalendarItem';
+import { roomSelector } from '../../store/roomSlice';
 
 type OwnProps = {
   member: Member;
@@ -54,7 +55,7 @@ const MemberCalendar = ({
 };
 
 const mapStateToProps = (state: AppState): StateBindings => ({
-  globalDays: state.room.days,
+  globalDays: roomSelector.value(state).days,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
