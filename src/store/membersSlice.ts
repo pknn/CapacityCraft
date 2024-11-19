@@ -57,6 +57,7 @@ const membersSlice = createSlice({
           generateDays(formatDateInput(new Date()), [], daysLength ?? 0),
       });
     },
+    clearMember: (state) => memberAdapter.removeAll(state),
   },
   extraReducers: (builder) => {
     builder
@@ -112,7 +113,8 @@ const membersSlice = createSlice({
   },
 });
 
-export const { toggleMemberNonWorkingDay, addMember } = membersSlice.actions;
+export const { toggleMemberNonWorkingDay, addMember, clearMember } =
+  membersSlice.actions;
 export const membersReducer = membersSlice.reducer;
 export const membersSelector = memberAdapter.getSelectors(
   (state: AppState) => state.members

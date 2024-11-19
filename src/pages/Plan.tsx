@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { useEffect } from 'react';
 import Calendar from '../components/Calendar/Calendar';
 import Legend from '../components/Calendar/Legend';
+import { clearMember } from '../store/membersSlice';
 
 type StateBindings = {
   roomId: string | undefined;
@@ -14,11 +15,12 @@ type StateBindings = {
 
 type ActionBindings = {
   setRoomId: (id: string) => void;
+  clearMembers: () => void;
 };
 
 type Props = StateBindings & ActionBindings;
 
-const Plan = ({ roomId, setRoomId }: Props) => {
+const Plan = ({ roomId, setRoomId, clearMembers }: Props) => {
   const navigate = useNavigate();
   const { roomId: roomIdFromParam } = useParams();
 
@@ -26,10 +28,17 @@ const Plan = ({ roomId, setRoomId }: Props) => {
     if (!roomIdFromParam) {
       navigate('/');
     }
+  }, [navigate, roomIdFromParam]);
+
+  useEffect(() => {
     if (!roomId) {
       setRoomId(roomIdFromParam ?? '');
     }
-  }, [roomId, setRoomId, roomIdFromParam, navigate]);
+  }, [roomId, roomIdFromParam, setRoomId]);
+
+  useEffect(() => {
+    clearMembers();
+  }, [clearMembers]);
 
   return (
     <>
@@ -47,6 +56,7 @@ const mapStateToProps = (state: AppState): StateBindings => ({
 
 const mapDispatchToProsp = (dispatch: AppDispatch): ActionBindings => ({
   setRoomId: (id: string) => dispatch(setRoomId(id)),
+  clearMembers: () => dispatch(clearMember()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProsp)(Plan);
