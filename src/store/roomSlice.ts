@@ -1,13 +1,23 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import formatDateInput from '../util/formatDateInput';
 import { generateDays, getUpdatedDays } from '../util/dayGenerator';
 import { Day } from '../types/Day';
+import roomService from '../services/roomService';
 
 type RoomState = {
   id: string | undefined;
   startDate: string;
   days: Day[];
 };
+
+export const fetchRoomAndSet = createAsyncThunk(
+  'rooms/fetchRoomAndSet',
+  async (roomId: string) => {
+    const room = await roomService.getRoom(roomId);
+
+    return room;
+  }
+);
 
 const initialState: RoomState = {
   id: undefined,
@@ -47,6 +57,20 @@ const roomSlice = createSlice({
       };
     },
   },
+  extraReducers: (builder) =>
+    builder.addCase(fetchRoomAndSet.fulfilled, (state, action) => {
+      const room = action.payload;
+      console.log(room.days.map((v) => new Date(v.date).getUTCSeconds()));
+      const startDate = room.days.sort((a, b) =>
+        new Date(a.date) < new Date(b.date) ? -1 : 1
+      )[0].date;
+
+      console.log(startDate);
+
+      state.id = room.id;
+      state.days = room.days;
+      state.startDate = startDate;
+    }),
 });
 
 export const {
