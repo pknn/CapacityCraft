@@ -1,4 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createEntityAdapter,
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 import { Member } from '../types/Member';
 import { generateDays, getUpdatedDays } from '../util/dayGenerator';
 import formatDateInput from '../util/formatDateInput';
@@ -8,41 +12,32 @@ import {
   toggleGlobalNonWorkingDay,
 } from './roomSlice';
 import { Day } from '../types/Day';
+import { AppState } from '.';
 
-type MembersState = Record<string, Member>;
-
-const initialState: MembersState = {
-  alice: {
-    displayName: 'Alice',
-    days: generateDays(formatDateInput(new Date()), [], 9),
-  },
-  bob: {
-    displayName: 'Bob',
-    days: generateDays(formatDateInput(new Date()), [], 9),
-  },
-  charlie: {
-    displayName: 'Charlie',
-    days: generateDays(formatDateInput(new Date()), [], 9),
-  },
-};
+const memberAdapter = createEntityAdapter<Member, Member['id']>({
+  selectId: (member: Member) => member.id,
+});
 
 const membersSlice = createSlice({
   name: 'members',
-  initialState,
+  initialState: memberAdapter.getInitialState(),
   reducers: {
     toggleMemberNonWorkingDay: (
       state,
-      action: PayloadAction<{ id: string; day: number }>
+      action: PayloadAction<{ id: string; dayIndex: number }>
     ) => {
-      const { id, day } = action.payload;
-      const member = state[id];
-      const memberDay = member.days[day];
-      if (memberDay) {
-        member.days[day] = {
-          ...memberDay,
-          isNonWorkingDay: !memberDay.isNonWorkingDay,
-        };
-      }
+      const { id, dayIndex } = action.payload;
+
+      memberAdapter.updateOne(state, {
+        id,
+        changes: {
+          days: state.entities[id].days.map((day, index) =>
+            index === dayIndex
+              ? { ...day, isNonWorkingDay: !day.isNonWorkingDay }
+              : day
+          ),
+        },
+      });
     },
     addMember: (
       state,
@@ -54,12 +49,13 @@ const membersSlice = createSlice({
       }>
     ) => {
       const { id, displayName, days, daysLength } = action.payload;
-      state[id] = {
+      memberAdapter.addOne(state, {
+        id,
         displayName,
         days:
           days ??
           generateDays(formatDateInput(new Date()), [], daysLength ?? 0),
-      };
+      });
     },
   },
   extraReducers: (builder) => {
@@ -67,35 +63,57 @@ const membersSlice = createSlice({
       .addCase(setLength, (state, action) => {
         const newLength = action.payload;
         if (newLength > 0) {
-          Object.values(state).forEach((member) => {
-            member.days = generateDays(
-              formatDateInput(new Date()),
-              member.days,
-              newLength
-            );
-          });
+          memberAdapter.updateMany(
+            state,
+            state.ids.map((id) => ({
+              id,
+              changes: {
+                days: generateDays(
+                  formatDateInput(new Date()),
+                  state.entities[id].days,
+                  newLength
+                ),
+              },
+            }))
+          );
         }
       })
       .addCase(setStartDate, (state, action) => {
         const newStartDate = action.payload;
-        Object.values(state).forEach((member) => {
-          member.days = getUpdatedDays(member.days, newStartDate);
-        });
+        memberAdapter.updateMany(
+          state,
+          state.ids.map((id) => ({
+            id,
+            changes: {
+              days: getUpdatedDays(state.entities[id].days, newStartDate),
+            },
+          }))
+        );
       })
       .addCase(toggleGlobalNonWorkingDay, (state, action) => {
-        const index = action.payload;
-        Object.values(state).forEach((member) => {
-          const memberDay = member.days[index];
-          if (memberDay) {
-            member.days[index] = {
-              ...memberDay,
-              isNonWorkingDay: !memberDay.isNonWorkingDay,
+        const dayIndex = action.payload;
+        memberAdapter.updateMany(
+          state,
+          state.ids.map((id) => {
+            const memberDay = state.entities[id].days;
+            return {
+              id,
+              changes: {
+                days: memberDay.map((day, index) =>
+                  index === dayIndex
+                    ? { ...day, isNonWorkingDay: !day.isNonWorkingDay }
+                    : day
+                ),
+              },
             };
-          }
-        });
+          })
+        );
       });
   },
 });
 
 export const { toggleMemberNonWorkingDay, addMember } = membersSlice.actions;
 export const membersReducer = membersSlice.reducer;
+export const membersSelector = memberAdapter.getSelectors(
+  (state: AppState) => state.members
+);

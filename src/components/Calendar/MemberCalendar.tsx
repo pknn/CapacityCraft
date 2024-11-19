@@ -8,7 +8,6 @@ import { Day } from '../../types/Day';
 import { toggleMemberNonWorkingDay } from '../../store/membersSlice';
 
 type OwnProps = {
-  id: string;
   member: Member;
 };
 
@@ -23,7 +22,6 @@ type ActionBindings = {
 type Props = OwnProps & StateBindings & ActionBindings;
 
 const MemberCalendar = ({
-  id,
   member,
   globalDays,
   toggleMemberNonWorkingDay,
@@ -37,7 +35,7 @@ const MemberCalendar = ({
   );
 
   const handleClick = (day: number) => () => {
-    toggleMemberNonWorkingDay(id, day);
+    toggleMemberNonWorkingDay(member.id, day);
   };
 
   return (
@@ -60,8 +58,8 @@ const mapStateToProps = (state: AppState): StateBindings => ({
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
-  toggleMemberNonWorkingDay: (id, day) =>
-    dispatch(toggleMemberNonWorkingDay({ id, day })),
+  toggleMemberNonWorkingDay: (id, dayIndex) =>
+    dispatch(toggleMemberNonWorkingDay({ id, dayIndex })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MemberCalendar);
