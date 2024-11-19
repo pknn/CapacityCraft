@@ -2,13 +2,11 @@ import {
   createAsyncThunk,
   createEntityAdapter,
   createSlice,
-  GetThunkAPI,
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { Member } from '../types/Member';
 import { generateDays, getUpdatedDays } from '../util/dayGenerator';
 import formatDateInput from '../util/formatDateInput';
-import { Day } from '../types/Day';
 import {
   fetchRoomAndSet,
   setLength,
@@ -21,14 +19,14 @@ import roomService from '../services/roomService';
 type AddMemberPayload = {
   id: string;
   displayName: string;
-  days: Day[];
 };
 
 export const addMember = createAsyncThunk(
   'members/addMember',
-  async ({ id, displayName, days }: AddMemberPayload, { getState }) => {
+  async ({ id, displayName }: AddMemberPayload, { getState }) => {
     const state = getState() as AppState;
     const roomId = state.rooms.id ?? '';
+    const days = state.rooms.days;
     const member: Member = {
       id,
       displayName,

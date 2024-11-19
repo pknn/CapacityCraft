@@ -6,21 +6,19 @@ import genId from '../util/genId';
 import { addMember } from '../store/membersSlice';
 import Button from './core/Button';
 import Input from './core/Input';
-import { Day } from '../types/Day';
 
 type StateBindings = {
   displayName: string | undefined;
-  days: Day[];
 };
 
 type ActionBindings = {
   setUser: (id: string, displayName: string) => void;
-  addMember: (id: string, displayName: string, days: Day[]) => void;
+  addMember: (id: string, displayName: string) => void;
 };
 
 type Props = StateBindings & ActionBindings;
 
-const UserOverlay = ({ displayName, days, setUser, addMember }: Props) => {
+const UserOverlay = ({ displayName, setUser, addMember }: Props) => {
   const [value, setValue] = useState(displayName);
   const [shouldDisplay, setShouldDisplay] = useState(
     !displayName || displayName.length <= 0
@@ -38,7 +36,7 @@ const UserOverlay = ({ displayName, days, setUser, addMember }: Props) => {
     setShouldDisplay(false);
     const id = genId();
     setUser(id, value);
-    addMember(id, value, days);
+    addMember(id, value);
   };
 
   return (
@@ -66,14 +64,13 @@ const UserOverlay = ({ displayName, days, setUser, addMember }: Props) => {
 
 const mapStateToProps = (state: AppState): StateBindings => ({
   displayName: state.user.displayName,
-  days: state.rooms.days,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   setUser: (id: string, displayName: string) =>
     dispatch(setUser({ id, displayName })),
-  addMember: (id: string, displayName: string, days: Day[]) =>
-    dispatch(addMember({ id, displayName, days })),
+  addMember: (id: string, displayName: string) =>
+    dispatch(addMember({ id, displayName })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserOverlay);
