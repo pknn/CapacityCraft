@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Member } from '../types/Member';
 import { generateDays, getUpdatedDays } from '../util/dayGenerator';
 import {
-  syncRoomDown,
   setDaysLength,
   setStartDate,
   toggleGlobalNonWorkingDay,
@@ -11,6 +10,7 @@ import {
 import { AppState } from '.';
 import roomService from '../services/roomService';
 import createUndoableEntityAdapter from './utils/createUndoableEntityAdapter';
+import { syncRoomDown, syncRoomUp } from './dataThunkActions';
 
 type AddMemberPayload = {
   id: string;
@@ -128,6 +128,12 @@ const membersSlice = createSlice({
         memberUndoableAdapter.commit(state);
       })
       .addCase(syncRoomDown.rejected, (state) => {
+        memberUndoableAdapter.rollback(state);
+      })
+      .addCase(syncRoomUp.fulfilled, (state) => {
+        memberUndoableAdapter.commit(state);
+      })
+      .addCase(syncRoomUp.rejected, (state) => {
         memberUndoableAdapter.rollback(state);
       });
   },

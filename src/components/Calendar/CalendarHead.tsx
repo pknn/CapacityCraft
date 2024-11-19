@@ -1,12 +1,9 @@
 import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../../store';
-import {
-  roomSelector,
-  syncRoomUp,
-  toggleGlobalNonWorkingDay,
-} from '../../store/roomSlice';
+import { roomSelector, toggleGlobalNonWorkingDay } from '../../store/roomSlice';
 import { Day } from '../../types/Day';
 import CalendarHeadItem from './CalendarHeadItem';
+import { syncRoomUp } from '../../store/dataThunkActions';
 
 type StateBindings = {
   days: Day[];

@@ -7,6 +7,7 @@ import { AppState } from '.';
 import { Room } from '../types/Room';
 import getStartDate from '../util/getStartDate';
 import createUndoableAdapter from './utils/createUndoableAdapter';
+import { syncRoomDown, syncRoomUp } from './dataThunkActions';
 
 type RoomState = {
   id: string | undefined;
@@ -25,31 +26,6 @@ export const createRoom = createAsyncThunk(
   async (roomId: string) => {
     await roomService.createRoom(roomId);
     return roomId;
-  }
-);
-
-export const syncRoomDown = createAsyncThunk(
-  'room/syncDown',
-  async (roomId: string) => {
-    const room = await roomService.getRoom(roomId);
-
-    return room;
-  }
-);
-
-export const syncRoomUp = createAsyncThunk(
-  'room/syncUp',
-  async (_, { getState }) => {
-    const state = getState() as AppState;
-    const roomState = roomSelector.value(state);
-    const roomId = roomState.id ?? '';
-
-    const roomUpdate: Partial<Room> = {
-      id: roomId,
-      days: roomState.days,
-    };
-
-    return roomService.updateRoom(roomId, roomUpdate);
   }
 );
 

@@ -1,13 +1,9 @@
 import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../store';
-import {
-  roomSelector,
-  setDaysLength,
-  setStartDate,
-  syncRoomUp,
-} from '../store/roomSlice';
+import { roomSelector, setDaysLength, setStartDate } from '../store/roomSlice';
 import Input from './core/Input';
 import SprintSummary from './SprintSummary';
+import { syncRoomUp } from '../store/dataThunkActions';
 
 type StateBindings = {
   length: number;

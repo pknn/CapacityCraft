@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import SprintDetails from '../components/SprintDetails';
 import UserOverlay from '../components/UserOverlay';
 import { AppDispatch } from '../store';
-import { syncRoomDown } from '../store/roomSlice';
 import Calendar from '../components/Calendar/Calendar';
 import Legend from '../components/Calendar/Legend';
 import { clearMember } from '../store/membersSlice';
+import { syncRoomDown } from '../store/dataThunkActions';
 
 type ActionBindings = {
   syncDown: (id: string) => void;
