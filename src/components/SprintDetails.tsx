@@ -1,8 +1,8 @@
-import Input from './core/Input';
-import { AppDispatch, AppState } from '../store';
 import { connect } from 'react-redux';
-import SprintSummary from './SprintSummary';
+import { AppDispatch, AppState } from '../store';
 import { setLength, setStartDate } from '../store/roomSlice';
+import Input from './core/Input';
+import SprintSummary from './SprintSummary';
 
 type StateBindings = {
   length: number;

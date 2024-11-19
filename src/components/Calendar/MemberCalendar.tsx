@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
-import { AppDispatch, AppState } from '../../store';
-import MemberCalendarItem from './MemberCalendarItem';
-import zip from '../../util/zip';
 import { useMemo } from 'react';
+import zip from '../../util/zip';
+import { AppDispatch, AppState } from '../../store';
 import { Member } from '../../types/Member';
 import { Day } from '../../types/Day';
 import { toggleMemberNonWorkingDay } from '../../store/membersSlice';
+import MemberCalendarItem from './MemberCalendarItem';
 
 type OwnProps = {
   member: Member;

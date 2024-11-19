@@ -1,11 +1,11 @@
-import Input from './core/Input';
 import { useState } from 'react';
-import Button from './core/Button';
+import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../store';
 import { setUser } from '../store/userSlice';
-import { connect } from 'react-redux';
 import genId from '../util/genId';
 import { addMember } from '../store/membersSlice';
+import Button from './core/Button';
+import Input from './core/Input';
 
 type StateBindings = {
   displayName: string | undefined;

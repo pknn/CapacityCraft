@@ -6,12 +6,12 @@ import {
 import { Member } from '../types/Member';
 import { generateDays, getUpdatedDays } from '../util/dayGenerator';
 import formatDateInput from '../util/formatDateInput';
+import { Day } from '../types/Day';
 import {
   setLength,
   setStartDate,
   toggleGlobalNonWorkingDay,
 } from './roomSlice';
-import { Day } from '../types/Day';
 import { AppState } from '.';
 
 const memberAdapter = createEntityAdapter<Member, Member['id']>({

@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
-import CalendarHeadItem from './CalendarHeadItem';
 import { AppDispatch, AppState } from '../../store';
 import { toggleGlobalNonWorkingDay } from '../../store/roomSlice';
 import { Day } from '../../types/Day';
+import CalendarHeadItem from './CalendarHeadItem';
 
 type StateBindings = {
   days: Day[];

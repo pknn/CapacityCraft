@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import { AppState } from '../../store';
-import MemberCalendar from './MemberCalendar';
 import { Member } from '../../types/Member';
 import { membersSelector } from '../../store/membersSlice';
+import MemberCalendar from './MemberCalendar';
 
 type StateBindings = {
   members: Member[];
