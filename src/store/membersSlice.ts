@@ -115,10 +115,18 @@ const membersSlice = createSlice({
       .addCase(addMember.fulfilled, (state, action) => {
         const member = action.payload;
         memberUndoableAdapter.addOne(state, member);
+        memberUndoableAdapter.commit(state);
+      })
+      .addCase(addMember.rejected, (state) => {
+        memberUndoableAdapter.rollback(state);
       })
       .addCase(syncDown.fulfilled, (state, action) => {
         const room = action.payload;
         memberUndoableAdapter.setAll(state, room.members);
+        memberUndoableAdapter.commit(state);
+      })
+      .addCase(syncDown.rejected, (state) => {
+        memberUndoableAdapter.rollback(state);
       });
   },
 });
