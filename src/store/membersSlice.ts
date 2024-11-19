@@ -2,6 +2,7 @@ import {
   createAsyncThunk,
   createEntityAdapter,
   createSlice,
+  GetThunkAPI,
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { Member } from '../types/Member';
@@ -20,13 +21,14 @@ import roomService from '../services/roomService';
 type AddMemberPayload = {
   id: string;
   displayName: string;
-  roomId: string;
   days: Day[];
 };
 
 export const addMember = createAsyncThunk(
   'members/addMember',
-  async ({ id, displayName, roomId, days }: AddMemberPayload) => {
+  async ({ id, displayName, days }: AddMemberPayload, { getState }) => {
+    const state = getState() as AppState;
+    const roomId = state.rooms.id ?? '';
     const member: Member = {
       id,
       displayName,
