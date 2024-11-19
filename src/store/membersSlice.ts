@@ -1,4 +1,5 @@
 import {
+  createAsyncThunk,
   createEntityAdapter,
   createSlice,
   PayloadAction,
@@ -13,6 +14,27 @@ import {
   toggleGlobalNonWorkingDay,
 } from './roomSlice';
 import { AppState } from '.';
+import roomService from '../services/roomService';
+
+type AddMemberPayload = {
+  id: string;
+  displayName: string;
+  roomId: string;
+  days: Day[];
+};
+
+export const addMember = createAsyncThunk(
+  'members/addMember',
+  async ({ id, displayName, roomId, days }: AddMemberPayload) => {
+    const member: Member = {
+      id,
+      displayName,
+      days,
+    };
+    await roomService.addMember(roomId, member);
+    return member;
+  }
+);
 
 const memberAdapter = createEntityAdapter<Member, Member['id']>({
   selectId: (member: Member) => member.id,
@@ -37,24 +59,6 @@ const membersSlice = createSlice({
               : day
           ),
         },
-      });
-    },
-    addMember: (
-      state,
-      action: PayloadAction<{
-        id: string;
-        displayName: string;
-        days?: Day[];
-        daysLength?: number;
-      }>
-    ) => {
-      const { id, displayName, days, daysLength } = action.payload;
-      memberAdapter.addOne(state, {
-        id,
-        displayName,
-        days:
-          days ??
-          generateDays(formatDateInput(new Date()), [], daysLength ?? 0),
       });
     },
     clearMember: (state) => memberAdapter.removeAll(state),
@@ -109,12 +113,15 @@ const membersSlice = createSlice({
             };
           })
         );
+      })
+      .addCase(addMember.fulfilled, (state, action) => {
+        const member = action.payload;
+        memberAdapter.addOne(state, member);
       });
   },
 });
 
-export const { toggleMemberNonWorkingDay, addMember, clearMember } =
-  membersSlice.actions;
+export const { toggleMemberNonWorkingDay, clearMember } = membersSlice.actions;
 export const membersReducer = membersSlice.reducer;
 export const membersSelector = memberAdapter.getSelectors(
   (state: AppState) => state.members

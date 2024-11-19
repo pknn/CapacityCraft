@@ -6,20 +6,33 @@ import genId from '../util/genId';
 import { addMember } from '../store/membersSlice';
 import Button from './core/Button';
 import Input from './core/Input';
+import { Day } from '../types/Day';
 
 type StateBindings = {
   displayName: string | undefined;
-  length: number;
+  days: Day[];
+  roomId: string;
 };
 
 type ActionBindings = {
   setUser: (id: string, displayName: string) => void;
-  addMember: (id: string, displayName: string, length: number) => void;
+  addMember: (
+    id: string,
+    displayName: string,
+    roomId: string,
+    days: Day[]
+  ) => void;
 };
 
 type Props = StateBindings & ActionBindings;
 
-const UserOverlay = ({ displayName, length, setUser, addMember }: Props) => {
+const UserOverlay = ({
+  displayName,
+  days,
+  roomId,
+  setUser,
+  addMember,
+}: Props) => {
   const [value, setValue] = useState(displayName);
   const [shouldDisplay, setShouldDisplay] = useState(
     !displayName || displayName.length <= 0
@@ -37,7 +50,7 @@ const UserOverlay = ({ displayName, length, setUser, addMember }: Props) => {
     setShouldDisplay(false);
     const id = genId();
     setUser(id, value);
-    addMember(id, value, length);
+    addMember(id, value, roomId, days);
   };
 
   return (
@@ -65,14 +78,15 @@ const UserOverlay = ({ displayName, length, setUser, addMember }: Props) => {
 
 const mapStateToProps = (state: AppState): StateBindings => ({
   displayName: state.user.displayName,
-  length: state.room.days.length,
+  days: state.room.days,
+  roomId: state.room.id ?? '',
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   setUser: (id: string, displayName: string) =>
     dispatch(setUser({ id, displayName })),
-  addMember: (id: string, displayName: string, length: number) =>
-    dispatch(addMember({ id, displayName, daysLength: length })),
+  addMember: (id: string, displayName: string, roomId: string, days: Day[]) =>
+    dispatch(addMember({ id, displayName, roomId, days })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserOverlay);
