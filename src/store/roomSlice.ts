@@ -3,6 +3,9 @@ import formatDateInput from '../util/formatDateInput';
 import { generateDays, getUpdatedDays } from '../util/dayGenerator';
 import { Day } from '../types/Day';
 import roomService from '../services/roomService';
+import { AppState } from '.';
+import { Member } from '../types/Member';
+import { Room } from '../types/Room';
 
 type RoomState = {
   id: string | undefined;
@@ -16,6 +19,40 @@ export const fetchRoomAndSet = createAsyncThunk(
     const room = await roomService.getRoom(roomId);
 
     return room;
+  }
+);
+
+export const setDaysLength = createAsyncThunk(
+  'rooms/setRoomLength',
+  async (newLength: number, { getState }) => {
+    const state = getState() as AppState;
+    const roomId = state.rooms.id ?? '';
+    const newDays = generateDays(
+      state.rooms.startDate,
+      state.rooms.days,
+      newLength
+    );
+
+    const membersWithNewDays = state.members.ids.map((id): Member => {
+      const member = state.members.entities[id];
+      const updatedDays = generateDays(
+        state.rooms.startDate,
+        member.days,
+        newLength
+      );
+
+      return {
+        ...member,
+        days: updatedDays,
+      };
+    });
+
+    const roomUpdate: Partial<Room> = {
+      days: newDays,
+      members: membersWithNewDays,
+    };
+
+    return roomService.updateRoom(roomId, roomUpdate);
   }
 );
 
@@ -37,12 +74,6 @@ const roomSlice = createSlice({
       state.startDate = formatDateInput(new Date());
       state.days = generateDays(state.startDate, [], 9);
     },
-    setLength: (state, action: PayloadAction<number>) => {
-      const newLength = action.payload;
-      if (newLength > 0) {
-        state.days = generateDays(state.startDate, state.days, newLength);
-      }
-    },
     setStartDate: (state, action: PayloadAction<string>) => {
       const newStartDate = action.payload;
       state.days = getUpdatedDays(state.days, newStartDate);
@@ -58,24 +89,23 @@ const roomSlice = createSlice({
     },
   },
   extraReducers: (builder) =>
-    builder.addCase(fetchRoomAndSet.fulfilled, (state, action) => {
-      const room = action.payload;
-      const startDate = room.days.sort((a, b) =>
-        new Date(a.date) < new Date(b.date) ? -1 : 1
-      )[0].date;
+    builder
+      .addCase(fetchRoomAndSet.fulfilled, (state, action) => {
+        const room = action.payload;
+        const startDate = room.days.sort((a, b) =>
+          new Date(a.date) < new Date(b.date) ? -1 : 1
+        )[0].date;
 
-      state.id = room.id;
-      state.days = room.days;
-      state.startDate = startDate;
-    }),
+        state.id = room.id;
+        state.days = room.days;
+        state.startDate = startDate;
+      })
+      .addCase(setDaysLength.fulfilled, (state, action) => {
+        state.days = action.payload.days;
+      }),
 });
 
-export const {
-  setRoomId,
-  clearRoom,
-  setLength,
-  setStartDate,
-  toggleGlobalNonWorkingDay,
-} = roomSlice.actions;
+export const { setRoomId, clearRoom, setStartDate, toggleGlobalNonWorkingDay } =
+  roomSlice.actions;
 
 export const roomReducer = roomSlice.reducer;

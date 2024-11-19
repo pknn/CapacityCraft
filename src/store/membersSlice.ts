@@ -5,11 +5,10 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { Member } from '../types/Member';
-import { generateDays, getUpdatedDays } from '../util/dayGenerator';
-import formatDateInput from '../util/formatDateInput';
+import { getUpdatedDays } from '../util/dayGenerator';
 import {
   fetchRoomAndSet,
-  setLength,
+  setDaysLength,
   setStartDate,
   toggleGlobalNonWorkingDay,
 } from './roomSlice';
@@ -66,23 +65,17 @@ const membersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(setLength, (state, action) => {
-        const newLength = action.payload;
-        if (newLength > 0) {
-          memberAdapter.updateMany(
-            state,
-            state.ids.map((id) => ({
-              id,
-              changes: {
-                days: generateDays(
-                  formatDateInput(new Date()),
-                  state.entities[id].days,
-                  newLength
-                ),
-              },
-            }))
-          );
-        }
+      .addCase(setDaysLength.fulfilled, (state, action) => {
+        const members = action.payload.members;
+        memberAdapter.updateMany(
+          state,
+          members.map((member) => ({
+            id: member.id,
+            changes: {
+              days: member.days,
+            },
+          }))
+        );
       })
       .addCase(setStartDate, (state, action) => {
         const newStartDate = action.payload;

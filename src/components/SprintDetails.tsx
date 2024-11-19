@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../store';
-import { setLength, setStartDate } from '../store/roomSlice';
+import { setDaysLength, setStartDate } from '../store/roomSlice';
 import Input from './core/Input';
 import SprintSummary from './SprintSummary';
 
@@ -61,7 +61,7 @@ const mapStateToProps = (state: AppState): StateBindings => ({
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
-  setLength: (length: number) => dispatch(setLength(length)),
+  setLength: (length: number) => dispatch(setDaysLength(length)),
   setStartDate: (startDate: string) => dispatch(setStartDate(startDate)),
 });
 

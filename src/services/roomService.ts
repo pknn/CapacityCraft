@@ -18,6 +18,7 @@ type RoomId = Room['id'];
 type RoomService = {
   createRoom: (roomId: RoomId) => Promise<void>;
   getRoom: (roomId: RoomId) => Promise<Room>;
+  updateRoom: (roomId: RoomId, update: Partial<Room>) => Promise<Room>;
   setDays: (roomId: RoomId, days: Day[]) => Promise<void>;
   addMember: (roomId: RoomId, member: Member) => Promise<void>;
 };
@@ -41,6 +42,17 @@ const roomService: RoomService = {
     const roomReference = getRoomReference(roomId);
     const doc = await getDoc(roomReference);
     return doc.data() as Room;
+  },
+  updateRoom: async (roomId, update) => {
+    const roomReference = getRoomReference(roomId);
+    const room = await roomService.getRoom(roomId);
+
+    const updatedRoom: Room = {
+      ...room,
+      ...update,
+    };
+    await updateDoc(roomReference, updatedRoom);
+    return updatedRoom;
   },
   setDays: async (roomId, days) => {
     const roomReference = getRoomReference(roomId);
