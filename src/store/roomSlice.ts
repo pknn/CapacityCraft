@@ -60,12 +60,9 @@ const roomSlice = createSlice({
   extraReducers: (builder) =>
     builder.addCase(fetchRoomAndSet.fulfilled, (state, action) => {
       const room = action.payload;
-      console.log(room.days.map((v) => new Date(v.date).getUTCSeconds()));
       const startDate = room.days.sort((a, b) =>
         new Date(a.date) < new Date(b.date) ? -1 : 1
       )[0].date;
-
-      console.log(startDate);
 
       state.id = room.id;
       state.days = room.days;

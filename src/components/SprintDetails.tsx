@@ -23,7 +23,6 @@ const SprintDetails = ({
   setStartDate,
 }: Props) => {
   const handleSprintStartDateChange = (value: string) => {
-    console.log(value);
     setStartDate(value);
   };
 

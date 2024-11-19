@@ -9,6 +9,7 @@ import { generateDays, getUpdatedDays } from '../util/dayGenerator';
 import formatDateInput from '../util/formatDateInput';
 import { Day } from '../types/Day';
 import {
+  fetchRoomAndSet,
   setLength,
   setStartDate,
   toggleGlobalNonWorkingDay,
@@ -117,6 +118,10 @@ const membersSlice = createSlice({
       .addCase(addMember.fulfilled, (state, action) => {
         const member = action.payload;
         memberAdapter.addOne(state, member);
+      })
+      .addCase(fetchRoomAndSet.fulfilled, (state, action) => {
+        const room = action.payload;
+        memberAdapter.setAll(state, room.members);
       });
   },
 });
