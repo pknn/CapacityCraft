@@ -5,7 +5,7 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { Member } from '../types/Member';
-import { getUpdatedDays } from '../util/dayGenerator';
+import { generateDays } from '../util/dayGenerator';
 import {
   syncDown,
   setDaysLength,
@@ -65,14 +65,15 @@ const membersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(setDaysLength.fulfilled, (state, action) => {
-        const members = action.payload.members;
+      .addCase(setDaysLength, (state, action) => {
+        const { newLength, startDate } = action.payload;
+
         memberAdapter.updateMany(
           state,
-          members.map((member) => ({
-            id: member.id,
+          state.ids.map((id) => ({
+            id,
             changes: {
-              days: member.days,
+              days: generateDays(startDate, state.entities[id].days, newLength),
             },
           }))
         );

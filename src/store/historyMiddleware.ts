@@ -4,7 +4,7 @@ const historyMiddleware = (store) => (next) => (action) => {
   action.meta = {
     ...action.meta,
     previousState: {
-      ...action.meta.previousState,
+      ...action.meta?.previousState,
       [action.type]: previousState,
     },
   };
