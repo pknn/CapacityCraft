@@ -16,7 +16,7 @@ import { Day } from '../types/Day';
 type RoomId = Room['id'];
 
 type RoomService = {
-  createRoom: (roomId: RoomId) => Promise<void>;
+  createRoom: (roomId: RoomId) => Promise<Room>;
   getRoom: (roomId: RoomId) => Promise<Room>;
   updateRoom: (roomId: RoomId, update: Partial<Room>) => Promise<Room>;
   setDays: (roomId: RoomId, days: Day[]) => Promise<void>;
@@ -36,7 +36,8 @@ const roomService: RoomService = {
       days: generateDays(formatDateInput(new Date()), [], 9),
       members: [],
     };
-    return setDoc(roomReference, room);
+    await setDoc(roomReference, room);
+    return room;
   },
   getRoom: async (roomId) => {
     const roomReference = getRoomReference(roomId);

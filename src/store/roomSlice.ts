@@ -4,29 +4,25 @@ import { generateDays, getUpdatedDays } from '../util/dayGenerator';
 import { Day } from '../types/Day';
 import roomService from '../services/roomService';
 import { AppState } from '.';
-import { Room } from '../types/Room';
 import getStartDate from '../util/getStartDate';
 import createUndoableAdapter from './utils/createUndoableAdapter';
 import { syncRoomDown, syncRoomUp } from './dataThunkActions';
 
 type RoomState = {
   id: string | undefined;
-  startDate: string;
+  startDate: string | undefined;
   days: Day[];
 };
 
 const roomUndoableAdapter = createUndoableAdapter<RoomState>({
   id: undefined,
-  startDate: formatDateInput(new Date()),
-  days: generateDays(formatDateInput(new Date()), [], 9),
+  startDate: undefined,
+  days: [],
 });
 
 export const createRoom = createAsyncThunk(
   'room/createRoom',
-  async (roomId: string) => {
-    await roomService.createRoom(roomId);
-    return roomId;
-  }
+  async (roomId: string) => roomService.createRoom(roomId)
 );
 
 const roomSlice = createSlice({
@@ -63,8 +59,8 @@ const roomSlice = createSlice({
     clearRoom: (state) => {
       roomUndoableAdapter.update(state, {
         id: undefined,
-        startDate: formatDateInput(new Date()),
-        days: generateDays(state.current.startDate, [], 9),
+        startDate: undefined,
+        days: [],
       });
     },
     toggleGlobalNonWorkingDay: (state, action: PayloadAction<number>) => {
@@ -94,9 +90,14 @@ const roomSlice = createSlice({
         roomUndoableAdapter.commit(state);
       })
       .addCase(createRoom.fulfilled, (state, action) => {
-        const roomId = action.payload;
+        const { id, days } = action.payload;
+        const startDate = days.sort((a, b) =>
+          new Date(a.date) < new Date(b.date) ? -1 : 1
+        )[0].date;
         roomUndoableAdapter.update(state, {
-          id: roomId,
+          id,
+          days,
+          startDate,
         });
         roomUndoableAdapter.commit(state);
       })
