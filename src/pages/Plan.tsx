@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import SprintDetails from '../components/SprintDetails';
 import UserOverlay from '../components/UserOverlay';
 import { AppDispatch } from '../store';
-import { syncDown } from '../store/roomSlice';
+import { syncRoomDown } from '../store/roomSlice';
 import Calendar from '../components/Calendar/Calendar';
 import Legend from '../components/Calendar/Legend';
 import { clearMember } from '../store/membersSlice';
@@ -45,7 +45,7 @@ const Plan = ({ syncDown, clearMembers }: Props) => {
 };
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
-  syncDown: (id: string) => dispatch(syncDown(id)),
+  syncDown: (id: string) => dispatch(syncRoomDown(id)),
   clearMembers: () => dispatch(clearMember()),
 });
 

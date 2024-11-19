@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Member } from '../types/Member';
 import { generateDays, getUpdatedDays } from '../util/dayGenerator';
 import {
-  syncDown,
+  syncRoomDown,
   setDaysLength,
   setStartDate,
   toggleGlobalNonWorkingDay,
@@ -122,12 +122,12 @@ const membersSlice = createSlice({
       .addCase(addMember.rejected, (state) => {
         memberUndoableAdapter.rollback(state);
       })
-      .addCase(syncDown.fulfilled, (state, action) => {
+      .addCase(syncRoomDown.fulfilled, (state, action) => {
         const room = action.payload;
         memberUndoableAdapter.setAll(state, room.members);
         memberUndoableAdapter.commit(state);
       })
-      .addCase(syncDown.rejected, (state) => {
+      .addCase(syncRoomDown.rejected, (state) => {
         memberUndoableAdapter.rollback(state);
       });
   },
