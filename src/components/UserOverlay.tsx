@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../store';
 import { setUser } from '../store/userSlice';
@@ -19,7 +19,7 @@ type StateBindings = {
 type ActionBindings = {
   setUser: (id: string, displayName: string) => void;
   addMember: (id: string, displayName: string, days: Day[]) => void;
-  syncUp: () => void;
+  syncUp: () => Promise<unknown>;
 };
 
 type Props = StateBindings & ActionBindings;
@@ -36,26 +36,35 @@ const UserOverlay = ({
   const [shouldDisplay, setShouldDisplay] = useState(
     !displayName || displayName.length <= 0
   );
+  const [syncing, setSyncing] = useState(false);
+
+  useEffect(() => {
+    if (!displayName) {
+      setShouldDisplay(true);
+    }
+  }, [displayName]);
 
   const handleDisplayNameChange = (value: string) => {
     setValue(value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!value || value.length <= 0) {
       return;
     }
 
-    setShouldDisplay(false);
     const id = genUserId(roomId);
     setUser(id, value);
     addMember(id, value, days);
-    syncUp();
+    setSyncing(true);
+    await syncUp();
+    setSyncing(false);
+    setShouldDisplay(false);
   };
 
   return (
     shouldDisplay && (
-      <div className="absolute inset-0 h-screen w-screen bg-stone-700/10 backdrop-blur-md">
+      <div className="absolute inset-0 z-50 h-screen w-screen bg-stone-700/10 backdrop-blur-md">
         <div className="flex h-full items-center justify-center">
           <div>
             <div>Let your friends know who you are</div>
@@ -68,7 +77,12 @@ const UserOverlay = ({
               type={undefined}
               label="Name"
             />
-            <Button onClick={handleSubmit}>Identify me!</Button>
+            <Button
+              variant={syncing ? 'loading' : 'default'}
+              onClick={handleSubmit}
+            >
+              Identify me!
+            </Button>
           </div>
         </div>
       </div>

@@ -29,7 +29,7 @@ const CalendarHead = ({
   return (
     <thead>
       <tr>
-        <th />
+        <th className="w-auto" />
         {days.map((day, index) => (
           <CalendarHeadItem
             key={day.date}

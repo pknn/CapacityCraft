@@ -1,3 +1,4 @@
+import equal from 'fast-deep-equal';
 import { WritableDraft } from 'immer';
 
 export type UndoableState<TState> = {
@@ -37,6 +38,7 @@ const createUndoableAdapter = <TState>(
       };
     },
     commit: (state) => {
+      if (equal(state.previous, state.current)) return;
       state.previous = state.current;
     },
     rollback: (state) => {

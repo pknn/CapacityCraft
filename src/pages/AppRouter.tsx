@@ -7,6 +7,7 @@ import {
 import Home from './Home';
 import App from './App';
 import Plan from './Plan';
+import NoMatch from './NoMatch';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -15,6 +16,7 @@ const router = createBrowserRouter(
       <Route path="/app" element={<App />}>
         <Route path="/app/:roomId" element={<Plan />} />
       </Route>
+      <Route path="*" element={<NoMatch />} />
     </>
   )
 );

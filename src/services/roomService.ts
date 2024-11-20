@@ -19,7 +19,11 @@ type RoomService = {
   createRoom: (roomId: RoomId) => Promise<Room>;
   getRoom: (roomId: RoomId) => Promise<Room>;
   updateRoom: (roomId: RoomId, update: Partial<Room>) => Promise<Room>;
-  subscribe: (roomId: RoomId, onChange: (room: Room) => void) => () => void;
+  subscribe: (
+    roomId: RoomId,
+    onChange: (room: Room) => void,
+    onError: (roomId: string) => void
+  ) => () => void;
 };
 
 type Reference = DocumentReference<DocumentData, DocumentData>;
@@ -54,12 +58,14 @@ const roomService: RoomService = {
     await updateDoc(roomReference, updatedRoom);
     return updatedRoom;
   },
-  subscribe: (roomId, onChange) => {
+  subscribe: (roomId, onChange, onError) => {
     const roomReference = getRoomReference(roomId);
     return onSnapshot(roomReference, (snapshot: DocumentSnapshot) => {
       if (snapshot.exists()) {
         const room = snapshot.data() as Room;
         onChange(room);
+      } else {
+        onError(roomId);
       }
     });
   },

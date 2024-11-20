@@ -12,7 +12,7 @@ import { clearRoom, createRoom, setRoomId } from '../store/roomSlice';
 import { clearUser } from '../store/userSlice';
 
 type ActionBindings = {
-  createRoom: (id: string) => void;
+  createRoom: (id: string) => Promise<unknown>;
   setRoomId: (id: string) => void;
   clearRoom: () => void;
   clearUser: () => void;
@@ -22,6 +22,7 @@ type Props = ActionBindings;
 
 const Home = ({ createRoom, setRoomId, clearRoom, clearUser }: Props) => {
   const [roomIdValue, setRoomIdValue] = useState<string>('');
+  const [creatingRoom, setCreatingRoom] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,9 +30,15 @@ const Home = ({ createRoom, setRoomId, clearRoom, clearUser }: Props) => {
     clearRoom();
   }, [clearUser, clearRoom]);
 
-  const handleStartPlanning = () => {
+  const handleStartPlanning = async () => {
+    if (creatingRoom) return;
+
     const id = genRoomId();
-    createRoom(id);
+
+    setCreatingRoom(true);
+    await createRoom(id);
+    setCreatingRoom(false);
+
     navigate(`/app/${id}`);
   };
 
@@ -62,7 +69,12 @@ const Home = ({ createRoom, setRoomId, clearRoom, clearUser }: Props) => {
           confidence.
         </span>
         <section className="m-6">
-          <Button onClick={handleStartPlanning}>Start planning</Button>
+          <Button
+            onClick={handleStartPlanning}
+            variant={creatingRoom ? 'loading' : 'default'}
+          >
+            Start planning
+          </Button>
           <Separator />
           <div className="mb-2 font-medium text-stone-800">
             Already have Room ID?

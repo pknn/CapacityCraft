@@ -7,29 +7,56 @@ import {
   toggleGlobalNonWorkingDay,
 } from './roomSlice';
 import { AppState } from '.';
-import createUndoableEntityAdapter from './utils/createUndoableEntityAdapter';
+import createUndoableEntityAdapter, {
+  UndoableEntityState,
+} from './utils/createUndoableEntityAdapter';
 import { syncDown, syncUp } from './dataThunkActions';
 import { Day } from '../types/Day';
+import { toast } from 'react-toastify';
 
-type AddMemberPayload = {
-  id: string;
-  displayName: string;
-  days: Day[];
+const memberAdapter = createUndoableEntityAdapter<Member, Member['id']>({
+  selectId: (member: Member) => member.id,
+});
+
+const updateAllMemberDays = (
+  state: UndoableEntityState<Member, Member['id']>,
+  updateFn: (days: Day[]) => Day[]
+) => {
+  memberAdapter.updateMany(
+    state,
+    state.current.ids.map((id) => ({
+      id,
+      changes: { days: updateFn(state.current.entities[id].days) },
+    }))
+  );
 };
 
-const memberUndoableAdapter = createUndoableEntityAdapter<Member, Member['id']>(
-  {
-    selectId: (member: Member) => member.id,
-  }
-);
+const toggleDayAtIndex = (days: Day[], index: number): Day[] =>
+  days.map((day, i) =>
+    i === index ? { ...day, isNonWorkingDay: !day.isNonWorkingDay } : day
+  );
+
+const getMemberDiff = (l1: Member[], l2: Member[]) => {
+  if (l1.length === 0) return [];
+
+  const l1Ids = new Set(l1.map((member) => member.id));
+  return l2.filter((member) => !l1Ids.has(member.id));
+};
 
 const membersSlice = createSlice({
   name: 'members',
-  initialState: memberUndoableAdapter.getInitialState(),
+  initialState: memberAdapter.getInitialState(),
   reducers: {
-    addMember: (state, action: PayloadAction<AddMemberPayload>) => {
+    addMember: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        displayName: string;
+        days: Day[];
+      }>
+    ) => {
       const { id, displayName, days } = action.payload;
-      memberUndoableAdapter.addOne(state, {
+      memberAdapter.upsertOne(state, {
         id,
         displayName,
         days,
@@ -41,7 +68,7 @@ const membersSlice = createSlice({
     ) => {
       const { id, dayIndex } = action.payload;
 
-      memberUndoableAdapter.updateOne(state, {
+      memberAdapter.updateOne(state, {
         id,
         changes: {
           days: state.current.entities[id].days.map((day, index) =>
@@ -52,80 +79,59 @@ const membersSlice = createSlice({
         },
       });
     },
-    clearMember: (state) => memberUndoableAdapter.removeAll(state),
+    removeMember: (state, action: PayloadAction<string>) => {
+      memberAdapter.removeOne(state, action.payload);
+    },
+    clearMember: (state) => memberAdapter.removeAll(state),
   },
   extraReducers: (builder) => {
     builder
       .addCase(setDaysLength, (state, action) => {
         const { newLength, startDate } = action.payload;
 
-        memberUndoableAdapter.updateMany(
-          state,
-          state.current.ids.map((id) => ({
-            id,
-            changes: {
-              days: generateDays(
-                startDate,
-                state.current.entities[id].days,
-                newLength
-              ),
-            },
-          }))
+        updateAllMemberDays(state, (days) =>
+          generateDays(startDate, days, newLength)
         );
       })
       .addCase(setStartDate, (state, action) => {
-        memberUndoableAdapter.updateMany(
-          state,
-          state.current.ids.map((id) => ({
-            id: id,
-            changes: {
-              days: getUpdatedDays(
-                state.current.entities[id].days,
-                action.payload
-              ),
-            },
-          }))
+        updateAllMemberDays(state, (days) =>
+          getUpdatedDays(days, action.payload)
         );
       })
       .addCase(toggleGlobalNonWorkingDay, (state, action) => {
         const dayIndex = action.payload;
-        memberUndoableAdapter.updateMany(
-          state,
-          state.current.ids.map((id) => {
-            const memberDay = state.current.entities[id].days;
-            return {
-              id,
-              changes: {
-                days: memberDay.map((day, index) =>
-                  index === dayIndex
-                    ? { ...day, isNonWorkingDay: !day.isNonWorkingDay }
-                    : day
-                ),
-              },
-            };
-          })
-        );
+        updateAllMemberDays(state, (days) => toggleDayAtIndex(days, dayIndex));
       })
       .addCase(syncDown.fulfilled, (state, action) => {
         const room = action.payload;
-        memberUndoableAdapter.setAll(state, room.members);
-        memberUndoableAdapter.commit(state);
+        const diff = getMemberDiff(
+          Object.values(state.current.entities),
+          room.members
+        );
+        if (diff.length > 0) {
+          diff.forEach((member) =>
+            toast(`🎉 ${member.displayName} has joined! 🎉`, {
+              position: 'bottom-right',
+            })
+          );
+        }
+
+        memberAdapter.setAll(state, room.members);
+        memberAdapter.commit(state);
       })
-      .addCase(syncDown.rejected, (state) => {
-        memberUndoableAdapter.rollback(state);
-      })
-      .addCase(syncUp.fulfilled, (state) => {
-        memberUndoableAdapter.commit(state);
-      })
-      .addCase(syncUp.rejected, (state) => {
-        memberUndoableAdapter.rollback(state);
-      });
+      .addCase(syncDown.rejected, memberAdapter.rollback)
+      .addCase(syncUp.fulfilled, memberAdapter.commit)
+      .addCase(syncUp.rejected, memberAdapter.rollback);
   },
 });
 
-export const { addMember, toggleMemberNonWorkingDay, clearMember } =
-  membersSlice.actions;
+export const {
+  addMember,
+  toggleMemberNonWorkingDay,
+  removeMember,
+  clearMember,
+} = membersSlice.actions;
 export const membersReducer = membersSlice.reducer;
-export const membersSelector = memberUndoableAdapter.getSelectors(
+export const membersSelector = memberAdapter.getSelectors(
   (state: AppState) => state.members
 );

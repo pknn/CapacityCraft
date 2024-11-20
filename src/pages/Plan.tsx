@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import SprintDetails from '../components/SprintDetails';
@@ -10,6 +10,7 @@ import { clearMember } from '../store/membersSlice';
 import { syncDown } from '../store/dataThunkActions';
 import roomService from '../services/roomService';
 import { Room } from '../types/Room';
+import { toast } from 'react-toastify';
 
 type ActionBindings = {
   syncDown: (id: string) => void;
@@ -23,6 +24,26 @@ const Plan = ({ syncDown, syncDownSubscribed, clearMembers }: Props) => {
   const navigate = useNavigate();
   const { roomId: roomIdFromParam } = useParams();
 
+  const handleSubscribeError = useCallback(
+    (roomId: string) => {
+      toast.error(
+        <div className="text-sm text-stone-700">
+          Cannot find room{' '}
+          <span className="font-mono text-stone-600">#{roomId}</span>
+          <br />
+          Bringing you back home
+        </div>,
+        {
+          autoClose: 5000,
+        }
+      );
+      setTimeout(() => {
+        navigate('/');
+      }, 6000);
+    },
+    [navigate]
+  );
+
   useEffect(() => {
     if (!roomIdFromParam) {
       navigate('/');
@@ -33,18 +54,17 @@ const Plan = ({ syncDown, syncDownSubscribed, clearMembers }: Props) => {
     syncDown(roomIdFromParam ?? '');
     const unsubscribe = roomService.subscribe(
       roomIdFromParam ?? '',
-      syncDownSubscribed
+      syncDownSubscribed,
+      handleSubscribeError
     );
     return () => {
       unsubscribe();
     };
-  }, [roomIdFromParam, syncDown, syncDownSubscribed]);
+  }, [roomIdFromParam, syncDown, syncDownSubscribed, handleSubscribeError]);
 
   useEffect(() => {
     clearMembers();
   }, [clearMembers]);
-
-  useEffect(() => {}, []);
 
   return (
     <>

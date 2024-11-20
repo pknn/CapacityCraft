@@ -3,9 +3,9 @@ import { generateDays, getUpdatedDays } from '../util/dayGenerator';
 import { Day } from '../types/Day';
 import roomService from '../services/roomService';
 import { AppState } from '.';
-import getStartDate from '../util/getStartDate';
 import createUndoableAdapter from './utils/createUndoableAdapter';
 import { syncDown, syncUp } from './dataThunkActions';
+import equal from 'fast-deep-equal';
 
 type RoomState = {
   id: string | undefined;
@@ -75,19 +75,6 @@ const roomSlice = createSlice({
   },
   extraReducers: (builder) =>
     builder
-      .addCase(syncDown.fulfilled, (state, action) => {
-        const room = action.payload;
-        const startDate = room.days.sort((a, b) =>
-          new Date(a.date) < new Date(b.date) ? -1 : 1
-        )[0].date;
-
-        roomUndoableAdapter.update(state, {
-          id: room.id,
-          days: room.days,
-          startDate,
-        });
-        roomUndoableAdapter.commit(state);
-      })
       .addCase(createRoom.fulfilled, (state, action) => {
         const { id, days } = action.payload;
         const startDate = days.sort((a, b) =>
@@ -101,18 +88,27 @@ const roomSlice = createSlice({
         roomUndoableAdapter.commit(state);
       })
       .addCase(syncUp.fulfilled, (state, action) => {
-        const { id, days } = action.payload;
-        const startDate = getStartDate(days);
-
-        roomUndoableAdapter.update(state, {
-          id,
-          days,
-          startDate,
-        });
-        roomUndoableAdapter.commit(state);
+        const { days } = action.payload;
+        const isUpdated = equal(days, state.current.days);
+        if (isUpdated) {
+          roomUndoableAdapter.commit(state);
+        }
       })
       .addCase(syncUp.rejected, (state) => {
         roomUndoableAdapter.rollback(state);
+      })
+      .addCase(syncDown.fulfilled, (state, action) => {
+        const room = action.payload;
+        const startDate = room.days.sort((a, b) =>
+          new Date(a.date) < new Date(b.date) ? -1 : 1
+        )[0].date;
+
+        roomUndoableAdapter.update(state, {
+          id: room.id,
+          days: room.days,
+          startDate,
+        });
+        roomUndoableAdapter.commit(state);
       }),
 });
 
