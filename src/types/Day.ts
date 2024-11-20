@@ -23,3 +23,15 @@ export const toggleGlobalDayType = (dayType: DayType): DayType => {
       return dayType;
   }
 };
+
+export const toggleMemberOffDayType = (dayType: DayType): DayType => {
+  switch (dayType) {
+    case DayTypes.FullDay:
+    case DayTypes.HalfDay:
+      return DayTypes.Holiday;
+    case DayTypes.Holiday:
+      return DayTypes.FullDay;
+    default:
+      return dayType;
+  }
+};

@@ -1,6 +1,4 @@
-import { useMemo } from 'react';
-import formatDateStringForDisplay from '../../util/formatDateStringForDisplay';
-import { Day } from '../../types/Day';
+import { Day, DayTypes } from '../../types/Day';
 
 type OwnProps = {
   globalDay: Day;
@@ -11,21 +9,16 @@ type OwnProps = {
 type Props = OwnProps;
 
 const MemberCalendarItem = ({ globalDay, memberDay, onClick }: Props) => {
-  const { isWeekend } = useMemo(
-    () => formatDateStringForDisplay(globalDay.date),
-    [globalDay]
+  const isGlobalOffDay = [DayTypes.Weekend, DayTypes.Holiday].includes(
+    globalDay.dayType
   );
-  const isGlobalNonWorkingDay = useMemo(
-    () => isWeekend || globalDay.isNonWorkingDay,
-    [isWeekend, globalDay]
+  const isPersonalOffDay = [DayTypes.Weekend, DayTypes.Holiday].includes(
+    memberDay.dayType
   );
-  const isNonWorkingDay = useMemo(
-    () => isGlobalNonWorkingDay || memberDay.isNonWorkingDay,
-    [isGlobalNonWorkingDay, memberDay]
-  );
+  const isOffDay = isGlobalOffDay || isPersonalOffDay;
 
   const handleClick = () => {
-    if (isGlobalNonWorkingDay) return;
+    if (isGlobalOffDay) return;
     onClick();
   };
 
@@ -33,10 +26,10 @@ const MemberCalendarItem = ({ globalDay, memberDay, onClick }: Props) => {
     'rounded',
     'border',
     'border-stone-200',
-    isGlobalNonWorkingDay ? 'cursor-not-allowed' : 'cursor-pointer',
-    isNonWorkingDay ? 'bg-stone-600' : 'bg-stone-300',
-    isNonWorkingDay ? 'hover:bg-stone-600' : 'hover:bg-stone-400',
-    isNonWorkingDay && !isGlobalNonWorkingDay ? 'hover:bg-stone-700' : '',
+    isGlobalOffDay ? 'cursor-not-allowed' : 'cursor-pointer',
+    isOffDay ? 'bg-stone-600' : 'bg-stone-300',
+    isOffDay ? 'hover:bg-stone-600' : 'hover:bg-stone-400',
+    isOffDay && !isGlobalOffDay ? 'hover:bg-stone-700' : '',
   ].join(' ');
 
   return <td className={className} onClick={handleClick}></td>;

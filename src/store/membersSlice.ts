@@ -11,7 +11,7 @@ import createUndoableEntityAdapter, {
   UndoableEntityState,
 } from './utils/createUndoableEntityAdapter';
 import { syncDown, syncUp } from './dataThunkActions';
-import { Day } from '../types/Day';
+import { Day, DayType, DayTypes, toggleMemberOffDayType } from '../types/Day';
 import { toast } from 'react-toastify';
 
 const memberAdapter = createUndoableEntityAdapter<Member, Member['id']>({
@@ -33,7 +33,7 @@ const updateAllMemberDays = (
 
 const toggleDayAtIndex = (days: Day[], index: number): Day[] =>
   days.map((day, i) =>
-    i === index ? { ...day, isNonWorkingDay: !day.isNonWorkingDay } : day
+    i === index ? { ...day, dayType: toggleMemberOffDayType(day.dayType) } : day
   );
 
 const getMemberDiff = (l1: Member[], l2: Member[]) => {
@@ -71,11 +71,7 @@ const membersSlice = createSlice({
       memberAdapter.updateOne(state, {
         id,
         changes: {
-          days: state.current.entities[id].days.map((day, index) =>
-            index === dayIndex
-              ? { ...day, isNonWorkingDay: !day.isNonWorkingDay }
-              : day
-          ),
+          days: toggleDayAtIndex(state.current.entities[id].days, dayIndex),
         },
       });
     },
