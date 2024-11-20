@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
-import { AppState } from '../../store';
-import { Member } from '../../types/Member';
-import { membersSelector } from '../../store/membersSlice';
+import { AppState } from '../../../store';
+import { Member } from '../../../types/Member';
+import { membersSelector } from '../../../store/membersSlice';
 import MemberCalendar from './MemberCalendar';
 
 type StateProps = {

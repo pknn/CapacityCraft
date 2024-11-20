@@ -1,4 +1,4 @@
-import { Day, DayTypes } from '../../types/Day';
+import { Day, DayTypes } from '../../../types/Day';
 
 type OwnProps = {
   globalDay: Day;

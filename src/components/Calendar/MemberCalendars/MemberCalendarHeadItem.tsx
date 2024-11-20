@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
-import { AppState } from '../../store';
-import { Member } from '../../types/Member';
+import { AppState } from '../../../store';
+import { Member } from '../../../types/Member';
 
 type OwnProps = {
   member: Member;

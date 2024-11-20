@@ -4,9 +4,9 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import userEvent from '@testing-library/user-event';
 import MemberCalendar from './MemberCalendar';
-import { DayTypes, type Day } from '../../types/Day';
-import { type Member } from '../../types/Member';
-import { AppState } from '../../store';
+import { DayTypes, type Day } from '../../../types/Day';
+import { type Member } from '../../../types/Member';
+import { AppState } from '../../../store';
 
 // Mock child components
 vi.mock('./MemberCalendarHeadItem', () => ({
@@ -44,13 +44,13 @@ vi.mock('./MemberCalendarItem', () => ({
 }));
 
 // Mock store slices and actions
-vi.mock('../../store/roomSlice', () => ({
+vi.mock('../../../store/roomSlice', () => ({
   roomSelector: {
     value: (state: AppState) => state.room,
   },
 }));
 
-vi.mock('../../store/dataThunkActions', () => ({
+vi.mock('../../../store/dataThunkActions', () => ({
   syncUp: () => ({ type: 'data/syncUp' }),
 }));
 

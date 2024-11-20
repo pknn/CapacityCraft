@@ -4,8 +4,8 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import userEvent from '@testing-library/user-event';
 import MemberCalendarHeadItem from './MemberCalendarHeadItem';
-import type { Member } from '../../types/Member';
-import type { AppState } from '../../store';
+import type { Member } from '../../../types/Member';
+import type { AppState } from '../../../store';
 
 describe('MemberCalendarHeadItem', () => {
   const mockMember: Member = {

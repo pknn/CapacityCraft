@@ -7,17 +7,17 @@ import {
   selectCapacity,
   selectHolidays,
   selectTotalWorkingManDays,
-} from '../store/selectors/selectSprintSummary';
-import { AppState } from '../store';
+} from '../../store/selectors/selectSprintSummary';
+import { AppState } from '../../store';
 
 // Mock selectors
-vi.mock('../store/selectors/selectSprintSummary', () => ({
+vi.mock('../../store/selectors/selectSprintSummary', () => ({
   selectCapacity: vi.fn(),
   selectHolidays: vi.fn(),
   selectTotalWorkingManDays: vi.fn(),
 }));
 
-vi.mock('../store/roomSlice', () => ({
+vi.mock('../../store/roomSlice', () => ({
   roomSelector: {
     value: (state: AppState) => state.room,
   },

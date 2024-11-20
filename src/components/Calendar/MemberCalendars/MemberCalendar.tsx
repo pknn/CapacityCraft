@@ -1,13 +1,16 @@
 import { connect } from 'react-redux';
 import { useMemo } from 'react';
-import zip from '../../util/zip';
-import { AppDispatch, AppState } from '../../store';
-import { Member } from '../../types/Member';
-import { Day } from '../../types/Day';
-import { removeMember, cyclePersonalDayType } from '../../store/membersSlice';
+import zip from '../../../util/zip';
+import { AppDispatch, AppState } from '../../../store';
+import { Member } from '../../../types/Member';
+import { Day } from '../../../types/Day';
+import {
+  removeMember,
+  cyclePersonalDayType,
+} from '../../../store/membersSlice';
 import MemberCalendarItem from './MemberCalendarItem';
-import { roomSelector } from '../../store/roomSlice';
-import { syncUp } from '../../store/dataThunkActions';
+import { roomSelector } from '../../../store/roomSlice';
+import { syncUp } from '../../../store/dataThunkActions';
 import MemberCalendarHeadItem from './MemberCalendarHeadItem';
 
 type OwnProps = {
