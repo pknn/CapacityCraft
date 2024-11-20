@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import ManuallyAddMember from './ManuallyAddMember';
-import { DayTypes, type Day } from '../types/Day';
-import { addMember } from '../store/membersSlice';
-import { syncUp } from '../store/dataThunkActions';
+import { DayTypes, type Day } from '../../types/Day';
+import { addMember } from '../../store/membersSlice';
+import { syncUp } from '../../store/dataThunkActions';
 import type { ChangeEvent } from 'react';
 
 // Mock core components
@@ -53,23 +53,23 @@ vi.mock('./core/Button', () => ({
 }));
 
 // Mock genId
-vi.mock('../util/genId', () => ({
+vi.mock('../../util/genId', () => ({
   genId: vi.fn(() => 'test-id-123'),
 }));
 
 // Mock the room selector
-vi.mock('../store/roomSlice', () => ({
+vi.mock('../../store/roomSlice', () => ({
   roomSelector: {
     value: (state: { room: { days: Day[] } }) => state.room,
   },
 }));
 
 // Mock actions
-vi.mock('../store/membersSlice', () => ({
+vi.mock('../../store/membersSlice', () => ({
   addMember: vi.fn((payload) => ({ type: 'members/addMember', payload })),
 }));
 
-vi.mock('../store/dataThunkActions', () => ({
+vi.mock('../../store/dataThunkActions', () => ({
   syncUp: vi.fn(() => ({ type: 'data/syncUp' })),
 }));
 

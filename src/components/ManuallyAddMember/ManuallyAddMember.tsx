@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import Input from './core/Input';
-import Button from './core/Button';
-import { AppDispatch, AppState } from '../store';
-import { addMember } from '../store/membersSlice';
-import { Day } from '../types/Day';
-import { syncUp } from '../store/dataThunkActions';
-import { roomSelector } from '../store/roomSlice';
+import Input from '../core/Input';
+import Button from '../core/Button';
+import { AppDispatch, AppState } from '../../store';
+import { addMember } from '../../store/membersSlice';
+import { Day } from '../../types/Day';
+import { syncUp } from '../../store/dataThunkActions';
+import { roomSelector } from '../../store/roomSlice';
 import { connect } from 'react-redux';
-import { genId } from '../util/genId';
+import { genId } from '../../util/genId';
 
 type StateProps = {
   days: Day[];

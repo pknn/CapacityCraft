@@ -3,11 +3,11 @@ import { render, screen, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import Header from './Header';
-import pushToClipboard from '../util/pushToClipboard';
-import { AppState } from '../store';
+import pushToClipboard from '../../util/pushToClipboard';
+import { AppState } from '../../store';
 
 // Mock the clipboard utility
-vi.mock('../util/pushToClipboard', () => ({
+vi.mock('../../util/pushToClipboard', () => ({
   default: vi.fn(),
 }));
 
@@ -17,7 +17,7 @@ vi.mock('./Logo', () => ({
 }));
 
 // Mock room selector
-vi.mock('../store/roomSlice', () => ({
+vi.mock('../../store/roomSlice', () => ({
   roomSelector: {
     value: (state: AppState) => state.room,
   },

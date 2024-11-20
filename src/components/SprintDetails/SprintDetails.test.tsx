@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import SprintDetails from './SprintDetails';
-import { AppState } from '../store';
+import { AppState } from '../../store';
 
 // Create mock action creators that return proper action objects
 const mockSetBaselineVelocity = vi.fn((payload: number) => ({
@@ -28,7 +28,7 @@ const mockSyncUp = vi.fn(() => ({
 }));
 
 // Mock dependencies
-vi.mock('../store/roomSlice', () => ({
+vi.mock('../../store/roomSlice', () => ({
   roomSelector: {
     value: (state: AppState) => state.room,
   },
@@ -38,7 +38,7 @@ vi.mock('../store/roomSlice', () => ({
   setStartDate: (payload: string) => mockSetStartDate(payload),
 }));
 
-vi.mock('../store/dataThunkActions', () => ({
+vi.mock('../../store/dataThunkActions', () => ({
   syncUp: () => mockSyncUp(),
 }));
 

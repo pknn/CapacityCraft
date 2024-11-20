@@ -3,14 +3,14 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import UserOverlay from './UserOverlay';
-import { Day, DayTypes } from '../types/Day';
+import { Day, DayTypes } from '../../types/Day';
 import { ComponentProps } from 'react';
-import Input from './core/Input';
-import { AppState } from '../store';
-import Button from './core/Button';
+import Input from '../core/Input';
+import { AppState } from '../../store';
+import Button from '../core/Button';
 
 // Mock dependencies
-vi.mock('../util/genId', () => ({
+vi.mock('../../util/genId', () => ({
   genUserIdWithCache: vi.fn(() => 'test-user-id'),
 }));
 
@@ -19,21 +19,21 @@ const mockSetUser = vi.fn();
 const mockAddMember = vi.fn();
 const mockSyncUp = vi.fn(() => Promise.resolve());
 
-vi.mock('../store/userSlice', () => ({
+vi.mock('../../store/userSlice', () => ({
   setUser: (payload: { id: string; displayName: string }) => {
     mockSetUser(payload.id, payload.displayName);
     return { type: 'user/setUser', payload };
   },
 }));
 
-vi.mock('../store/membersSlice', () => ({
+vi.mock('../../store/membersSlice', () => ({
   addMember: (payload: { id: string; displayName: string; days: Day[] }) => {
     mockAddMember(payload.id, payload.displayName, payload.days);
     return { type: 'members/addMember', payload };
   },
 }));
 
-vi.mock('../store/dataThunkActions', () => ({
+vi.mock('../../store/dataThunkActions', () => ({
   syncUp: () => {
     mockSyncUp();
     return { type: 'data/syncUp' };
@@ -41,7 +41,7 @@ vi.mock('../store/dataThunkActions', () => ({
 }));
 
 // Mock room selector
-vi.mock('../store/roomSlice', () => ({
+vi.mock('../../store/roomSlice', () => ({
   roomSelector: {
     value: (state: AppState) => state.room,
   },

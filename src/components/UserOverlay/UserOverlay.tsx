@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { AppDispatch, AppState } from '../store';
-import { setUser } from '../store/userSlice';
-import { genUserIdWithCache } from '../util/genId';
-import { addMember } from '../store/membersSlice';
-import Button from './core/Button';
-import Input from './core/Input';
-import { roomSelector } from '../store/roomSlice';
-import { Day } from '../types/Day';
-import { syncUp } from '../store/dataThunkActions';
+import { AppDispatch, AppState } from '../../store';
+import { setUser } from '../../store/userSlice';
+import { genUserIdWithCache } from '../../util/genId';
+import { addMember } from '../../store/membersSlice';
+import Button from '../core/Button';
+import Input from '../core/Input';
+import { roomSelector } from '../../store/roomSlice';
+import { Day } from '../../types/Day';
+import { syncUp } from '../../store/dataThunkActions';
 
 type StateProps = {
   displayName: string | undefined;

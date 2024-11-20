@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
-import { AppState } from '../store';
+import { AppState } from '../../store';
 import {
   selectCapacity,
   selectHolidays,
   selectTotalWorkingManDays,
-} from '../store/selectors/selectSprintSummary';
-import { roomSelector } from '../store/roomSlice';
+} from '../../store/selectors/selectSprintSummary';
+import { roomSelector } from '../../store/roomSlice';
 
 type StateProps = {
   totalDays: number;

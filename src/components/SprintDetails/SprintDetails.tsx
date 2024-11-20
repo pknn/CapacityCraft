@@ -1,14 +1,14 @@
 import { connect } from 'react-redux';
-import { AppDispatch, AppState } from '../store';
+import { AppDispatch, AppState } from '../../store';
 import {
   roomSelector,
   setBaselineVelocity,
   setDaysLength,
   setStartDate,
-} from '../store/roomSlice';
-import Input from './core/Input';
-import SprintSummary from './SprintSummary';
-import { syncUp } from '../store/dataThunkActions';
+} from '../../store/roomSlice';
+import Input from '../core/Input';
+import SprintSummary from '../SprintSummary';
+import { syncUp } from '../../store/dataThunkActions';
 
 type StateProps = {
   length: number;

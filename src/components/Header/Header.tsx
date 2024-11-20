@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
-import pushToClipboard from '../util/pushToClipboard';
-import { AppState } from '../store';
-import Logo from './Logo';
-import { roomSelector } from '../store/roomSlice';
+import pushToClipboard from '../../util/pushToClipboard';
+import { AppState } from '../../store';
+import Logo from '../Logo';
+import { roomSelector } from '../../store/roomSlice';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
