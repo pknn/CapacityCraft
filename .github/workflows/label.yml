@@ -13,3 +13,14 @@ jobs:
         run: |
           echo "❌ Automerge label is missing"
           exit 1
+      - name: Automerge PR
+        uses: pascalgn/automerge-action@v0.15.6
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_LABELS: "Automerge"
+          MERGE_METHOD: "merge"
+          MERGE_COMMIT_MESSAGE: "{pullRequest.title}"
+          MERGE_DELETE_BRANCH: "true"
+          MERGE_RETRIES: "6"
+          MERGE_RETRY_SLEEP: "10000"
+          MERGE_REQUIRED_APPROVALS: "0"
