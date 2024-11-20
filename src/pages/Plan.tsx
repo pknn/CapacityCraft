@@ -60,7 +60,7 @@ const Plan = ({ syncDown, syncDownSubscribed, clearMembers }: Props) => {
     return () => {
       unsubscribe();
     };
-  }, [roomIdFromParam, syncDown, syncDownSubscribed]);
+  }, [roomIdFromParam, syncDown, syncDownSubscribed, handleSubscribeError]);
 
   useEffect(() => {
     clearMembers();
