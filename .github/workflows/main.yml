@@ -5,43 +5,25 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  pull_request_target:
-    types: [labeled, unlabeled]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
 
 jobs:
   check-automerge-label:
+    if: github.event_name == 'pull_request'  # Only run on pull requests
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || (github.event_name == 'pull_request_target' && (github.event.action == 'labeled' || github.event.action == 'unlabeled'))
-    outputs:
-      has-automerge: ${{ steps.check-label.outputs.has-automerge }}
-      pr-number: ${{ steps.get-pr-number.outputs.number }}
     steps:
-      - name: Get PR number
-        id: get-pr-number
-        run: |
-          if [ "${{ github.event_name }}" = "pull_request_target" ]; then
-            echo "number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
-          else
-            echo "number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
-          fi
-
       - name: Check for Automerge label
-        id: check-label
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.url }}
         run: |
-          PR_NUMBER=$(echo "${{ steps.get-pr-number.outputs.number }}")
-          labels=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/labels" \
-            | jq -r '.[].name')
+          labels=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "$PR_URL" | jq -r '.labels[].name')
           if echo "$labels" | grep -q "^Automerge$"; then
-            echo "has-automerge=true" >> $GITHUB_OUTPUT
             echo "Automerge label is present"
-            exit 0
           else
-            echo "has-automerge=false" >> $GITHUB_OUTPUT
             echo "Automerge label is missing"
             exit 1
           fi
-
   lint:
     runs-on: ubuntu-latest
     steps:
