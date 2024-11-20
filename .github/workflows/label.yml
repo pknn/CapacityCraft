@@ -69,7 +69,7 @@ jobs:
           MERGE_DELETE_BRANCH: "true"
           MERGE_RETRIES: "6"
           MERGE_RETRY_SLEEP: "10000"
-          MERGE_REQUIRED_APPROVALS: "1"
+          MERGE_REQUIRED_APPROVALS: "0"
 
 permissions:
   contents: write
