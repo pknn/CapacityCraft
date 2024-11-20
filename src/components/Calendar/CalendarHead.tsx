@@ -25,7 +25,7 @@ const CalendarHead = ({ days, toggleGlobalOffDay, syncUp }: Props) => {
   return (
     <thead>
       <tr>
-        <th className="w-auto" />
+        <th className="w-auto snap-start" />
         {days.map((day, index) => (
           <CalendarHeadItem
             key={day.date}

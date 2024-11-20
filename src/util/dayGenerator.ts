@@ -1,12 +1,12 @@
 import { Day, DayTypes } from '../types/Day';
-import formatDateInput from './formatDateInput';
+import formatDate from './formatDateInput';
 import isWeekend from './isWeekend';
 
 export const generateDay = (startDate: string, offset: number): Day => {
   const date = new Date(startDate);
   date.setDate(date.getDate() + offset);
   return {
-    date: formatDateInput(date),
+    date: formatDate(date),
     dayType: isWeekend(date) ? DayTypes.Weekend : DayTypes.FullDay,
   };
 };
@@ -33,7 +33,7 @@ export const getUpdatedDays = (days: Day[], newStartDateStr: string): Day[] =>
   days.map((_, index) => {
     const calculatedDate = new Date(newStartDateStr);
     calculatedDate.setDate(calculatedDate.getDate() + index);
-    const formattedDate = formatDateInput(calculatedDate);
+    const formattedDate = formatDate(calculatedDate);
 
     // Keep existing day if date matches, otherwise create a new one
     return (

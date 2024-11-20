@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../store';
 import { setUser } from '../store/userSlice';
-import { genUserId } from '../util/genId';
+import { genUserIdWithCache } from '../util/genId';
 import { addMember } from '../store/membersSlice';
 import Button from './core/Button';
 import Input from './core/Input';
@@ -14,6 +14,7 @@ type StateBindings = {
   displayName: string | undefined;
   roomId: string;
   days: Day[];
+  isLoading: boolean;
 };
 
 type ActionBindings = {
@@ -28,6 +29,7 @@ const UserOverlay = ({
   displayName,
   roomId,
   days,
+  isLoading,
   setUser,
   addMember,
   syncUp,
@@ -36,7 +38,6 @@ const UserOverlay = ({
   const [shouldDisplay, setShouldDisplay] = useState(
     !displayName || displayName.length <= 0
   );
-  const [syncing, setSyncing] = useState(false);
 
   useEffect(() => {
     if (!displayName) {
@@ -53,12 +54,10 @@ const UserOverlay = ({
       return;
     }
 
-    const id = genUserId(roomId);
+    const id = genUserIdWithCache(roomId);
     setUser(id, value);
     addMember(id, value, days);
-    setSyncing(true);
     await syncUp();
-    setSyncing(false);
     setShouldDisplay(false);
   };
 
@@ -78,8 +77,9 @@ const UserOverlay = ({
               type={undefined}
             />
             <Button
-              variant={syncing ? 'loading' : 'default'}
+              variant={isLoading ? 'loading' : 'default'}
               onClick={handleSubmit}
+              disabled={isLoading}
             >
               Identify me!
             </Button>
@@ -94,13 +94,14 @@ const mapStateToProps = (state: AppState): StateBindings => ({
   displayName: state.user.displayName,
   roomId: roomSelector.value(state).id ?? '',
   days: roomSelector.value(state).days,
+  isLoading: state.status.status === 'loading',
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   setUser: (id: string, displayName: string) =>
     dispatch(setUser({ id, displayName })),
   addMember: (id: string, displayName: string, days: Day[]) =>
-    dispatch(addMember({ id, displayName, days })),
+    dispatch(addMember({ id, displayName, days, isManual: false })),
   syncUp: () => dispatch(syncUp()),
 });
 

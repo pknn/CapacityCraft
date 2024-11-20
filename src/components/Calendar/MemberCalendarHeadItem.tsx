@@ -21,7 +21,7 @@ const MemberCalendarHeadItem = ({ member, onRemove, id }: Props) => {
 
   return (
     <td
-      className="group relative w-fit cursor-pointer overflow-visible p-2"
+      className="group relative w-fit min-w-24 cursor-pointer overflow-visible p-2"
       onClick={handleRemove}
     >
       <span className="absolute opacity-100 transition-opacity duration-500 group-hover:invisible group-hover:opacity-0">

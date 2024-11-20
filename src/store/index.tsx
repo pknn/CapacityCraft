@@ -4,16 +4,15 @@ import { Provider } from 'react-redux';
 import { roomReducer } from './roomSlice';
 import userReducer from './userSlice';
 import { membersReducer } from './membersSlice';
-import historyMiddleware from './historyMiddleware';
+import { statusReducer } from './statusSlice';
 
 const store = configureStore({
   reducer: {
     room: roomReducer,
     members: membersReducer,
     user: userReducer,
+    status: statusReducer,
   },
-  middleware: (getDefaultMiddlware) =>
-    getDefaultMiddlware().concat(historyMiddleware),
 });
 
 const StoreProvider = ({ children }: PropsWithChildren) => (

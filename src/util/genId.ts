@@ -1,4 +1,4 @@
-const genId = () => {
+export const genId = () => {
   const chars = 'ABCDEF1234567890';
 
   const getRandomChar = () =>
@@ -11,9 +11,7 @@ const genId = () => {
   return newId;
 };
 
-export const genRoomId = () => genId();
-
-export const genUserId = (roomId: string) => {
+export const genUserIdWithCache = (roomId: string) => {
   const thisRoomKey = `userId:${roomId}`;
   Object.keys(localStorage)
     .filter((k) => k.startsWith('userId'))

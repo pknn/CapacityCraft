@@ -6,6 +6,7 @@ import { AppState } from '.';
 import createUndoableAdapter from './utils/createUndoableAdapter';
 import { syncDown, syncUp } from './dataThunkActions';
 import equal from 'fast-deep-equal';
+import getStartDate from '../util/getStartDate';
 
 type RoomState = {
   id: string | undefined;
@@ -83,14 +84,13 @@ const roomSlice = createSlice({
   extraReducers: (builder) =>
     builder
       .addCase(createRoom.fulfilled, (state, action) => {
-        const { id, days } = action.payload;
-        const startDate = days.sort((a, b) =>
-          new Date(a.date) < new Date(b.date) ? -1 : 1
-        )[0].date;
+        const { id, days, baselineVelocity } = action.payload;
+        const startDate = getStartDate(days);
         roomUndoableAdapter.update(state, {
           id,
           days,
           startDate,
+          baselineVelocity,
         });
         roomUndoableAdapter.commit(state);
       })
@@ -106,14 +106,13 @@ const roomSlice = createSlice({
       })
       .addCase(syncDown.fulfilled, (state, action) => {
         const room = action.payload;
-        const startDate = room.days.sort((a, b) =>
-          new Date(a.date) < new Date(b.date) ? -1 : 1
-        )[0].date;
+        const startDate = getStartDate(room.days);
 
         roomUndoableAdapter.update(state, {
           id: room.id,
           days: room.days,
           startDate,
+          baselineVelocity: room.baselineVelocity,
         });
         roomUndoableAdapter.commit(state);
       }),
