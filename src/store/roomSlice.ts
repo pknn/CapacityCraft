@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { generateDays, getUpdatedDays } from '../util/dayGenerator';
-import { Day, DayType, toggleGlobalDayType } from '../types/Day';
+import { Day, toggleGlobalDayType } from '../types/Day';
 import roomService from '../services/roomService';
 import { AppState } from '.';
 import createUndoableAdapter from './utils/createUndoableAdapter';
@@ -69,7 +69,7 @@ const roomSlice = createSlice({
         days: [],
       });
     },
-    toggleGlobalNonWorkingDay: (state, action: PayloadAction<number>) => {
+    toggleGlobalOffDay: (state, action: PayloadAction<number>) => {
       const dayIndex = action.payload;
       roomUndoableAdapter.update(state, {
         days: state.current.days.map((day, index) =>
@@ -125,7 +125,7 @@ export const {
   setBaselineVelocity,
   setRoomId,
   clearRoom,
-  toggleGlobalNonWorkingDay,
+  toggleGlobalOffDay,
 } = roomSlice.actions;
 
 export const roomSelector = roomUndoableAdapter.getSelectors(

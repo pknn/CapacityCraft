@@ -1,17 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Member } from '../types/Member';
 import { generateDays, getUpdatedDays } from '../util/dayGenerator';
-import {
-  setDaysLength,
-  setStartDate,
-  toggleGlobalNonWorkingDay,
-} from './roomSlice';
+import { setDaysLength, setStartDate, toggleGlobalOffDay } from './roomSlice';
 import { AppState } from '.';
 import createUndoableEntityAdapter, {
   UndoableEntityState,
 } from './utils/createUndoableEntityAdapter';
 import { syncDown, syncUp } from './dataThunkActions';
-import { Day, DayType, DayTypes, toggleMemberOffDayType } from '../types/Day';
+import { Day, toggleMemberOffDayType } from '../types/Day';
 import { toast } from 'react-toastify';
 
 const memberAdapter = createUndoableEntityAdapter<Member, Member['id']>({
@@ -62,7 +58,7 @@ const membersSlice = createSlice({
         days,
       });
     },
-    toggleMemberNonWorkingDay: (
+    togglePersonalOffDay: (
       state,
       action: PayloadAction<{ id: string; dayIndex: number }>
     ) => {
@@ -94,7 +90,7 @@ const membersSlice = createSlice({
           getUpdatedDays(days, action.payload)
         );
       })
-      .addCase(toggleGlobalNonWorkingDay, (state, action) => {
+      .addCase(toggleGlobalOffDay, (state, action) => {
         const dayIndex = action.payload;
         updateAllMemberDays(state, (days) => toggleDayAtIndex(days, dayIndex));
       })
@@ -121,12 +117,8 @@ const membersSlice = createSlice({
   },
 });
 
-export const {
-  addMember,
-  toggleMemberNonWorkingDay,
-  removeMember,
-  clearMember,
-} = membersSlice.actions;
+export const { addMember, togglePersonalOffDay, removeMember, clearMember } =
+  membersSlice.actions;
 export const membersReducer = membersSlice.reducer;
 export const membersSelector = memberAdapter.getSelectors(
   (state: AppState) => state.members
