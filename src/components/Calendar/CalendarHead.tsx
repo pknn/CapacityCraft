@@ -11,19 +11,15 @@ type StateBindings = {
 
 type ActionBindings = {
   toggleGlobalNonWorkingDay: (index: number) => void;
-  syncRoomUp: () => void;
+  syncUp: () => void;
 };
 
 type Props = StateBindings & ActionBindings;
 
-const CalendarHead = ({
-  days,
-  toggleGlobalNonWorkingDay,
-  syncRoomUp,
-}: Props) => {
+const CalendarHead = ({ days, toggleGlobalNonWorkingDay, syncUp }: Props) => {
   const handleClick = (index: number) => () => {
     toggleGlobalNonWorkingDay(index);
-    syncRoomUp();
+    syncUp();
   };
 
   return (
@@ -49,7 +45,7 @@ const mapStateToProps = (state: AppState): StateBindings => ({
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   toggleGlobalNonWorkingDay: (index) =>
     dispatch(toggleGlobalNonWorkingDay(index)),
-  syncRoomUp: () => dispatch(syncUp()),
+  syncUp: () => dispatch(syncUp()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CalendarHead);
