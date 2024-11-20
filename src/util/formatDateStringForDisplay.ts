@@ -13,9 +13,7 @@ const formatDateStringForDisplay = (dateStr: string) => {
     month: 'short',
   }).format(date);
 
-  const isWeekend = [0, 6].includes(date.getDay());
-
-  return { dayOfWeek, date: day, month, isWeekend };
+  return { dayOfWeek, date: day, month };
 };
 
 export default formatDateStringForDisplay;

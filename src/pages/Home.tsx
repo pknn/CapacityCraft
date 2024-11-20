@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Button from '../components/core/Button';
 import Input from '../components/core/Input';
 import Separator from '../components/core/Separator';
-import { genRoomId } from '../util/genId';
+import { genId } from '../util/genId';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { AppDispatch, AppState } from '../store';
@@ -42,7 +42,7 @@ const Home = ({
   const handleStartPlanning = async () => {
     if (isLoading) return;
 
-    const id = genRoomId();
+    const id = genId();
 
     await createRoom(id);
 

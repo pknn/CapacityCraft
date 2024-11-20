@@ -10,7 +10,7 @@ import {
   onSnapshot,
 } from 'firebase/firestore';
 import { generateDays } from '../util/dayGenerator';
-import formatDateInput from '../util/formatDateInput';
+import formatDate from '../util/formatDateInput';
 import { DocumentSnapshot } from 'firebase/firestore/lite';
 
 type RoomId = Room['id'];
@@ -36,7 +36,7 @@ const roomService: RoomService = {
     const roomReference = getRoomReference(roomId);
     const room: Room = {
       id: roomId,
-      days: generateDays(formatDateInput(new Date()), [], 11),
+      days: generateDays(formatDate(new Date()), [], 11),
       members: [],
       baselineVelocity: 0,
     };
