@@ -4,7 +4,6 @@ import { AppState } from '../store';
 import Logo from './Logo';
 import { roomSelector } from '../store/roomSlice';
 import { useEffect, useState } from 'react';
-import Button from './core/Button';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
