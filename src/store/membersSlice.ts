@@ -48,7 +48,7 @@ const membersSlice = createSlice({
       }>
     ) => {
       const { id, displayName, days } = action.payload;
-      memberAdapter.addOne(state, {
+      memberAdapter.upsertOne(state, {
         id,
         displayName,
         days,
