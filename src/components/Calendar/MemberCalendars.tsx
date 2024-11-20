@@ -4,11 +4,11 @@ import { Member } from '../../types/Member';
 import { membersSelector } from '../../store/membersSlice';
 import MemberCalendar from './MemberCalendar';
 
-type StateBindings = {
+type StateProps = {
   members: Member[];
 };
 
-type Props = StateBindings;
+type Props = StateProps;
 
 const MemberCalendars = ({ members }: Props) => (
   <tbody>
@@ -18,7 +18,7 @@ const MemberCalendars = ({ members }: Props) => (
   </tbody>
 );
 
-const mapStateToProps = (state: AppState): StateBindings => ({
+const mapStateToProps = (state: AppState): StateProps => ({
   members: membersSelector.selectAll(state),
 });
 
