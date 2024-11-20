@@ -31,6 +31,30 @@ jobs:
     runs-on: ubuntu-latest
     if: success()
     steps:
+      - name: Wait for lint
+        uses: lewagon/wait-on-check-action@v1.3.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          check-name: 'lint'
+          wait-interval: 10
+
+      - name: Wait for build
+        uses: lewagon/wait-on-check-action@v1.3.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          check-name: 'build'
+          wait-interval: 10
+
+      - name: Wait for test
+        uses: lewagon/wait-on-check-action@v1.3.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          check-name: 'test'
+          wait-interval: 10
+
       - name: Automerge PR
         uses: pascalgn/automerge-action@v0.15.6
         env:
