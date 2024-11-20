@@ -12,6 +12,7 @@ import createUndoableEntityAdapter, {
 } from './utils/createUndoableEntityAdapter';
 import { syncDown, syncUp } from './dataThunkActions';
 import { Day } from '../types/Day';
+import { toast } from 'react-toastify';
 
 const memberAdapter = createUndoableEntityAdapter<Member, Member['id']>({
   selectId: (member: Member) => member.id,
@@ -34,6 +35,13 @@ const toggleDayAtIndex = (days: Day[], index: number): Day[] =>
   days.map((day, i) =>
     i === index ? { ...day, isNonWorkingDay: !day.isNonWorkingDay } : day
   );
+
+const getMemberDiff = (l1: Member[], l2: Member[]) => {
+  if (l1.length === 0) return [];
+
+  const l1Ids = new Set(l1.map((member) => member.id));
+  return l2.filter((member) => !l1Ids.has(member.id));
+};
 
 const membersSlice = createSlice({
   name: 'members',
@@ -93,6 +101,18 @@ const membersSlice = createSlice({
       })
       .addCase(syncDown.fulfilled, (state, action) => {
         const room = action.payload;
+        const diff = getMemberDiff(
+          Object.values(state.current.entities),
+          room.members
+        );
+        if (diff.length > 0) {
+          diff.forEach((member) =>
+            toast(`🎉 ${member.displayName} has joined! 🎉`, {
+              position: 'bottom-right',
+            })
+          );
+        }
+
         memberAdapter.setAll(state, room.members);
         memberAdapter.commit(state);
       })
