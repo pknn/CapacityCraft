@@ -22,7 +22,7 @@ const CalendarHeadItem = ({ day, onClick }: Props) => {
 
   return (
     <th
-      className={`rounded text-center font-medium uppercase ${isWeekend ? 'cursor-not-allowed' : 'group cursor-pointer'} select-none`}
+      className={`snap-center rounded text-center font-medium uppercase ${isWeekend ? 'cursor-not-allowed' : 'group cursor-pointer'} select-none`}
       onClick={onClick}
     >
       <div
