@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { syncDown } from './dataThunkActions';
+import { toast } from 'react-toastify';
 
 type UserState = {
   id: string | undefined;
@@ -28,6 +30,25 @@ const userSlice = createSlice({
       state.displayName = undefined;
     },
   },
+  extraReducers: (builder) =>
+    builder.addCase(syncDown.fulfilled, (state, action) => {
+      const room = action.payload;
+
+      if (
+        state.id &&
+        !room.members
+          .map((member) => {
+            console.log(member.id, state.id, member.id === state.id);
+            return member.id;
+          })
+          .includes(state.id)
+      ) {
+        state.id = undefined;
+        state.displayName = undefined;
+
+        toast("Sorry! You've been removed from the room");
+      }
+    }),
 });
 
 export const { setUser, clearUser } = userSlice.actions;
