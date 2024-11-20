@@ -36,7 +36,7 @@ const roomService: RoomService = {
     const roomReference = getRoomReference(roomId);
     const room: Room = {
       id: roomId,
-      days: generateDays(formatDateInput(new Date()), [], 9),
+      days: generateDays(formatDateInput(new Date()), [], 11),
       members: [],
       baselineVelocity: 0,
     };
