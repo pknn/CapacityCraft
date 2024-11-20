@@ -7,7 +7,6 @@ export const generateDay = (startDate: string, offset: number): Day => {
   date.setDate(date.getDate() + offset);
   return {
     date: formatDateInput(date),
-    isNonWorkingDay: false,
     dayType: isWeekend(date) ? DayTypes.Weekend : DayTypes.FullDay,
   };
 };
@@ -40,7 +39,6 @@ export const getUpdatedDays = (days: Day[], newStartDateStr: string): Day[] =>
     return (
       days.find((day) => day.date === formattedDate) || {
         date: formattedDate,
-        isNonWorkingDay: false,
         dayType: isWeekend(calculatedDate)
           ? DayTypes.Weekend
           : DayTypes.FullDay,

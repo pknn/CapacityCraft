@@ -9,7 +9,6 @@ export const DayTypes = {
 
 export type Day = {
   date: string;
-  isNonWorkingDay: boolean;
   dayType: DayType;
 };
 
