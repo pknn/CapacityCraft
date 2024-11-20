@@ -14,6 +14,7 @@ type StateBindings = {
   displayName: string | undefined;
   roomId: string;
   days: Day[];
+  isLoading: boolean;
 };
 
 type ActionBindings = {
@@ -28,6 +29,7 @@ const UserOverlay = ({
   displayName,
   roomId,
   days,
+  isLoading,
   setUser,
   addMember,
   syncUp,
@@ -36,19 +38,12 @@ const UserOverlay = ({
   const [shouldDisplay, setShouldDisplay] = useState(
     !displayName || displayName.length <= 0
   );
-  const [syncing, setSyncing] = useState(true);
 
   useEffect(() => {
     if (!displayName) {
       setShouldDisplay(true);
     }
   }, [displayName]);
-
-  useEffect(() => {
-    if (days.length > 0) {
-      setSyncing(false);
-    }
-  }, [days]);
 
   const handleDisplayNameChange = (value: string) => {
     setValue(value);
@@ -62,9 +57,7 @@ const UserOverlay = ({
     const id = genUserId(roomId);
     setUser(id, value);
     addMember(id, value, days);
-    setSyncing(true);
     await syncUp();
-    setSyncing(false);
     setShouldDisplay(false);
   };
 
@@ -84,9 +77,9 @@ const UserOverlay = ({
               type={undefined}
             />
             <Button
-              variant={syncing ? 'loading' : 'default'}
+              variant={isLoading ? 'loading' : 'default'}
               onClick={handleSubmit}
-              disabled={syncing}
+              disabled={isLoading}
             >
               Identify me!
             </Button>
@@ -101,6 +94,7 @@ const mapStateToProps = (state: AppState): StateBindings => ({
   displayName: state.user.displayName,
   roomId: roomSelector.value(state).id ?? '',
   days: roomSelector.value(state).days,
+  isLoading: state.status.status === 'loading',
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({

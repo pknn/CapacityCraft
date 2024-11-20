@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createRoom } from './roomSlice';
+import { syncDown, syncUp } from './dataThunkActions';
 
 export type AppStatus = 'loading' | 'idle';
 type StatusState = {
@@ -20,6 +21,18 @@ const statusSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(createRoom.fulfilled, (state) => {
+        state.status = 'idle';
+      })
+      .addCase(syncDown.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(syncDown.fulfilled, (state) => {
+        state.status = 'idle';
+      })
+      .addCase(syncUp.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(syncUp.fulfilled, (state) => {
         state.status = 'idle';
       }),
 });
