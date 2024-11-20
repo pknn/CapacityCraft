@@ -11,7 +11,7 @@ jobs:
       - name: Remove unauthorized Automerge label
         if: |
           contains(github.event.pull_request.labels.*.name, 'Automerge') &&
-          github.event.sender.login != 'YOUR_GITHUB_USERNAME'
+          github.event.sender.login != 'pknn'
         run: |
           curl -X DELETE \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
@@ -66,7 +66,7 @@ jobs:
           MERGE_DELETE_BRANCH: "true"
           MERGE_RETRIES: "6"
           MERGE_RETRY_SLEEP: "10000"
-          MERGE_REQUIRED_APPROVALS: "0"
+          MERGE_REQUIRED_APPROVALS: "1"
 
 permissions:
   contents: write
