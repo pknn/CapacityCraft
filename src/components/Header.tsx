@@ -4,6 +4,8 @@ import { AppState } from '../store';
 import Logo from './Logo';
 import { roomSelector } from '../store/roomSlice';
 import { useEffect, useState } from 'react';
+import Button from './core/Button';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   roomId: string | undefined;
@@ -15,6 +17,7 @@ const Header = ({ roomId, displayName }: Props) => {
     'Copy link to clipboard'
   );
   const [copied, setCopied] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (copied) {
@@ -29,6 +32,10 @@ const Header = ({ roomId, displayName }: Props) => {
   const handleRoomIdClick = () => {
     pushToClipboard(location.href);
     setCopied(true);
+  };
+
+  const handleLeaveClick = () => {
+    navigate('/');
   };
 
   return (
@@ -48,7 +55,15 @@ const Header = ({ roomId, displayName }: Props) => {
         ) : null}
       </div>
       {displayName ? (
-        <span className="group font-medium">{displayName} </span>
+        <div>
+          <div className="group font-medium">{displayName}</div>
+          <div
+            onClick={handleLeaveClick}
+            className="cursor-pointer text-xs text-stone-400 underline hover:text-stone-500"
+          >
+            Leave
+          </div>
+        </div>
       ) : null}
     </header>
   );
