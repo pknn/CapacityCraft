@@ -7,22 +7,31 @@ import Separator from '../components/core/Separator';
 import { genRoomId } from '../util/genId';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { AppDispatch } from '../store';
+import { AppDispatch, AppState } from '../store';
 import { clearRoom, createRoom, setRoomId } from '../store/roomSlice';
 import { clearUser } from '../store/userSlice';
 
-type ActionBindings = {
+type StateProps = {
+  isLoading: boolean;
+};
+
+type DispatchProps = {
   createRoom: (id: string) => Promise<unknown>;
   setRoomId: (id: string) => void;
   clearRoom: () => void;
   clearUser: () => void;
 };
 
-type Props = ActionBindings;
+type Props = StateProps & DispatchProps;
 
-const Home = ({ createRoom, setRoomId, clearRoom, clearUser }: Props) => {
+const Home = ({
+  isLoading,
+  createRoom,
+  setRoomId,
+  clearRoom,
+  clearUser,
+}: Props) => {
   const [roomIdValue, setRoomIdValue] = useState<string>('');
-  const [creatingRoom, setCreatingRoom] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,13 +40,11 @@ const Home = ({ createRoom, setRoomId, clearRoom, clearUser }: Props) => {
   }, [clearUser, clearRoom]);
 
   const handleStartPlanning = async () => {
-    if (creatingRoom) return;
+    if (isLoading) return;
 
     const id = genRoomId();
 
-    setCreatingRoom(true);
     await createRoom(id);
-    setCreatingRoom(false);
 
     navigate(`/app/${id}`);
   };
@@ -71,7 +78,7 @@ const Home = ({ createRoom, setRoomId, clearRoom, clearUser }: Props) => {
         <section className="m-6">
           <Button
             onClick={handleStartPlanning}
-            variant={creatingRoom ? 'loading' : 'default'}
+            variant={isLoading ? 'loading' : 'default'}
           >
             Start planning
           </Button>
@@ -95,11 +102,15 @@ const Home = ({ createRoom, setRoomId, clearRoom, clearUser }: Props) => {
   );
 };
 
-const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
+const mapStateToProps = (state: AppState): StateProps => ({
+  isLoading: state.status.status === 'loading',
+});
+
+const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
   createRoom: (id: string) => dispatch(createRoom(id)),
   setRoomId: (id: string) => dispatch(setRoomId(id)),
   clearRoom: () => dispatch(clearRoom()),
   clearUser: () => dispatch(clearUser()),
 });
 
-export default connect(undefined, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

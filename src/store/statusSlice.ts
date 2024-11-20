@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { createRoom } from './roomSlice';
 
 export type AppStatus = 'loading' | 'idle';
 type StatusState = {
@@ -12,16 +13,15 @@ const initialState: StatusState = {
 const statusSlice = createSlice({
   name: 'status',
   initialState,
-  reducers: {
-    setLoading: (state) => {
-      state.status = 'loading';
-    },
-    setFinishLoading: (state) => {
-      state.status = 'idle';
-    },
-  },
+  reducers: {},
+  extraReducers: (builder) =>
+    builder
+      .addCase(createRoom.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(createRoom.fulfilled, (state) => {
+        state.status = 'idle';
+      }),
 });
-
-export const { setLoading, setFinishLoading } = statusSlice.actions;
 
 export const statusReducer = statusSlice.reducer;
