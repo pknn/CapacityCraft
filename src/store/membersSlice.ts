@@ -54,13 +54,15 @@ const membersSlice = createSlice({
         id: string;
         displayName: string;
         days: Day[];
+        isManual: boolean;
       }>
     ) => {
-      const { id, displayName, days } = action.payload;
+      const { id, displayName, days, isManual } = action.payload;
       memberAdapter.upsertOne(state, {
         id,
         displayName,
         days,
+        isManual,
       });
     },
     cyclePersonalDayType: (
@@ -108,11 +110,13 @@ const membersSlice = createSlice({
           room.members
         );
         if (diff.length > 0) {
-          diff.forEach((member) =>
-            toast(`🎉 ${member.displayName} has joined! 🎉`, {
-              position: 'top-right',
-            })
-          );
+          diff
+            .filter((member) => !member.isManual)
+            .forEach((member) =>
+              toast(`🎉 ${member.displayName} has joined! 🎉`, {
+                position: 'top-right',
+              })
+            );
         }
 
         memberAdapter.setAll(state, room.members);

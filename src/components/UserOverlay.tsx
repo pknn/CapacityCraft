@@ -100,7 +100,7 @@ const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   setUser: (id: string, displayName: string) =>
     dispatch(setUser({ id, displayName })),
   addMember: (id: string, displayName: string, days: Day[]) =>
-    dispatch(addMember({ id, displayName, days })),
+    dispatch(addMember({ id, displayName, days, isManual: false })),
   syncUp: () => dispatch(syncUp()),
 });
 
