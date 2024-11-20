@@ -55,7 +55,7 @@ const UserOverlay = ({
 
   return (
     shouldDisplay && (
-      <div className="absolute inset-0 h-screen w-screen bg-stone-700/10 backdrop-blur-md">
+      <div className="absolute inset-0 z-50 h-screen w-screen bg-stone-700/10 backdrop-blur-md">
         <div className="flex h-full items-center justify-center">
           <div>
             <div>Let your friends know who you are</div>

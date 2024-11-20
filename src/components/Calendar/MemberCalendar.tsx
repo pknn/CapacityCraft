@@ -4,10 +4,14 @@ import zip from '../../util/zip';
 import { AppDispatch, AppState } from '../../store';
 import { Member } from '../../types/Member';
 import { Day } from '../../types/Day';
-import { toggleMemberNonWorkingDay } from '../../store/membersSlice';
+import {
+  removeMember,
+  toggleMemberNonWorkingDay,
+} from '../../store/membersSlice';
 import MemberCalendarItem from './MemberCalendarItem';
 import { roomSelector } from '../../store/roomSlice';
 import { syncUp } from '../../store/dataThunkActions';
+import MemberCalendarHeadItem from './MemberCalendarHeadItem';
 
 type OwnProps = {
   member: Member;
@@ -19,6 +23,7 @@ type StateBindings = {
 
 type ActionBindings = {
   toggleMemberNonWorkingDay: (id: string, day: number) => void;
+  removeMember: (id: string) => void;
   syncUp: () => void;
 };
 
@@ -28,6 +33,7 @@ const MemberCalendar = ({
   member,
   globalDays,
   toggleMemberNonWorkingDay,
+  removeMember,
   syncUp,
 }: Props) => {
   const zippedDays = useMemo(
@@ -43,9 +49,14 @@ const MemberCalendar = ({
     syncUp();
   };
 
+  const handleRemove = () => {
+    removeMember(member.id);
+    syncUp();
+  };
+
   return (
     <tr>
-      <td className="p-2 text-lg font-medium">{member.displayName}</td>
+      <MemberCalendarHeadItem member={member} onRemove={handleRemove} />
       {zippedDays.map(([globalDay, memberDay], day) => (
         <MemberCalendarItem
           key={memberDay.date}
@@ -65,6 +76,7 @@ const mapStateToProps = (state: AppState): StateBindings => ({
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
   toggleMemberNonWorkingDay: (id, dayIndex) =>
     dispatch(toggleMemberNonWorkingDay({ id, dayIndex })),
+  removeMember: (id) => dispatch(removeMember(id)),
   syncUp: () => dispatch(syncUp()),
 });
 

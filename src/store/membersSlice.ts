@@ -79,6 +79,9 @@ const membersSlice = createSlice({
         },
       });
     },
+    removeMember: (state, action: PayloadAction<string>) => {
+      memberAdapter.removeOne(state, action.payload);
+    },
     clearMember: (state) => memberAdapter.removeAll(state),
   },
   extraReducers: (builder) => {
@@ -122,8 +125,12 @@ const membersSlice = createSlice({
   },
 });
 
-export const { addMember, toggleMemberNonWorkingDay, clearMember } =
-  membersSlice.actions;
+export const {
+  addMember,
+  toggleMemberNonWorkingDay,
+  removeMember,
+  clearMember,
+} = membersSlice.actions;
 export const membersReducer = membersSlice.reducer;
 export const membersSelector = memberAdapter.getSelectors(
   (state: AppState) => state.members
