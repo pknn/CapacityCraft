@@ -80,6 +80,7 @@ const Home = ({ createRoom, setRoomId, clearRoom, clearUser }: Props) => {
             Already have Room ID?
           </div>
           <Input<string>
+            className="max-w-full"
             value={roomIdValue}
             onValueChange={handleRoomIdChange}
             name="room-id"
