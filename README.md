@@ -1,50 +1,96 @@
-# React + TypeScript + Vite
+# CapacityCraft
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple sprint planning tool that helps teams visualize and manage their capacity in real-time.
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+CapacityCraft is a lightweight web-based collaboration tool that enables teams to:
+- Create planning rooms for sprint sessions
+- View live capacity updates as team members join and contribute
+- Calculate sprint capacity instantly as numbers change
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+No installation or setup required! Simply:
 
-- Configure the top-level `parserOptions` property like this:
+1. Visit [CapacityCraft](https://capacity-craft.pakanon.me)
+2. Click "Start Planning"
+3. Share the room link or ID with your team members
+4. Begin planning together!
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Joining Existing Sessions
+
+Two easy ways to join:
+- Click on the shared room link
+- Enter the Room ID on the homepage
+
+## Features
+
+### Real-time Collaboration
+- Create and join planning rooms
+- Multiple team members can participate simultaneously
+- See live updates as changes happen
+
+### Instant Capacity Visualization
+- Automatic capacity calculations
+- Real-time updates as numbers are adjusted
+- Clear visual representation of team capacity
+
+### Simple & Focused
+- No setup required
+- Streamlined for sprint planning sessions
+- Minimal learning curve
+
+## Technical Stack
+
+- **Frontend**: React with TypeScript
+- **Styling**: Tailwind CSS
+- **Database**: Firebase Firestore
+
+## Development
+
+1. Clone the repository
+```bash
+git clone [repository-url]
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+2. Install dependencies
+```bash
+yarn install
 ```
+
+3. Available commands
+```bash
+# Start development server
+yarn dev
+
+# Build for production
+yarn build
+
+# Run linter
+yarn lint
+```
+
+## Contributing
+
+We welcome contributions to CapacityCraft! Here's how you can help:
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+## Reporting Issues
+
+Found a bug or have a suggestion? Please help us improve CapacityCraft by reporting it! When reporting issues:
+
+1. Check if the issue already exists
+2. Include steps to reproduce the issue
+3. Include browser and OS version
+4. Add screenshots if applicable
+5. Describe expected vs actual behavior
+
+You can report issues through:
+- GitHub Issues
+- Email: pakanon.pantisawat@gmail.com
