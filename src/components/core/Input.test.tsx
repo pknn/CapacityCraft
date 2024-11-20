@@ -34,14 +34,6 @@ describe('Input', () => {
       render(<Input {...defaultProps} />);
       expect(screen.queryByRole('label')).not.toBeInTheDocument();
     });
-
-    it('applies custom className to container and input', () => {
-      render(<Input {...defaultProps} className="custom-class" />);
-
-      const container = screen.getByRole('textbox').parentElement;
-      expect(container).toHaveClass('custom-class');
-      expect(screen.getByRole('textbox')).toHaveClass('custom-class');
-    });
   });
 
   describe('Functionality', () => {

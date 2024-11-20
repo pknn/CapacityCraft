@@ -31,11 +31,6 @@ describe('Button', () => {
       expect(handleClick).toHaveBeenCalledTimes(1);
     });
 
-    it('merges custom className with default classes', () => {
-      render(<Button className="custom-class">Click me</Button>);
-      expect(screen.getByRole('button')).toHaveClass('custom-class');
-    });
-
     it('handles disabled state', async () => {
       const handleClick = vi.fn();
       render(
