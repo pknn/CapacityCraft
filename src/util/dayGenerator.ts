@@ -1,10 +1,15 @@
 import { Day } from '../types/Day';
 import formatDateInput from './formatDateInput';
+import isWeekend from './isWeekend';
 
 export const generateDay = (startDate: string, offset: number): Day => {
   const date = new Date(startDate);
   date.setDate(date.getDate() + offset);
-  return { date: formatDateInput(date), isNonWorkingDay: false };
+  return {
+    date: formatDateInput(date),
+    isNonWorkingDay: false,
+    dayType: isWeekend(date) ? 'weekend' : 'full-day',
+  };
 };
 
 export const generateDays = (
@@ -36,6 +41,7 @@ export const getUpdatedDays = (days: Day[], newStartDateStr: string): Day[] =>
       days.find((day) => day.date === formattedDate) || {
         date: formattedDate,
         isNonWorkingDay: false,
+        dayType: isWeekend(calculatedDate) ? 'weekend' : 'full-day',
       }
     );
   });
