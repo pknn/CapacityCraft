@@ -5,8 +5,27 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  pull_request_target:
+    types: [labeled, unlabeled]
 
 jobs:
+  check-automerge-label:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
+    outputs:
+      has-automerge: ${{ steps.check-label.outputs.has-automerge }}
+    steps:
+      - name: Check for Automerge label
+        id: check-label
+        run: |
+          labels=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" \
+            | jq -r '.[].name')
+          if echo "$labels" | grep -q "^Automerge$"; then
+            echo "has-automerge=true" >> $GITHUB_OUTPUT
+          else
+            echo "has-automerge=false" >> $GITHUB_OUTPUT
+          fi
   lint:
     runs-on: ubuntu-latest
     steps:
