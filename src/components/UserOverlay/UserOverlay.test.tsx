@@ -48,7 +48,7 @@ vi.mock('../../store/roomSlice', () => ({
 }));
 
 // Mock child components
-vi.mock('./core/Input', () => ({
+vi.mock('../core/Input', () => ({
   default: ({ value, onValueChange }: ComponentProps<typeof Input>) => (
     <input
       data-testid="name-input"
@@ -58,7 +58,7 @@ vi.mock('./core/Input', () => ({
   ),
 }));
 
-vi.mock('./core/Button', () => ({
+vi.mock('../core/Button', () => ({
   default: ({ children, onClick, disabled }: ComponentProps<typeof Button>) => (
     <button data-testid="submit-button" onClick={onClick} disabled={disabled}>
       {children}

@@ -42,12 +42,12 @@ vi.mock('../../store/dataThunkActions', () => ({
   syncUp: () => mockSyncUp(),
 }));
 
-vi.mock('./SprintSummary', () => ({
+vi.mock('../SprintSummary', () => ({
   default: () => <div data-testid="sprint-summary">Sprint Summary</div>,
 }));
 
 // Mock Input component
-vi.mock('./core/Input', () => ({
+vi.mock('../core/Input', () => ({
   default: function MockInput<T extends string | number>({
     value,
     onValueChange,

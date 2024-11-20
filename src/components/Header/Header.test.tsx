@@ -12,7 +12,7 @@ vi.mock('../../util/pushToClipboard', () => ({
 }));
 
 // Mock Logo component
-vi.mock('./Logo', () => ({
+vi.mock('../Logo', () => ({
   default: () => <div data-testid="logo">Logo</div>,
 }));
 

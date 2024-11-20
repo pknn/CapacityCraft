@@ -10,7 +10,7 @@ import { syncUp } from '../../store/dataThunkActions';
 import type { ChangeEvent } from 'react';
 
 // Mock core components
-vi.mock('./core/Input', () => ({
+vi.mock('../core/Input', () => ({
   default: function MockInput<T extends string | number>({
     value,
     onValueChange,
@@ -35,7 +35,7 @@ vi.mock('./core/Input', () => ({
   },
 }));
 
-vi.mock('./core/Button', () => ({
+vi.mock('../core/Button', () => ({
   default: function MockButton({
     children,
     onClick,
