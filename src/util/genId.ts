@@ -1,4 +1,4 @@
-const genId = () => {
+export const genId = () => {
   const chars = 'ABCDEF1234567890';
 
   const getRandomChar = () =>

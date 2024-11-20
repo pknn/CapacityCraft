@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { toast } from 'react-toastify';
 import SprintDetails from '../components/SprintDetails';
 import UserOverlay from '../components/UserOverlay';
 import { AppDispatch } from '../store';
@@ -10,7 +11,7 @@ import { clearMember } from '../store/membersSlice';
 import { syncDown } from '../store/dataThunkActions';
 import roomService from '../services/roomService';
 import { Room } from '../types/Room';
-import { toast } from 'react-toastify';
+import ManuallyAddMember from '../components/ManuallyAddMember';
 
 type ActionBindings = {
   syncDown: (id: string) => void;
@@ -74,6 +75,7 @@ const Plan = ({ syncDown, syncDownSubscribed, clearMembers }: Props) => {
       <SprintDetails />
       <Legend />
       <Calendar />
+      <ManuallyAddMember />
     </>
   );
 };
