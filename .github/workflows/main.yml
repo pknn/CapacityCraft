@@ -11,7 +11,7 @@ on:
 jobs:
   check-automerge-label:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
+    if: github.event_name == 'pull_request' || (github.event_name == 'pull_request_target' && (github.event.action == 'labeled' || github.event.action == 'unlabeled'))
     outputs:
       has-automerge: ${{ steps.check-label.outputs.has-automerge }}
     steps:
@@ -23,8 +23,12 @@ jobs:
             | jq -r '.[].name')
           if echo "$labels" | grep -q "^Automerge$"; then
             echo "has-automerge=true" >> $GITHUB_OUTPUT
+            echo "Automerge label is present"
+            exit 0
           else
             echo "has-automerge=false" >> $GITHUB_OUTPUT
+            echo "Automerge label is missing"
+            exit 1
           fi
   lint:
     runs-on: ubuntu-latest
