@@ -23,16 +23,25 @@ const statusSlice = createSlice({
       .addCase(createRoom.fulfilled, (state) => {
         state.status = 'idle';
       })
+      .addCase(createRoom.rejected, (state) => {
+        state.status = 'idle';
+      })
       .addCase(syncDown.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(syncDown.fulfilled, (state) => {
         state.status = 'idle';
       })
+      .addCase(syncDown.rejected, (state) => {
+        state.status = 'idle';
+      })
       .addCase(syncUp.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(syncUp.fulfilled, (state) => {
+        state.status = 'idle';
+      })
+      .addCase(syncUp.rejected, (state) => {
         state.status = 'idle';
       }),
 });

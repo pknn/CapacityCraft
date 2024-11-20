@@ -46,7 +46,11 @@ const roomService: RoomService = {
   getRoom: async (roomId) => {
     const roomReference = getRoomReference(roomId);
     const doc = await getDoc(roomReference);
-    return doc.data() as Room;
+    const room = doc.data() as Room;
+
+    if (!room.id) return Promise.reject();
+
+    return room;
   },
   updateRoom: async (roomId, update) => {
     const roomReference = getRoomReference(roomId);
