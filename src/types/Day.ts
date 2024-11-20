@@ -26,6 +26,18 @@ export const toggleGlobalDayType = (dayType: DayType): DayType => {
 export const toggleMemberOffDayType = (dayType: DayType): DayType => {
   switch (dayType) {
     case DayTypes.FullDay:
+    case DayTypes.HalfDay:
+      return DayTypes.Holiday;
+    case DayTypes.Holiday:
+      return DayTypes.FullDay;
+    default:
+      return dayType;
+  }
+};
+
+export const cybleMemberDayType = (dayType: DayType): DayType => {
+  switch (dayType) {
+    case DayTypes.FullDay:
       return DayTypes.HalfDay;
     case DayTypes.HalfDay:
       return DayTypes.Holiday;
