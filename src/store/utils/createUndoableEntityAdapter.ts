@@ -6,7 +6,7 @@ import {
 } from '@reduxjs/toolkit';
 import createUndoableAdapter, { UndoableState } from './createUndoableAdapter';
 
-type UndoableEntityState<Entity, Id extends EntityId> = UndoableState<
+export type UndoableEntityState<Entity, Id extends EntityId> = UndoableState<
   EntityState<Entity, Id>
 >;
 

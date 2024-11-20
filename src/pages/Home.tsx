@@ -12,7 +12,7 @@ import { clearRoom, createRoom, setRoomId } from '../store/roomSlice';
 import { clearUser } from '../store/userSlice';
 
 type ActionBindings = {
-  createRoom: (id: string) => void;
+  createRoom: (id: string) => Promise<unknown>;
   setRoomId: (id: string) => void;
   clearRoom: () => void;
   clearUser: () => void;
@@ -29,9 +29,9 @@ const Home = ({ createRoom, setRoomId, clearRoom, clearUser }: Props) => {
     clearRoom();
   }, [clearUser, clearRoom]);
 
-  const handleStartPlanning = () => {
+  const handleStartPlanning = async () => {
     const id = genRoomId();
-    createRoom(id);
+    await createRoom(id);
     navigate(`/app/${id}`);
   };
 
