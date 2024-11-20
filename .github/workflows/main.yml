@@ -5,29 +5,9 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-    types: [opened, synchronize, reopened, labeled, unlabeled]
 
 jobs:
-  check-automerge-label:
-    if: github.event_name == 'pull_request'  # Only run on pull requests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check for Automerge label
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_URL: ${{ github.event.pull_request.url }}
-        run: |
-          labels=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "$PR_URL" | jq -r '.labels[].name')
-          if echo "$labels" | grep -q "^Automerge$"; then
-            echo "Automerge label is present"
-          else
-            echo "Automerge label is missing"
-            exit 1
-          fi
   lint:
-    if: |
-      github.event_name == 'push' ||
-      (github.event_name == 'pull_request' && github.event.action != 'labeled' && github.event.action != 'unlabeled')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -62,9 +42,6 @@ jobs:
       run: yarn lint
 
   build:
-    if: |
-      github.event_name == 'push' ||
-      (github.event_name == 'pull_request' && github.event.action != 'labeled' && github.event.action != 'unlabeled')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -99,9 +76,6 @@ jobs:
       run: yarn build
 
   test:
-    if: |
-      github.event_name == 'push' ||
-      (github.event_name == 'pull_request' && github.event.action != 'labeled' && github.event.action != 'unlabeled')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
