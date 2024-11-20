@@ -1,8 +1,9 @@
 import { connect } from 'react-redux';
 import { AppState } from '../store';
 import {
+  selectCapacity,
   selectHolidays,
-  selectTotalWorkingDays,
+  selectTotalWorkingManDays,
 } from '../store/selectors/selectSprintSummary';
 import { roomSelector } from '../store/roomSlice';
 
@@ -10,11 +11,17 @@ type StateProps = {
   totalDays: number;
   totalWorkingDays: number;
   holidays: number;
+  calculatedCapacity: number;
 };
 
 type Props = StateProps;
 
-const SprintSummary = ({ totalDays, totalWorkingDays, holidays }: Props) => (
+const SprintSummary = ({
+  totalDays,
+  totalWorkingDays,
+  holidays,
+  calculatedCapacity,
+}: Props) => (
   <div className="my-8">
     <h3 className="text-lg font-bold">Sprint Summary</h3>
     <table>
@@ -30,13 +37,13 @@ const SprintSummary = ({ totalDays, totalWorkingDays, holidays }: Props) => (
           <td>Days</td>
         </tr>
         <tr>
-          <th className="pr-4 text-left font-medium">Total Working Days</th>
+          <th className="pr-4 text-left font-medium">Total Working Man-Days</th>
           <td className="pr-4 text-right">{totalWorkingDays}</td>
           <td>Days</td>
         </tr>
         <tr>
           <th className="text-left font-medium">Capacity</th>
-          <td className="pr-4 text-right">22</td>
+          <td className="pr-4 text-right">{calculatedCapacity}</td>
           <td>SPs</td>
         </tr>
       </tbody>
@@ -46,8 +53,9 @@ const SprintSummary = ({ totalDays, totalWorkingDays, holidays }: Props) => (
 
 const mapStateToProps = (state: AppState): StateProps => ({
   totalDays: roomSelector.value(state).days.length,
-  totalWorkingDays: selectTotalWorkingDays(state),
+  totalWorkingDays: selectTotalWorkingManDays(state),
   holidays: selectHolidays(state),
+  calculatedCapacity: selectCapacity(state),
 });
 
 export default connect(mapStateToProps)(SprintSummary);
