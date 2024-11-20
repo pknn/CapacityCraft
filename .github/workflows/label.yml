@@ -9,15 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check for Automerge label
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'Automerge') }}
         run: |
-          labels=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/labels" \
-            | jq -r '.[].name')
-
-          if echo "$labels" | grep -q "^Automerge$"; then
-            echo "✅ Automerge label is present"
-            exit 0
-          else
-            echo "❌ Automerge label is missing"
-            exit 1
-          fi
+          echo "❌ Automerge label is missing"
+          exit 1
