@@ -13,13 +13,13 @@ import roomService from '../services/roomService';
 import { Room } from '../types/Room';
 import ManuallyAddMember from '../components/ManuallyAddMember';
 
-type ActionBindings = {
+type DispatchProps = {
   syncDown: (id: string) => void;
   syncDownSubscribed: (room: Room) => void;
   clearMembers: () => void;
 };
 
-type Props = ActionBindings;
+type Props = DispatchProps;
 
 const Plan = ({ syncDown, syncDownSubscribed, clearMembers }: Props) => {
   const navigate = useNavigate();
@@ -80,7 +80,7 @@ const Plan = ({ syncDown, syncDownSubscribed, clearMembers }: Props) => {
   );
 };
 
-const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
+const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
   syncDown: (id: string) => dispatch(syncDown(id)),
   syncDownSubscribed: (room: Room) =>
     dispatch(syncDown.fulfilled(room, '', room.id)),

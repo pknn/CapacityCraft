@@ -10,20 +10,20 @@ import { roomSelector } from '../store/roomSlice';
 import { Day } from '../types/Day';
 import { syncUp } from '../store/dataThunkActions';
 
-type StateBindings = {
+type StateProps = {
   displayName: string | undefined;
   roomId: string;
   days: Day[];
   isLoading: boolean;
 };
 
-type ActionBindings = {
+type DispatchProps = {
   setUser: (id: string, displayName: string) => void;
   addMember: (id: string, displayName: string, days: Day[]) => void;
   syncUp: () => Promise<unknown>;
 };
 
-type Props = StateBindings & ActionBindings;
+type Props = StateProps & DispatchProps;
 
 const UserOverlay = ({
   displayName,
@@ -90,14 +90,14 @@ const UserOverlay = ({
   );
 };
 
-const mapStateToProps = (state: AppState): StateBindings => ({
+const mapStateToProps = (state: AppState): StateProps => ({
   displayName: state.user.displayName,
   roomId: roomSelector.value(state).id ?? '',
   days: roomSelector.value(state).days,
   isLoading: state.status.status === 'loading',
 });
 
-const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
+const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
   setUser: (id: string, displayName: string) =>
     dispatch(setUser({ id, displayName })),
   addMember: (id: string, displayName: string, days: Day[]) =>

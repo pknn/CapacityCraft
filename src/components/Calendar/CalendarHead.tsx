@@ -5,16 +5,16 @@ import { Day } from '../../types/Day';
 import CalendarHeadItem from './CalendarHeadItem';
 import { syncUp } from '../../store/dataThunkActions';
 
-type StateBindings = {
+type StateProps = {
   days: Day[];
 };
 
-type ActionBindings = {
+type DispatchProps = {
   toggleGlobalOffDay: (index: number) => void;
   syncUp: () => void;
 };
 
-type Props = StateBindings & ActionBindings;
+type Props = StateProps & DispatchProps;
 
 const CalendarHead = ({ days, toggleGlobalOffDay, syncUp }: Props) => {
   const handleClick = (index: number) => () => {
@@ -25,7 +25,7 @@ const CalendarHead = ({ days, toggleGlobalOffDay, syncUp }: Props) => {
   return (
     <thead>
       <tr>
-        <th className="w-auto snap-start" />
+        <th className="w-auto snap-start" data-testid="empty-header-cell" />
         {days.map((day, index) => (
           <CalendarHeadItem
             key={day.date}
@@ -38,11 +38,11 @@ const CalendarHead = ({ days, toggleGlobalOffDay, syncUp }: Props) => {
   );
 };
 
-const mapStateToProps = (state: AppState): StateBindings => ({
+const mapStateToProps = (state: AppState): StateProps => ({
   days: roomSelector.value(state).days,
 });
 
-const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
+const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
   toggleGlobalOffDay: (index) => dispatch(toggleGlobalOffDay(index)),
   syncUp: () => dispatch(syncUp()),
 });
