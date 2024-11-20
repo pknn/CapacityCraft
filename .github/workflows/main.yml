@@ -30,6 +30,7 @@ jobs:
             echo "Automerge label is missing"
             exit 1
           fi
+
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -131,3 +132,18 @@ jobs:
 
     - name: Run tests
       run: yarn test:run
+
+  auto-merge:
+    needs: [check-automerge-label, lint, build, test]
+    runs-on: ubuntu-latest
+    if: |
+      needs.check-automerge-label.outputs.has-automerge == 'true' &&
+      (github.event_name == 'pull_request' || github.event_name == 'pull_request_target')
+    steps:
+      - name: Auto-merge pull request
+        run: |
+          curl -X PUT \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/merge" \
+            -d '{"merge_method":"squash"}'
