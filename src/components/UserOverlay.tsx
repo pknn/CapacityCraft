@@ -36,13 +36,19 @@ const UserOverlay = ({
   const [shouldDisplay, setShouldDisplay] = useState(
     !displayName || displayName.length <= 0
   );
-  const [syncing, setSyncing] = useState(false);
+  const [syncing, setSyncing] = useState(true);
 
   useEffect(() => {
     if (!displayName) {
       setShouldDisplay(true);
     }
   }, [displayName]);
+
+  useEffect(() => {
+    if (days.length > 0) {
+      setSyncing(false);
+    }
+  }, [days]);
 
   const handleDisplayNameChange = (value: string) => {
     setValue(value);
@@ -80,6 +86,7 @@ const UserOverlay = ({
             <Button
               variant={syncing ? 'loading' : 'default'}
               onClick={handleSubmit}
+              disabled={syncing}
             >
               Identify me!
             </Button>

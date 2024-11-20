@@ -83,7 +83,7 @@ const roomSlice = createSlice({
   extraReducers: (builder) =>
     builder
       .addCase(createRoom.fulfilled, (state, action) => {
-        const { id, days } = action.payload;
+        const { id, days, baselineVelocity } = action.payload;
         const startDate = days.sort((a, b) =>
           new Date(a.date) < new Date(b.date) ? -1 : 1
         )[0].date;
@@ -91,6 +91,7 @@ const roomSlice = createSlice({
           id,
           days,
           startDate,
+          baselineVelocity,
         });
         roomUndoableAdapter.commit(state);
       })
@@ -114,6 +115,7 @@ const roomSlice = createSlice({
           id: room.id,
           days: room.days,
           startDate,
+          baselineVelocity: room.baselineVelocity,
         });
         roomUndoableAdapter.commit(state);
       }),
