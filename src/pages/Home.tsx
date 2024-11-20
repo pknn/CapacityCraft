@@ -22,6 +22,7 @@ type Props = ActionBindings;
 
 const Home = ({ createRoom, setRoomId, clearRoom, clearUser }: Props) => {
   const [roomIdValue, setRoomIdValue] = useState<string>('');
+  const [creatingRoom, setCreatingRoom] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,8 +31,14 @@ const Home = ({ createRoom, setRoomId, clearRoom, clearUser }: Props) => {
   }, [clearUser, clearRoom]);
 
   const handleStartPlanning = async () => {
+    if (creatingRoom) return;
+
     const id = genRoomId();
+
+    setCreatingRoom(true);
     await createRoom(id);
+    setCreatingRoom(false);
+
     navigate(`/app/${id}`);
   };
 
@@ -62,7 +69,12 @@ const Home = ({ createRoom, setRoomId, clearRoom, clearUser }: Props) => {
           confidence.
         </span>
         <section className="m-6">
-          <Button onClick={handleStartPlanning}>Start planning</Button>
+          <Button
+            onClick={handleStartPlanning}
+            variant={creatingRoom ? 'loading' : 'default'}
+          >
+            Start planning
+          </Button>
           <Separator />
           <div className="mb-2 font-medium text-stone-800">
             Already have Room ID?
