@@ -38,6 +38,7 @@ const roomService: RoomService = {
       id: roomId,
       days: generateDays(formatDateInput(new Date()), [], 9),
       members: [],
+      baselineVelocity: 0,
     };
     await setDoc(roomReference, room);
     return room;

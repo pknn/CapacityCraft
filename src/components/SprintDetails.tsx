@@ -1,6 +1,11 @@
 import { connect } from 'react-redux';
 import { AppDispatch, AppState } from '../store';
-import { roomSelector, setDaysLength, setStartDate } from '../store/roomSlice';
+import {
+  roomSelector,
+  setBaselineVelocity,
+  setDaysLength,
+  setStartDate,
+} from '../store/roomSlice';
 import Input from './core/Input';
 import SprintSummary from './SprintSummary';
 import { syncUp } from '../store/dataThunkActions';
@@ -8,12 +13,14 @@ import { syncUp } from '../store/dataThunkActions';
 type StateBindings = {
   length: number;
   startDate: string;
+  baselineVelocity: number;
 };
 
 type ActionBindings = {
-  syncRoomUp: () => void;
+  syncUp: () => void;
   setDaysLength: (newLength: number, startDate: string) => void;
   setStartDate: (startDate: string) => void;
+  setBaselineVelocity: (newVelocity: number) => void;
 };
 
 type Props = StateBindings & ActionBindings;
@@ -21,38 +28,54 @@ type Props = StateBindings & ActionBindings;
 const SprintDetails = ({
   length,
   startDate,
-  syncRoomUp,
+  baselineVelocity,
+  syncUp,
   setDaysLength,
   setStartDate,
+  setBaselineVelocity,
 }: Props) => {
   const handleSprintStartDateChange = (value: string) => {
     setStartDate(value);
-    syncRoomUp();
+    syncUp();
   };
 
   const handleSprintLengthChange = (value: number) => {
     setDaysLength(value <= 0 ? 0 : value, startDate);
-    syncRoomUp();
+    syncUp();
+  };
+  const handleBaselineVelocityChange = (value: number) => {
+    setBaselineVelocity(value);
+    syncUp();
   };
 
   return (
     <div className="flex items-baseline justify-between gap-4">
       <SprintSummary />
-      <div className="flex gap-4">
+      <div className="inline-flex gap-4">
         <Input<string>
           value={startDate}
           onValueChange={handleSprintStartDateChange}
-          name={''}
-          placeholder={''}
-          label="Sprint start date"
+          name="sprint-start-date"
+          placeholder=""
+          label="Start date"
           type="date"
         />
         <Input<number>
+          className="max-w-16"
           value={length}
           onValueChange={handleSprintLengthChange}
-          name={''}
-          placeholder={''}
-          label="Sprint length (days)"
+          name="sprint-length"
+          placeholder=""
+          label="Length"
+          type="number"
+        />
+        <Input<number>
+          className="max-w-20"
+          value={baselineVelocity}
+          onValueChange={handleBaselineVelocityChange}
+          name="baseline-velocity"
+          placeholder=""
+          label="Base Velocity"
           type="number"
         />
       </div>
@@ -63,13 +86,16 @@ const SprintDetails = ({
 const mapStateToProps = (state: AppState): StateBindings => ({
   length: roomSelector.value(state).days.length,
   startDate: roomSelector.value(state).startDate ?? '',
+  baselineVelocity: roomSelector.value(state).baselineVelocity,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
-  syncRoomUp: () => dispatch(syncUp()),
+  syncUp: () => dispatch(syncUp()),
   setDaysLength: (newLength: number, startDate: string) =>
     dispatch(setDaysLength({ newLength, startDate })),
   setStartDate: (startDate: string) => dispatch(setStartDate(startDate)),
+  setBaselineVelocity: (newVelocity) =>
+    dispatch(setBaselineVelocity(newVelocity)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SprintDetails);
