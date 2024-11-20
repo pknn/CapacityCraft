@@ -5,4 +5,5 @@ export type Room = {
   id: string;
   days: Day[];
   members: Member[];
+  baselineVelocity: number;
 };

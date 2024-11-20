@@ -26,6 +26,7 @@ export const syncUp = createAsyncThunk(
       id: roomId,
       days: roomState.days,
       members,
+      baselineVelocity: roomState.baselineVelocity,
     };
 
     return roomService.updateRoom(roomId, roomUpdate);

@@ -11,12 +11,14 @@ type RoomState = {
   id: string | undefined;
   startDate: string | undefined;
   days: Day[];
+  baselineVelocity: number;
 };
 
 const roomUndoableAdapter = createUndoableAdapter<RoomState>({
   id: undefined,
   startDate: undefined,
   days: [],
+  baselineVelocity: 0,
 });
 
 export const createRoom = createAsyncThunk(
@@ -48,6 +50,11 @@ const roomSlice = createSlice({
       roomUndoableAdapter.update(state, {
         startDate,
         days: updatedDays,
+      });
+    },
+    setBaselineVelocity: (state, action: PayloadAction<number>) => {
+      roomUndoableAdapter.update(state, {
+        baselineVelocity: action.payload,
       });
     },
     setRoomId: (state, action: PayloadAction<string>) => {
@@ -115,6 +122,7 @@ const roomSlice = createSlice({
 export const {
   setDaysLength,
   setStartDate,
+  setBaselineVelocity,
   setRoomId,
   clearRoom,
   toggleGlobalNonWorkingDay,
