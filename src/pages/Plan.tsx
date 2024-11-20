@@ -44,8 +44,6 @@ const Plan = ({ syncDown, syncDownSubscribed, clearMembers }: Props) => {
     clearMembers();
   }, [clearMembers]);
 
-  useEffect(() => {}, []);
-
   return (
     <>
       <UserOverlay />
