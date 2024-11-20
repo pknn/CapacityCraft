@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import formatDateStringForDisplay from '../../util/formatDateStringForDisplay';
-import { Day } from '../../types/Day';
+import { Day, DayTypes } from '../../types/Day';
 
 type OwnProps = {
   day: Day;
@@ -10,15 +10,14 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CalendarHeadItem = ({ day, onClick }: Props) => {
-  const { dayOfWeek, date, month, isWeekend } = useMemo(
+  const { dayOfWeek, date, month } = useMemo(
     () => formatDateStringForDisplay(day.date),
     [day]
   );
 
-  const isNonWorkingDay = useMemo(
-    () => isWeekend || day.isNonWorkingDay,
-    [isWeekend, day]
-  );
+  const isWeekend = day.dayType === DayTypes.Weekend;
+  const isHoliday = day.dayType === DayTypes.Holiday;
+  const isNonWorkingDay = isWeekend || isHoliday;
 
   return (
     <th

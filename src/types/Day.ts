@@ -12,3 +12,14 @@ export type Day = {
   isNonWorkingDay: boolean;
   dayType: DayType;
 };
+
+export const toggleGlobalDayType = (dayType: DayType): DayType => {
+  switch (dayType) {
+    case DayTypes.FullDay:
+      return DayTypes.Holiday;
+    case DayTypes.Holiday:
+      return DayTypes.FullDay;
+    default:
+      return dayType;
+  }
+};
