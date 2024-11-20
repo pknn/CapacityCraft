@@ -8,6 +8,7 @@ type InputProps<T> = {
   name: string;
   placeholder: string;
   type: InputHTMLAttributes<HTMLInputElement>['type'];
+  step?: number;
 } & CoreComponentProps;
 
 const Input = <T extends string | number | undefined | ''>({
@@ -18,6 +19,7 @@ const Input = <T extends string | number | undefined | ''>({
   name,
   placeholder,
   type,
+  step = 1,
 }: InputProps<T>) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onValueChange(event.target.value as T);
@@ -37,6 +39,7 @@ const Input = <T extends string | number | undefined | ''>({
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
+        step={step}
       />
     </div>
   );

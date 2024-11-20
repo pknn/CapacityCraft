@@ -5,7 +5,7 @@ import { roomSelector } from '../roomSlice';
 import dayTypeToRatio from '../../util/dayTypeToRatio';
 import { DayTypes } from '../../types/Day';
 
-export const selectTotalWorkingDays = createSelector(
+export const selectTotalWorkingManDays = createSelector(
   (state: AppState) => membersSelector.selectAll(state),
   (members): number =>
     members.reduce(
@@ -23,4 +23,11 @@ export const selectHolidays = createSelector(
   (state: AppState) => roomSelector.value(state).days,
   (days): number =>
     days.filter((day) => day.dayType === DayTypes.Holiday).length
+);
+
+export const selectCapacity = createSelector(
+  (state: AppState) => roomSelector.value(state).baselineVelocity,
+  selectTotalWorkingManDays,
+  (baseVelocity, totalWorkingDays) =>
+    Math.floor(baseVelocity * totalWorkingDays)
 );

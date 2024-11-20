@@ -77,6 +77,7 @@ const SprintDetails = ({
           placeholder=""
           label="Base Velocity"
           type="number"
+          step={0.1}
         />
       </div>
     </div>
