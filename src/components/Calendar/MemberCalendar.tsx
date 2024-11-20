@@ -14,17 +14,17 @@ type OwnProps = {
   member: Member;
 };
 
-type StateBindings = {
+type StateProps = {
   globalDays: Day[];
 };
 
-type ActionBindings = {
+type DispatchProps = {
   cyclePersonalDayType: (id: string, day: number) => void;
   removeMember: (id: string) => void;
   syncUp: () => void;
 };
 
-type Props = OwnProps & StateBindings & ActionBindings;
+type Props = OwnProps & StateProps & DispatchProps;
 
 const MemberCalendar = ({
   member,
@@ -66,11 +66,11 @@ const MemberCalendar = ({
   );
 };
 
-const mapStateToProps = (state: AppState): StateBindings => ({
+const mapStateToProps = (state: AppState): StateProps => ({
   globalDays: roomSelector.value(state).days,
 });
 
-const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
+const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
   cyclePersonalDayType: (id, dayIndex) =>
     dispatch(cyclePersonalDayType({ id, dayIndex })),
   removeMember: (id) => dispatch(removeMember(id)),

@@ -10,20 +10,20 @@ import Input from './core/Input';
 import SprintSummary from './SprintSummary';
 import { syncUp } from '../store/dataThunkActions';
 
-type StateBindings = {
+type StateProps = {
   length: number;
   startDate: string;
   baselineVelocity: number;
 };
 
-type ActionBindings = {
+type DispatchProps = {
   syncUp: () => void;
   setDaysLength: (newLength: number, startDate: string) => void;
   setStartDate: (startDate: string) => void;
   setBaselineVelocity: (newVelocity: number) => void;
 };
 
-type Props = StateBindings & ActionBindings;
+type Props = StateProps & DispatchProps;
 
 const SprintDetails = ({
   length,
@@ -84,13 +84,13 @@ const SprintDetails = ({
   );
 };
 
-const mapStateToProps = (state: AppState): StateBindings => ({
+const mapStateToProps = (state: AppState): StateProps => ({
   length: roomSelector.value(state).days.length,
   startDate: roomSelector.value(state).startDate ?? '',
   baselineVelocity: roomSelector.value(state).baselineVelocity,
 });
 
-const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
+const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
   syncUp: () => dispatch(syncUp()),
   setDaysLength: (newLength: number, startDate: string) =>
     dispatch(setDaysLength({ newLength, startDate })),
