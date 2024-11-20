@@ -45,7 +45,7 @@ describe('Footer', () => {
   it('maintains correct text content and spacing', () => {
     render(<Footer />);
 
-    const contributionText = screen.getByText((content, element) => {
+    const contributionText = screen.getByText((_, element) => {
       return (
         element?.textContent ===
         'Contribute to this project on GitHub or Report issue'
