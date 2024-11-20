@@ -35,17 +35,19 @@ const Header = ({ roomId, displayName }: Props) => {
     <header className="container mx-auto flex max-w-screen-lg items-center justify-between py-4">
       <div className="group flex items-baseline">
         <Logo />
-        <span
-          className="relative cursor-pointer text-stone-400 group-hover:text-stone-500 group-hover:*:block"
-          onClick={handleRoomIdClick}
-        >
-          #{roomId}
-          <div className="absolute left-0 top-full text-xs opacity-0 transition-all duration-300 group-hover:opacity-100">
-            {copyContentMessage}
-          </div>
-        </span>
+        {roomId ? (
+          <span
+            className="relative cursor-pointer text-stone-400 group-hover:text-stone-500 group-hover:*:block"
+            onClick={handleRoomIdClick}
+          >
+            #{roomId}
+            <div className="absolute left-0 top-full text-xs opacity-0 transition-all duration-300 group-hover:opacity-100">
+              {copyContentMessage}
+            </div>
+          </span>
+        ) : null}
       </div>
-      {displayName && roomId ? (
+      {displayName ? (
         <span className="group font-medium">{displayName} </span>
       ) : null}
     </header>

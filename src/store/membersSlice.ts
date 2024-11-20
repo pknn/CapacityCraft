@@ -1,17 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Member } from '../types/Member';
 import { generateDays, getUpdatedDays } from '../util/dayGenerator';
-import {
-  setDaysLength,
-  setStartDate,
-  toggleGlobalNonWorkingDay,
-} from './roomSlice';
+import { setDaysLength, setStartDate, toggleGlobalOffDay } from './roomSlice';
 import { AppState } from '.';
 import createUndoableEntityAdapter, {
   UndoableEntityState,
 } from './utils/createUndoableEntityAdapter';
 import { syncDown, syncUp } from './dataThunkActions';
-import { Day } from '../types/Day';
+import { cybleMemberDayType, Day, toggleMemberOffDayType } from '../types/Day';
 import { toast } from 'react-toastify';
 
 const memberAdapter = createUndoableEntityAdapter<Member, Member['id']>({
@@ -31,9 +27,14 @@ const updateAllMemberDays = (
   );
 };
 
-const toggleDayAtIndex = (days: Day[], index: number): Day[] =>
+const toggleDayOffAtIndex = (days: Day[], index: number): Day[] =>
   days.map((day, i) =>
-    i === index ? { ...day, isNonWorkingDay: !day.isNonWorkingDay } : day
+    i === index ? { ...day, dayType: toggleMemberOffDayType(day.dayType) } : day
+  );
+
+const cycleDayTypeAtIndex = (days: Day[], index: number): Day[] =>
+  days.map((day, i) =>
+    i === index ? { ...day, dayType: cybleMemberDayType(day.dayType) } : day
   );
 
 const getMemberDiff = (l1: Member[], l2: Member[]) => {
@@ -62,7 +63,7 @@ const membersSlice = createSlice({
         days,
       });
     },
-    toggleMemberNonWorkingDay: (
+    cyclePersonalDayType: (
       state,
       action: PayloadAction<{ id: string; dayIndex: number }>
     ) => {
@@ -71,11 +72,7 @@ const membersSlice = createSlice({
       memberAdapter.updateOne(state, {
         id,
         changes: {
-          days: state.current.entities[id].days.map((day, index) =>
-            index === dayIndex
-              ? { ...day, isNonWorkingDay: !day.isNonWorkingDay }
-              : day
-          ),
+          days: cycleDayTypeAtIndex(state.current.entities[id].days, dayIndex),
         },
       });
     },
@@ -98,9 +95,11 @@ const membersSlice = createSlice({
           getUpdatedDays(days, action.payload)
         );
       })
-      .addCase(toggleGlobalNonWorkingDay, (state, action) => {
+      .addCase(toggleGlobalOffDay, (state, action) => {
         const dayIndex = action.payload;
-        updateAllMemberDays(state, (days) => toggleDayAtIndex(days, dayIndex));
+        updateAllMemberDays(state, (days) =>
+          toggleDayOffAtIndex(days, dayIndex)
+        );
       })
       .addCase(syncDown.fulfilled, (state, action) => {
         const room = action.payload;
@@ -125,12 +124,8 @@ const membersSlice = createSlice({
   },
 });
 
-export const {
-  addMember,
-  toggleMemberNonWorkingDay,
-  removeMember,
-  clearMember,
-} = membersSlice.actions;
+export const { addMember, cyclePersonalDayType, removeMember, clearMember } =
+  membersSlice.actions;
 export const membersReducer = membersSlice.reducer;
 export const membersSelector = memberAdapter.getSelectors(
   (state: AppState) => state.members

@@ -36,12 +36,7 @@ const userSlice = createSlice({
 
       if (
         state.id &&
-        !room.members
-          .map((member) => {
-            console.log(member.id, state.id, member.id === state.id);
-            return member.id;
-          })
-          .includes(state.id)
+        !room.members.map((member) => member.id).includes(state.id)
       ) {
         state.id = undefined;
         state.displayName = undefined;

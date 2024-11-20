@@ -4,10 +4,7 @@ import zip from '../../util/zip';
 import { AppDispatch, AppState } from '../../store';
 import { Member } from '../../types/Member';
 import { Day } from '../../types/Day';
-import {
-  removeMember,
-  toggleMemberNonWorkingDay,
-} from '../../store/membersSlice';
+import { removeMember, cyclePersonalDayType } from '../../store/membersSlice';
 import MemberCalendarItem from './MemberCalendarItem';
 import { roomSelector } from '../../store/roomSlice';
 import { syncUp } from '../../store/dataThunkActions';
@@ -22,7 +19,7 @@ type StateBindings = {
 };
 
 type ActionBindings = {
-  toggleMemberNonWorkingDay: (id: string, day: number) => void;
+  cyclePersonalDayType: (id: string, day: number) => void;
   removeMember: (id: string) => void;
   syncUp: () => void;
 };
@@ -32,7 +29,7 @@ type Props = OwnProps & StateBindings & ActionBindings;
 const MemberCalendar = ({
   member,
   globalDays,
-  toggleMemberNonWorkingDay,
+  cyclePersonalDayType,
   removeMember,
   syncUp,
 }: Props) => {
@@ -45,7 +42,7 @@ const MemberCalendar = ({
   );
 
   const handleClick = (day: number) => () => {
-    toggleMemberNonWorkingDay(member.id, day);
+    cyclePersonalDayType(member.id, day);
     syncUp();
   };
 
@@ -74,8 +71,8 @@ const mapStateToProps = (state: AppState): StateBindings => ({
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch): ActionBindings => ({
-  toggleMemberNonWorkingDay: (id, dayIndex) =>
-    dispatch(toggleMemberNonWorkingDay({ id, dayIndex })),
+  cyclePersonalDayType: (id, dayIndex) =>
+    dispatch(cyclePersonalDayType({ id, dayIndex })),
   removeMember: (id) => dispatch(removeMember(id)),
   syncUp: () => dispatch(syncUp()),
 });

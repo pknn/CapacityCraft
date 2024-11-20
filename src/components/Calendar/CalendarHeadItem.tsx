@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import formatDateStringForDisplay from '../../util/formatDateStringForDisplay';
-import { Day } from '../../types/Day';
+import { Day, DayTypes } from '../../types/Day';
 
 type OwnProps = {
   day: Day;
@@ -10,15 +10,14 @@ type OwnProps = {
 type Props = OwnProps;
 
 const CalendarHeadItem = ({ day, onClick }: Props) => {
-  const { dayOfWeek, date, month, isWeekend } = useMemo(
+  const { dayOfWeek, date, month } = useMemo(
     () => formatDateStringForDisplay(day.date),
     [day]
   );
 
-  const isNonWorkingDay = useMemo(
-    () => isWeekend || day.isNonWorkingDay,
-    [isWeekend, day]
-  );
+  const isWeekend = day.dayType === DayTypes.Weekend;
+  const isHoliday = day.dayType === DayTypes.Holiday;
+  const isOffDay = isWeekend || isHoliday;
 
   return (
     <th
@@ -26,17 +25,17 @@ const CalendarHeadItem = ({ day, onClick }: Props) => {
       onClick={onClick}
     >
       <div
-        className={`rounded-t px-4 py-2 font-medium uppercase ${isNonWorkingDay ? 'bg-stone-600 text-stone-400 group-hover:bg-stone-700' : 'bg-stone-300 group-hover:bg-stone-400'}`}
+        className={`rounded-t px-4 py-2 font-medium uppercase ${isOffDay ? 'bg-stone-600 text-stone-400 group-hover:bg-stone-700' : 'bg-stone-300 group-hover:bg-stone-400'}`}
       >
         {dayOfWeek}
       </div>
       <div
-        className={`px-4 py-2 text-4xl font-bold ${isNonWorkingDay ? 'bg-stone-400 text-stone-300 group-hover:bg-stone-500' : 'bg-stone-100 group-hover:bg-stone-200'}`}
+        className={`px-4 py-2 text-4xl font-bold ${isOffDay ? 'bg-stone-400 text-stone-300 group-hover:bg-stone-500' : 'bg-stone-100 group-hover:bg-stone-200'}`}
       >
         {date}
       </div>
       <div
-        className={`px-4 py-2 ${isNonWorkingDay ? 'bg-stone-600 text-stone-400 group-hover:bg-stone-700' : 'bg-stone-300 group-hover:bg-stone-400'}`}
+        className={`px-4 py-2 ${isOffDay ? 'bg-stone-600 text-stone-400 group-hover:bg-stone-700' : 'bg-stone-300 group-hover:bg-stone-400'}`}
       >
         {month}
       </div>
