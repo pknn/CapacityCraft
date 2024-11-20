@@ -31,10 +31,12 @@ const Plan = ({ syncDown, syncDownSubscribed, clearMembers }: Props) => {
           Cannot find room{' '}
           <span className="font-mono text-stone-600">#{roomId}</span>
           <br />
-          Bringing you back home
+          Bringing you back home 🏠
         </div>,
         {
           autoClose: 5000,
+          position: 'top-center',
+          closeButton: false,
         }
       );
       setTimeout(() => {

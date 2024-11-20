@@ -41,7 +41,10 @@ const userSlice = createSlice({
         state.id = undefined;
         state.displayName = undefined;
 
-        toast("Sorry! You've been removed from the room");
+        toast("Sorry! You've been removed from the room", {
+          position: 'top-center',
+          closeButton: false,
+        });
       }
     }),
 });

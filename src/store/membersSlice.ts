@@ -110,7 +110,7 @@ const membersSlice = createSlice({
         if (diff.length > 0) {
           diff.forEach((member) =>
             toast(`🎉 ${member.displayName} has joined! 🎉`, {
-              position: 'bottom-right',
+              position: 'top-right',
             })
           );
         }
