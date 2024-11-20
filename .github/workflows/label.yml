@@ -5,6 +5,19 @@ on:
     types: [opened, labeled, unlabeled, synchronize]
 
 jobs:
+  validate-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove unauthorized Automerge label
+        if: |
+          contains(github.event.pull_request.labels.*.name, 'Automerge') &&
+          github.event.sender.login != 'YOUR_GITHUB_USERNAME'
+        run: |
+          curl -X DELETE \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels/Automerge"
+          echo "❌ Removed unauthorized Automerge label"
   check-label:
     runs-on: ubuntu-latest
     steps:
