@@ -117,7 +117,7 @@ describe('roomService', () => {
       const mockRef = {} as DocumentReference;
 
       (doc as unknown as Mock).mockReturnValue(mockRef);
-      (onSnapshot as unknown as Mock).mockImplementation((ref, callback) => {
+      (onSnapshot as unknown as Mock).mockImplementation((_, callback) => {
         callback({
           exists: () => true,
           data: () => mockRoom,
@@ -144,7 +144,7 @@ describe('roomService', () => {
       const mockRef = {} as DocumentReference;
 
       (doc as unknown as Mock).mockReturnValue(mockRef);
-      (onSnapshot as unknown as Mock).mockImplementation((ref, callback) => {
+      (onSnapshot as unknown as Mock).mockImplementation((_, callback) => {
         callback({
           exists: () => false,
           data: () => null,
