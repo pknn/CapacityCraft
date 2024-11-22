@@ -8,6 +8,7 @@ import { DayTypes, type Day } from '../../types/Day';
 import { addMember } from '../../store/membersSlice';
 import { syncUp } from '../../store/dataThunkActions';
 import type { ChangeEvent } from 'react';
+import { toast } from 'react-toastify';
 
 // Mock core components
 vi.mock('../core/Input', () => ({
@@ -73,6 +74,12 @@ vi.mock('../../store/dataThunkActions', () => ({
   syncUp: vi.fn(() => ({ type: 'data/syncUp' })),
 }));
 
+vi.mock('react-toastify', () => ({
+  toast: {
+    error: vi.fn(),
+  },
+}));
+
 describe('ManuallyAddMember', () => {
   const mockDays: Day[] = [
     { date: '2024-01-01', dayType: DayTypes.FullDay },
@@ -122,6 +129,12 @@ describe('ManuallyAddMember', () => {
       expect(screen.getByTestId('manual-member-button')).toBeInTheDocument();
       expect(screen.getByText('Include!')).toBeInTheDocument();
     });
+
+    it('renders input with correct placeholder', () => {
+      renderWithStore();
+      const input = screen.getByTestId('manual-member-input');
+      expect(input).toHaveAttribute('placeholder', 'Mimi');
+    });
   });
 
   describe('interactions', () => {
@@ -132,7 +145,7 @@ describe('ManuallyAddMember', () => {
       expect(input).toHaveValue('John');
     });
 
-    it('handles member addition', async () => {
+    it('handles member addition successfully', async () => {
       renderWithStore();
       const mockAddMember = vi.mocked(addMember);
       const mockSyncUp = vi.mocked(syncUp);
@@ -150,15 +163,30 @@ describe('ManuallyAddMember', () => {
         isManual: true,
       });
       expect(mockSyncUp).toHaveBeenCalled();
+      expect(input).toHaveValue(''); // Verify input is cleared after submission
     });
 
-    it('prevents adding member with empty name', async () => {
+    it('prevents adding member with empty name and shows error toast', async () => {
       renderWithStore();
       const mockAddMember = vi.mocked(addMember);
+      const mockToastError = vi.mocked(toast.error);
 
-      await userEvent.click(screen.getByTestId('manual-member-button'));
+      const button = screen.getByTestId('manual-member-button');
+      await userEvent.click(button);
 
       expect(mockAddMember).not.toHaveBeenCalled();
+      expect(mockToastError).toHaveBeenCalledWith('Display cannot be empty!');
+    });
+
+    it('clears input after successful member addition', async () => {
+      renderWithStore();
+      const input = screen.getByTestId('manual-member-input');
+
+      await userEvent.type(input, 'John');
+      expect(input).toHaveValue('John');
+
+      await userEvent.click(screen.getByTestId('manual-member-button'));
+      expect(input).toHaveValue('');
     });
   });
 
@@ -175,6 +203,13 @@ describe('ManuallyAddMember', () => {
         .getByTestId('manual-member-input')
         .closest('.flex');
       expect(container).toHaveClass('flex', 'items-center', 'gap-2');
+    });
+
+    it('renders button correctly', () => {
+      renderWithStore();
+      const button = screen.getByTestId('manual-member-button');
+      expect(button).toBeInTheDocument();
+      expect(button).toHaveTextContent('Include!');
     });
   });
 });

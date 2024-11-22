@@ -8,6 +8,7 @@ import { syncUp } from '../../store/dataThunkActions';
 import { roomSelector } from '../../store/roomSlice';
 import { connect } from 'react-redux';
 import { genId } from '../../util/genId';
+import { toast } from 'react-toastify';
 
 type StateProps = {
   days: Day[];
@@ -28,10 +29,14 @@ const ManuallyAddMember = ({ days, addMember, syncUp }: Props) => {
   };
 
   const handleMemberAdd = () => {
-    if (displayName.length <= 0) return;
+    if (displayName.length <= 0) {
+      toast.error('Display cannot be empty!');
+      return;
+    }
 
     const id = genId();
     addMember(id, displayName, days);
+    setDisplayName('');
     syncUp();
   };
 
