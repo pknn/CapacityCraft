@@ -9,7 +9,7 @@ describe('dayGenerator', () => {
       const result = generateDay('2024-01-02', 0);
       expect(result).toEqual({
         date: '2024-01-02',
-        dayType: DayTypes.FullDay
+        dayType: DayTypes.FullDay,
       });
     });
 
@@ -18,7 +18,7 @@ describe('dayGenerator', () => {
       const result = generateDay('2024-01-02', 4);
       expect(result).toEqual({
         date: '2024-01-06',
-        dayType: DayTypes.Weekend
+        dayType: DayTypes.Weekend,
       });
     });
 
@@ -26,7 +26,7 @@ describe('dayGenerator', () => {
       const result = generateDay('2024-01-31', 1);
       expect(result).toEqual({
         date: '2024-02-01',
-        dayType: DayTypes.FullDay
+        dayType: DayTypes.FullDay,
       });
     });
 
@@ -34,7 +34,7 @@ describe('dayGenerator', () => {
       const result = generateDay('2024-12-31', 1);
       expect(result).toEqual({
         date: '2025-01-01',
-        dayType: DayTypes.FullDay
+        dayType: DayTypes.FullDay,
       });
     });
   });
@@ -44,7 +44,7 @@ describe('dayGenerator', () => {
     const initialDays: Day[] = [
       { date: '2024-01-02', dayType: DayTypes.FullDay },
       { date: '2024-01-03', dayType: DayTypes.FullDay },
-      { date: '2024-01-04', dayType: DayTypes.FullDay }
+      { date: '2024-01-04', dayType: DayTypes.FullDay },
     ];
 
     it('extends days when newLength is greater', () => {
@@ -52,11 +52,11 @@ describe('dayGenerator', () => {
       expect(result).toHaveLength(5);
       expect(result[3]).toEqual({
         date: '2024-01-05',
-        dayType: DayTypes.FullDay
+        dayType: DayTypes.FullDay,
       });
       expect(result[4]).toEqual({
         date: '2024-01-06',
-        dayType: DayTypes.Weekend
+        dayType: DayTypes.Weekend,
       });
     });
 
@@ -81,7 +81,7 @@ describe('dayGenerator', () => {
     const initialDays: Day[] = [
       { date: '2024-01-02', dayType: DayTypes.HalfDay },
       { date: '2024-01-03', dayType: DayTypes.FullDay },
-      { date: '2024-01-04', dayType: DayTypes.Holiday }
+      { date: '2024-01-04', dayType: DayTypes.Holiday },
     ];
 
     it('preserves existing day types when dates match', () => {
@@ -94,7 +94,7 @@ describe('dayGenerator', () => {
       expect(result).toEqual([
         { date: '2024-01-03', dayType: DayTypes.FullDay },
         { date: '2024-01-04', dayType: DayTypes.Holiday },
-        { date: '2024-01-05', dayType: DayTypes.FullDay }
+        { date: '2024-01-05', dayType: DayTypes.FullDay },
       ]);
     });
 
@@ -103,7 +103,7 @@ describe('dayGenerator', () => {
       expect(result).toEqual([
         { date: '2024-01-05', dayType: DayTypes.FullDay },
         { date: '2024-01-06', dayType: DayTypes.Weekend },
-        { date: '2024-01-07', dayType: DayTypes.Weekend }
+        { date: '2024-01-07', dayType: DayTypes.Weekend },
       ]);
     });
 
@@ -117,7 +117,7 @@ describe('dayGenerator', () => {
       expect(result).toEqual([
         { date: '2024-01-31', dayType: DayTypes.FullDay },
         { date: '2024-02-01', dayType: DayTypes.FullDay },
-        { date: '2024-02-02', dayType: DayTypes.FullDay }
+        { date: '2024-02-02', dayType: DayTypes.FullDay },
       ]);
     });
   });
